@@ -37,18 +37,34 @@
             <li role="presentation" class="active"><a href="{% url 'index' %}">Home</a></li>
             <li role="presentation"><a href="#">About</a></li>
             <li role="presentation"><a href="#">Contact</a></li>
+            {% if user.is_authenticated %}
+              <li role="presentation"><a href="{% url 'auth_logout' %}">Logout</a></li>
+            {% endif %}
           </ul>
         </nav>
-        <h3 class="text-muted">FunkOv</h3>
+        <h3 class="text-muted">{{ title }}</h3>
       </div>
 
       <div class="jumbotron">
-        <h1>FunkOv</h1>
-        <h2>Funktional Coverage Made Easy</h2>
-        <p class="lead">Something catchy here that makes people want to register</p>
+        <h1>{{ h1 }}</h1>
+        <h2>{{ h2 }}</h2>
+        <p class="lead">{{ h3 }}</p>
+
+        {% if user.is_authenticated %}
+          {% for label,url in buttons.items %}
+            <a class="btn btn-lg btn-success" href="{{ url }}" role="button">{{ label }}</a>
+          {% endfor %}
+        {% else %}
+          {% for label,url in buttons.items %}
+            <a class="btn btn-lg btn-success" href="{{ url }}" role="button">{{ label }}</a>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+<!--
         <a class="btn btn-lg btn-success" href="{% url 'registration_register' %}" role="button">Register</a>
         <a class="btn btn-lg btn-success" href="{% url 'auth_login' %}" role="button">Login</a>
-      </div>
+-->
 
       <footer class="footer">
         <p>&copy; AgileSoC.com 2015</p>

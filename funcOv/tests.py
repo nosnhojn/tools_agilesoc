@@ -4,21 +4,6 @@ from registration.forms import RegistrationForm
 
 import funcOv.views
 
-class IndexViewTests(TestCase):
-
-  def testIndexViewExists(self):
-    response = self.client.get('/funcOv/')
-    self.assertEqual(response.status_code, 200)
-
-# def testIndexContextHasAuthenticationForm(self):
-#   response = self.client.get(reverse('index'))
-#   self.assertTrue(response.context['authForm'])
-#
-# def testIndexContextHasRegistrationtionForm(self):
-#   response = self.client.get(reverse('index'))
-#   self.assertTrue(response.context['regForm'])
-
-
 class userTests(TestCase):
   uname = 'uname'
   passwd = 'passwd'
@@ -29,6 +14,32 @@ class userTests(TestCase):
     up.user = User.objects.create_user(self.uname, self.email, self.passwd)
     up.save()
 
+  def testIndexViewExists(self):
+    response = self.client.get(reverse('index'))
+    self.assertEqual(response.status_code, 200)
+
+  def testNoUserIndex(self):
+    response = self.client.get(reverse('index'))
+    self.assertEquals(response.context['title'], 'FunkOv')
+    self.assertEquals(response.context['h1'], 'FunkOv')
+    self.assertEquals(response.context['h2'], 'Funktional Coverage Made Easy')
+    self.assertEquals(response.context['h3'], 'Something catchy here that makes people want to register')
+    self.assertEquals(response.context['buttons']['Register'], reverse('registration_register'))
+    self.assertEquals(response.context['buttons']['Login'], reverse('auth_login'))
+
+  def testUserIndex(self):
+    self.createUser()
+    self.client.login(username=self.uname, password=self.passwd)
+
+    response = self.client.get(reverse('index'))
+    self.assertEquals(response.context['title'], self.uname)
+    self.assertEquals(response.context['h1'], 'FunkOv')
+    self.assertEquals(response.context['h2'], 'Pick an interface to get started')
+    self.assertEquals(response.context['h3'], '')
+    self.assertEquals(response.context['buttons']['AHB'], reverse('index'))
+    self.assertEquals(response.context['buttons']['APB'], reverse('index'))
+    self.assertEquals(response.context['buttons']['AXI4-Stream'], reverse('index'))
+
   def testLoginViewExists(self):
     response = self.client.get(reverse('auth_login'))
     self.assertEqual(response.status_code, 200)
@@ -36,7 +47,11 @@ class userTests(TestCase):
   def testLoginRedirect(self):
     self.createUser()
     response = self.client.post('/accounts/login/', {'username':self.uname, 'password':self.passwd})
-    self.assertRedirects(response, '/funcOv/')
+    self.assertRedirects(response, reverse('index'))
+
+  def testLogoutRedirect(self):
+    response = self.client.post('/accounts/logout/')
+    self.assertRedirects(response, reverse('index'))
 
   def testBadLoginRedirect(self):
     response = self.client.post('/accounts/login/', {'username':'dad', 'password':self.passwd})
@@ -48,7 +63,7 @@ class userTests(TestCase):
 
   def testRegisterRedirect(self):
     response = self.client.post('/accounts/register/', {'username':'name', 'email':'name@domain.com', 'password1':'pass', 'password2':'pass'})
-    self.assertRedirects(response, '/funcOv/')
+    self.assertRedirects(response, reverse('index'))
 
   def testRepeatRegistration(self):
     self.createUser()

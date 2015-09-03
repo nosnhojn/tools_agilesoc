@@ -28,5 +28,6 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^funcOv/', include('funcOv.urls')),
     url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
+    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': 'index'}),
     url(r'^accounts/', include('registration.backends.simple.urls')),
 ]

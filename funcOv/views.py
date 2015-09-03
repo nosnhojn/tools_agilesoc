@@ -2,11 +2,33 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.forms import AuthenticationForm
 from registration.forms import RegistrationForm
+from django.core.urlresolvers import reverse
+
 
 def index(request):
-    context_dict = {
-                     'regForm': RegistrationForm(),
-                     'authForm': AuthenticationForm(),
-                   }
+    if request.user.is_authenticated():
+      context_dict = {
+                       'title': request.user.username,
+                       'h1': 'FunkOv',
+                       'h2': 'Pick an interface to get started',
+                       'h3': '',
+                       'buttons' : {
+                                     'AHB':reverse('index'),
+                                     'APB':reverse('index'),
+                                     'AXI4-Stream':reverse('index'),
+                                   },
+                     }
+
+    else:
+      context_dict = {
+                       'title': 'FunkOv',
+                       'h1': 'FunkOv',
+                       'h2': 'Funktional Coverage Made Easy',
+                       'h3': 'Something catchy here that makes people want to register',
+                       'buttons' : {
+                                     'Register':'/accounts/register/',
+                                     'Login':'/accounts/login/',
+                                   },
+                     }
 
     return render(request, 'funcOv/index.html', context_dict)
