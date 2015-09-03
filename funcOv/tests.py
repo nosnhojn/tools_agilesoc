@@ -4,16 +4,9 @@ from django.core.urlresolvers import reverse
 import funcOv.views
 
 class IndexViewTests(TestCase):
-  uname = 'uname'
-  passwd = 'passwd'
-
-  def createUser(self):
-    up = UserProfile()
-    up.user = User.objects.create_user(self.uname, 'email', self.passwd)
-    up.save()
 
   def testIndexViewExists(self):
-    response = self.client.get(reverse('index'))
+    response = self.client.get('/funcOv/')
     self.assertEqual(response.status_code, 200)
 
 # def testIndexContextHasAuthenticationForm(self):
@@ -24,19 +17,38 @@ class IndexViewTests(TestCase):
 #   response = self.client.get(reverse('index'))
 #   self.assertTrue(response.context['regForm'])
 
-# def testHuh(self):
-#   self.createUser()
-#   print(self.client.login(username=self.uname, password=self.passwd))
-
 
 class authenticationTests(TestCase):
+  uname = 'uname'
+  passwd = 'passwd'
+
+  def createUser(self):
+    up = UserProfile()
+    up.user = User.objects.create_user(self.uname, 'email', self.passwd)
+    up.save()
+
   def testLoginViewExists(self):
     response = self.client.get(reverse('auth_login'))
     self.assertEqual(response.status_code, 200)
 
+  def testLoginRedirect(self):
+    self.createUser()
+    response = self.client.post('/accounts/login/', {'username':self.uname, 'password':self.passwd})
+    self.assertRedirects(response, '/funcOv/')
+
+  def testBadLoginRedirect(self):
+    response = self.client.post('/accounts/login/', {'username':'dad', 'password':self.passwd})
+    self.assertEquals(response.status_code, 200)
+
+
+class registrationTests(TestCase):
   def testRegistrationViewExists(self):
     response = self.client.get(reverse('registration_register'))
     self.assertEqual(response.status_code, 200)
+
+  def testRegisterRedirect(self):
+    response = self.client.post('/accounts/register/', {'username':'name', 'email':'name@domain.com', 'password1':'pass', 'password2':'pass'})
+    self.assertRedirects(response, '/funcOv/')
 
 
 from django.contrib.auth.models import User
