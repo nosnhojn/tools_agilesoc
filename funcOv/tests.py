@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from registration.forms import RegistrationForm
 
 import funcOv.views
 
@@ -18,13 +19,14 @@ class IndexViewTests(TestCase):
 #   self.assertTrue(response.context['regForm'])
 
 
-class authenticationTests(TestCase):
+class userTests(TestCase):
   uname = 'uname'
   passwd = 'passwd'
+  email = 'email@domain.com'
 
   def createUser(self):
     up = UserProfile()
-    up.user = User.objects.create_user(self.uname, 'email', self.passwd)
+    up.user = User.objects.create_user(self.uname, self.email, self.passwd)
     up.save()
 
   def testLoginViewExists(self):
@@ -40,8 +42,6 @@ class authenticationTests(TestCase):
     response = self.client.post('/accounts/login/', {'username':'dad', 'password':self.passwd})
     self.assertEquals(response.status_code, 200)
 
-
-class registrationTests(TestCase):
   def testRegistrationViewExists(self):
     response = self.client.get(reverse('registration_register'))
     self.assertEqual(response.status_code, 200)
@@ -49,6 +49,20 @@ class registrationTests(TestCase):
   def testRegisterRedirect(self):
     response = self.client.post('/accounts/register/', {'username':'name', 'email':'name@domain.com', 'password1':'pass', 'password2':'pass'})
     self.assertRedirects(response, '/funcOv/')
+
+  def testRepeatRegistration(self):
+    self.createUser()
+    response = self.client.post('/accounts/register/', {'username':self.uname, 'email':'name@domain.com', 'password1':'pass', 'password2':'pass'})
+    self.assertEqual(response.status_code, 200)
+
+  def testRegistrationUnameError(self):
+    response = self.client.post('/accounts/register/', {'username':' ', 'email':'name@domain.com', 'password1':'pass', 'password2':'pass'})
+    self.assertFormError(response, 'form', 'username', 'Enter a valid username. This value may contain only letters, numbers and @/./+/-/_ characters.')
+
+  def testRegistrationDuplicateUnameError(self):
+    self.createUser()
+    response = self.client.post('/accounts/register/', {'username':self.uname, 'email':'email', 'password1':'pass', 'password2':'pass'})
+    self.assertFormError(response, 'form', 'username', 'A user with that username already exists.')
 
 
 from django.contrib.auth.models import User
