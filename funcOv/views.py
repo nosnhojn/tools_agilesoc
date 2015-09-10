@@ -24,7 +24,7 @@ def index(request):
                        'title': 'FunkOv',
                        'h1': 'FunkOv',
                        'h2': 'Funktional Coverage Made Easy',
-                       'h3': 'Something catchy here that makes people want to register',
+                       'h3': 'For design and verification engineers that care',
                        'buttons' : {
                                      'Register':'/accounts/register/',
                                      'Login':'/accounts/login/',

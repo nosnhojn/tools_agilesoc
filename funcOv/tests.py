@@ -23,7 +23,7 @@ class userTests(TestCase):
     self.assertEquals(response.context['title'], 'FunkOv')
     self.assertEquals(response.context['h1'], 'FunkOv')
     self.assertEquals(response.context['h2'], 'Funktional Coverage Made Easy')
-    self.assertEquals(response.context['h3'], 'Something catchy here that makes people want to register')
+    self.assertEquals(response.context['h3'], 'For design and verification engineers that care')
     self.assertEquals(response.context['buttons']['Register'], reverse('registration_register'))
     self.assertEquals(response.context['buttons']['Login'], reverse('auth_login'))
 

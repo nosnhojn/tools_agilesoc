@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'funcOv',
     'registration',
+    'widget_tweaks',
 )
 
 REGISTRATION_OPEN = True
