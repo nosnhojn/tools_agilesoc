@@ -24,7 +24,14 @@ class MyRegistrationView(RegistrationView):
     def get_success_url(self,request, user):
         return '/funcov/'
 
+from django.views.generic import View
+from django.http import HttpResponseRedirect
+class defaultIndexView(View):
+    def get(self, request):
+        return HttpResponseRedirect('/funcov/')
+
 urlpatterns = [
+    url(r'^$', defaultIndexView.as_view(), name='default_index'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^funcov/', include('funcov.urls')),
     url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
