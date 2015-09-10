@@ -6,24 +6,26 @@
   <div style="margin: 0 auto; width:50%;">
     <form class="form-signin" method="post" action="/accounts/register/">
       <h2 class="form-signin-heading">Register Here</h2>
-        {% csrf_token %}
         <p>
+          {% csrf_token %}
           <label for="id_username" class="sr-only">User Name</label>
           {% render_field form.username class+="form-control" placeholder+="Username" type+="text" %}
           {{ form.username.errors }}
 
           <label for="id_email" class="sr-only">Email</label>
-          {% render_field form.email class+="form-control" placeholder+="Email Address" type+="text"%}
+          {% render_field form.email class+="form-control" placeholder+="Email Address" type+="email"%}
           {{ form.email.errors }}
 
           <label for="id_password1" class="sr-only">Password</label>
-          {% render_field form.password1 class+="form-control" placeholder+="Password" type+="text" %}
+          {% render_field form.password1 class+="form-control" placeholder+="Password" type+="password" %}
           {{ form.password1.errors }}
 
           <label for="id_password2" class="sr-only">Password</label>
-          {% render_field form.password2 class+="form-control" placeholder+="Confirm Password" type+="text" %}
+          {% render_field form.password2 class+="form-control" placeholder+="Confirm Password" type+="password" %}
           {{ form.password2.errors }}
+        </p>
 
+        <p>
           <button class="btn btn-lg btn-success btn-block" type="submit">Register</button>
           <input type="hidden" name="next" value="{{ next }}" />
         </p>
