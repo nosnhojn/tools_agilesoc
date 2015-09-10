@@ -22,11 +22,11 @@ from registration.backends.simple.views import RegistrationView
 # Create a new class that redirects the user to the index page, if successful at logging
 class MyRegistrationView(RegistrationView):
     def get_success_url(self,request, user):
-        return '/funcOv/'
+        return '/funcov/'
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^funcOv/', include('funcOv.urls')),
+    url(r'^funcov/', include('funcov.urls')),
     url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': 'index'}),
     url(r'^accounts/', include('registration.backends.simple.urls')),

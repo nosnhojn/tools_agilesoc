@@ -37,7 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'funcOv',
+    'funcov',
     'registration',
     'widget_tweaks',
 )
@@ -45,7 +45,7 @@ INSTALLED_APPS = (
 REGISTRATION_OPEN = True
 ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_AUTO_LOGIN = True
-LOGIN_REDIRECT_URL = '/funcOv/'
+LOGIN_REDIRECT_URL = '/funcov/'
 LOGIN_URL = '/accounts/login/'
 
 MIDDLEWARE_CLASSES = (
