@@ -9,8 +9,8 @@
     <p class="lead">{{ h3 }}</p>
 
     {% if user.is_authenticated %}
-      {% for label,url in buttons.items %}
-        <a class="btn btn-lg btn-success" href="{{ url }}" role="button">{{ label }}</a>
+      {% for label,ctxt in buttons.items %}
+        <a class="btn btn-lg btn-success" href="{{ 'editor' }}?type={{ ctxt.type }}" role="button">{{ label }}</a>
       {% endfor %}
     {% else %}
       {% for label,url in buttons.items %}
