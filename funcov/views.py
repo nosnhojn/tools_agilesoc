@@ -12,7 +12,7 @@ def index(request):
     if request.user.is_authenticated():
       context = {
                   'title': request.user.username,
-                  'h1': 'FunkOv',
+                  'h1': 'FunCov',
                   'h2': 'Pick an interface to get started',
                   'h3': '',
                   'buttons' : {
@@ -30,9 +30,9 @@ def index(request):
 
     else:
       context = {
-                  'title': 'FunkOv',
-                  'h1': 'FunkOv',
-                  'h2': 'Funktional Coverage Made Easy',
+                  'title': 'FunCov',
+                  'h1': 'FunCov',
+                  'h2': 'Functional Coverage Made Easy',
                   'h3': 'For design and verification engineers that care',
                   'buttons' : {
                                 'Register':'/accounts/register/',
@@ -46,24 +46,33 @@ def index(request):
 @login_required
 def editor(request):
     context = {}
-    if request.method == 'POST':
-      type = request.POST.get('type')
-      if type == 'ahb':
-        context['type'] = "AHB"
-        context['covergroups'] = {
-                                   'name':'not empty',
-                                 }
-      elif type == 'apb':
-        context['type'] = "APB"
-        context['covergroups'] = {
-                                   'name':'not empty',
-                                 }
-      elif type == 'axi4stream':
-        context['type'] = "AXI-4 Streaming"
-        context['covergroups'] = {
-                                   'name':'not empty',
-                                 }
-      else:
-        return HttpResponseRedirect(reverse('index'))
+
+    type = request.GET.get('type')
+    if type == 'ahb':
+      context = {
+                  'name' : "AHB",
+                  'type' : "ahb",
+                  'covergroups' : {
+                                    'name':'not empty',
+                                  },
+                }
+    elif type == 'apb':
+      context = {
+                  'name' : "APB",
+                  'type' : "apb",
+                  'covergroups' : {
+                                    'name':'not empty',
+                                  },
+                }
+    elif type == 'axi4stream':
+      context = {
+                  'name' : "AXI-4 Streaming",
+                  'type' : "axi4stream",
+                  'covergroups' : {
+                                    'name':'not empty',
+                                  },
+                }
+    else:
+      return HttpResponseRedirect(reverse('index'))
 
     return render(request, 'funcov/editor.html', context)

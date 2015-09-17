@@ -1,0 +1,49 @@
+{% extends 'funcov/base.html' %}
+
+{% load staticfiles %}
+
+
+{% block nav_block %}
+
+<div class="bs-example">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#sectionA">Section A</a></li>
+        <li><a data-toggle="tab" href="#sectionB">Section B</a></li>
+    </ul>
+</div>
+<!--
+    <ul class="nav nav-tabs">
+      <li role="presentation" class="active"><a href="{% url 'editor' %}?type={{ type }}&tab=covergroup">Covergroup</a></li>
+      <li role="presentation"><a href="{% url 'editor' %}?type={{ type }}&tab=coverpoint">Add Coverpoint</a></li>
+      <li role="presentation"><a href="{% url 'editor' %}?type={{ type }}&tab=cross">Add Cross Cover</a></li>
+    </ul>
+-->
+
+{% endblock %}
+
+
+
+{% block content_block %}
+
+    <div class="tab-content">
+        <div id="sectionA" class="tab-pane fade in active">
+             <h3>Select All Applicable {{ type }} Coverpoints</h3>
+
+             <form id="category_form" method="post" action="{% url 'editor' %}">
+  
+                 {% csrf_token %}
+  
+                 {% for name,blah in covergroups.items %}
+                    <p>{{ name }} {{ blah }}</p>
+                 {% endfor %}
+  
+                 <input class="btn btn-lg btn-success" type="submit" name="submit" value="Download Covergroup" />
+             </form>
+        </div>
+        <div id="sectionB" class="tab-pane fade">
+            <h3>Section B</h3>
+            <p>Vestibulum nec erat eu nulla rhoncus fringilla ut non neque. Vivamus nibh urna, ornare id gravida ut, mollis a magna. Aliquam porttitor condimentum nisi, eu viverra ipsum porta ut. Nam hendrerit bibendum turpis, sed molestie mi fermentum id. Aenean volutpat velit sem. Sed consequat ante in rutrum convallis. Nunc facilisis leo at faucibus adipiscing.</p>
+        </div>
+    </div>
+
+{% endblock %}

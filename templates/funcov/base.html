@@ -9,13 +9,16 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>FunkOv - Funktional Coverage Made Easy</title>
+    <title>FunCov - Functional Coverage Made Easy</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../../static/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="../../static/dist/css/jumbotron-narrow.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../static/assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -44,8 +47,10 @@
             {% endif %}
           </ul>
         </nav>
-        <h3 class="text-muted">FunkOv</h3>
+        <h3 class="text-muted">FunCov</h3>
       </div>
+
+      {% block nav_block %}{% endblock %}
 
       <div class="jumbotron">
 
