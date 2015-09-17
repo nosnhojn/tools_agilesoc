@@ -1,6 +1,8 @@
 from django.test import TestCase
+from unittest.mock import patch
 from django.core.urlresolvers import reverse
 from registration.forms import RegistrationForm
+import django
 
 import funcov.views
 
@@ -73,18 +75,44 @@ class userTests(TestCase):
 
 
 
+from django.http import HttpRequest
+from django.http import HttpResponse
 class viewTests(TestCase):
+  def __init__(self, *args, **kwargs):
+    super(viewTests, self).__init__(*args, **kwargs)
+
   def testUrlTranslationViewExists(self):
-    response = self.client.get('/funCov/')
+    response = self.client.get('/FuNcOv/')
     self.assertEqual(response.status_code, 200)
 
   def testIndexViewExists(self):
     response = self.client.get(reverse('index'))
     self.assertEqual(response.status_code, 200)
 
+  @patch('funcov.views.render') # mocked relative the to the module using it, not the definition
+  def testIndexRendersIndexHtml(self, mock_render):
+    request = HttpRequest()
+    request.user = User.objects.create_user('uname', 'email', 'password')
+    funcov.views.index(request)
+    args, kwargs = mock_render.call_args
+    self.assertEqual(args[0], request)
+    self.assertEqual(args[1], 'funcov/index.html')
+
   def testLoginViewExists(self):
     response = self.client.get(reverse('auth_login'))
     self.assertEqual(response.status_code, 200)
+
+  def testEditorViewExists(self):
+    response = self.client.get(reverse('editor'))
+    self.assertEqual(response.status_code, 200)
+
+  @patch('funcov.views.render') # mocked relative the to the module using it, not the definition
+  def testEditorRendersEditorHtml(self, mock_render):
+    request = HttpRequest()
+    funcov.views.editor(request)
+    args, kwargs = mock_render.call_args
+    self.assertEqual(args[0], request)
+    self.assertEqual(args[1], 'funcov/editor.html')
 
 
 

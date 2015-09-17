@@ -32,3 +32,6 @@ def index(request):
                      }
 
     return render(request, 'funcov/index.html', context_dict)
+
+def editor(request):
+    return render(request, 'funcov/editor.html')
