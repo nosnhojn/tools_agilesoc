@@ -14,10 +14,6 @@ class userTests(TestCase):
     up.user = User.objects.create_user(self.uname, self.email, self.passwd)
     up.save()
 
-  def testIndexViewExists(self):
-    response = self.client.get(reverse('index'))
-    self.assertEqual(response.status_code, 200)
-
   def testNoUserIndex(self):
     response = self.client.get(reverse('index'))
     self.assertEquals(response.context['title'], 'FunkOv')
@@ -39,10 +35,6 @@ class userTests(TestCase):
     self.assertEquals(response.context['buttons']['AHB'], reverse('index'))
     self.assertEquals(response.context['buttons']['APB'], reverse('index'))
     self.assertEquals(response.context['buttons']['AXI4-Stream'], reverse('index'))
-
-  def testLoginViewExists(self):
-    response = self.client.get(reverse('auth_login'))
-    self.assertEqual(response.status_code, 200)
 
   def testLoginRedirect(self):
     self.createUser()
@@ -80,9 +72,25 @@ class userTests(TestCase):
     self.assertFormError(response, 'form', 'username', 'A user with that username already exists.')
 
 
+
+class viewTests(TestCase):
+  def testUrlTranslationViewExists(self):
+    response = self.client.get('/funCov/')
+    self.assertEqual(response.status_code, 200)
+
+  def testIndexViewExists(self):
+    response = self.client.get(reverse('index'))
+    self.assertEqual(response.status_code, 200)
+
+  def testLoginViewExists(self):
+    response = self.client.get(reverse('auth_login'))
+    self.assertEqual(response.status_code, 200)
+
+
+
 from django.contrib.auth.models import User
 from funcov.models import UserProfile
-class userProfileTests(TestCase):
+class dbInteractionTests(TestCase):
   def testCreateNewUserProfile(self):
     up = UserProfile()
     up.user = User.objects.create_user('uname', 'email', 'password')

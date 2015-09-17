@@ -30,11 +30,14 @@ class defaultIndexView(View):
     def get(self, request):
         return HttpResponseRedirect('/funcov/')
 
+import re
+re_funcov = re.compile(r'^funcov/', re.I)
+
 urlpatterns = [
     url(r'^$', defaultIndexView.as_view(), name='default_index'),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^funcov/', include('funcov.urls')),
-    url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
-    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': 'index'}),
-    url(r'^accounts/', include('registration.backends.simple.urls')),
+    url(r'^(?i)admin/', include(admin.site.urls)),
+    url(r'^(?i)funcov/', include('funcov.urls')),
+    url(r'^(?i)accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
+    url(r'^(?i)accounts/logout/$', 'django.contrib.auth.views.logout', {'next_page': 'index'}),
+    url(r'^(?i)accounts/', include('registration.backends.simple.urls')),
 ]
