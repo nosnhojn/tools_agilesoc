@@ -173,7 +173,9 @@ class axi4StreamTests(TestCase):
     parameters = response.context['parameters']
     self.assertTrue(len(parameters) > 0)
     for k,v in parameters.items():
+      self.assertTrue(v['name'] != None)
       self.assertTrue(int(v['default']) > 0)
+      self.assertTrue(len(v['values']) > 0)
 
 
 from django.contrib.auth.models import User
