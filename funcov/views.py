@@ -48,7 +48,36 @@ def editor(request):
     context = {}
 
     type = request.GET.get('type')
-    if type == 'ahb':
+    if type == 'axi4stream':
+      context = {
+                  'name' : "AXI-4 Streaming",
+                  'type' : "axi4stream",
+                  'covergroups' : {
+                                    'name':'not empty',
+                                  },
+                  'parameters' : {
+                                   'TDATA_WIDTH' : {
+                                                     'default' : '8',
+                                                   },
+                                   'TSTRB_WIDTH' : {
+                                                     'default' : '1',
+                                                   },
+                                   'TKEEP_WIDTH' : {
+                                                     'default' : '4',
+                                                   },
+                                   'TID_WIDTH'   : {
+                                                     'default' : '4',
+                                                   },
+                                   'TDEST_WIDTH' : {
+                                                     'default' : '4',
+                                                   },
+                                   'TUSER_WIDTH' : {
+                                                     'default' : '4',
+                                                   },
+                                 },
+                }
+
+    elif type == 'ahb':
       context = {
                   'name' : "AHB",
                   'type' : "ahb",
@@ -56,6 +85,7 @@ def editor(request):
                                     'name':'not empty',
                                   },
                 }
+
     elif type == 'apb':
       context = {
                   'name' : "APB",
@@ -64,14 +94,7 @@ def editor(request):
                                     'name':'not empty',
                                   },
                 }
-    elif type == 'axi4stream':
-      context = {
-                  'name' : "AXI-4 Streaming",
-                  'type' : "axi4stream",
-                  'covergroups' : {
-                                    'name':'not empty',
-                                  },
-                }
+
     else:
       return HttpResponseRedirect(reverse('index'))
 

@@ -148,6 +148,14 @@ class editorViewTests(TestCase):
     self.assertEqual(response.context['type'], 'apb')
     self.assertTrue(len(response.context['covergroups']) > 0)
 
+
+class axi4StreamTests(TestCase):
+  def setUp(self):
+    up = UserProfile()
+    up.user = User.objects.create_user('a', 'b', 'c')
+    up.save()
+    self.client.login(username='a', password='c')
+
   @patch('funcov.views.render', return_value=HttpResponse())
   def testRendersStreamAxi4(self, mock_render):
     self.client.get(reverse('editor'), { 'type':'axi4stream' })
@@ -160,6 +168,12 @@ class editorViewTests(TestCase):
     self.assertEqual(response.context['type'], 'axi4stream')
     self.assertTrue(len(response.context['covergroups']) > 0)
 
+  def testAxi4StreamParams(self):
+    response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
+    parameters = response.context['parameters']
+    self.assertTrue(len(parameters) > 0)
+    for k,v in parameters.items():
+      self.assertTrue(int(v['default']) > 0)
 
 
 from django.contrib.auth.models import User

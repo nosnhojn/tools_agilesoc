@@ -7,18 +7,12 @@
 
 <div class="bs-example">
     <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#sectionA">My Covergroup</a></li>
-        <li><a data-toggle="tab" href="#sectionB">Add Coverpoint</a></li>
-        <li><a data-toggle="tab" href="#sectionC">Add Cross Cover</a></li>
+        <li class="active"><a data-toggle="tab" href="#params">Bus Parameters</a></li>
+        <li><a data-toggle="tab" href="#covergroup">My Covergroup</a></li>
+        <li><a data-toggle="tab" href="#coverpoint">New Coverpoint</a></li>
+        <li><a data-toggle="tab" href="#cross">New Cross Cover</a></li>
     </ul>
 </div>
-<!--
-    <ul class="nav nav-tabs">
-      <li role="presentation" class="active"><a href="{% url 'editor' %}?type={{ type }}&tab=covergroup">Covergroup</a></li>
-      <li role="presentation"><a href="{% url 'editor' %}?type={{ type }}&tab=coverpoint">Add Coverpoint</a></li>
-      <li role="presentation"><a href="{% url 'editor' %}?type={{ type }}&tab=cross">Add Cross Cover</a></li>
-    </ul>
--->
 
 {% endblock %}
 
@@ -27,7 +21,12 @@
 {% block content_block %}
 
     <div class="tab-content">
-        <div id="sectionA" class="tab-pane fade in active">
+        <div id="params" class="tab-pane fade in active">
+            <h3>Bus Parameters</h3>
+            <p>Not quite working yet!</p>
+        </div>
+
+        <div id="covergroup" class="tab-pane fade">
              <h3>Select All Applicable {{ type }} Coverpoints</h3>
 
              <form id="category_form" method="post" action="{% url 'editor' %}">
@@ -35,18 +34,40 @@
                  {% csrf_token %}
   
                  {% for name,blah in covergroups.items %}
-                    <p>{{ name }} {{ blah }}</p>
+
+<!--
+<div class="container">
+<div class="row">
+  <div class="col-lg">
+    <div class="input-group input-group-lg">
+      <span class="input-group-addon"><input type="checkbox" aria-label="..."></span>
+      <span class="input-group-addon" id="basic-addon2">{{ name }}</span>
+      <input type="text" class="form-control" aria-label="{{ name }}">
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sensitivity <span class="caret"></span></button>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li role="separator" class="divider"></li>
+          <li><a href="#">Separated link</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+-->
                  {% endfor %}
   
                  <input class="btn btn-lg btn-success" type="submit" name="submit" value="Download Covergroup" />
              </form>
         </div>
-        <div id="sectionB" class="tab-pane fade">
-            <h3>Add Coverpoint</h3>
+        <div id="coverpoint" class="tab-pane fade">
+            <h3>New Coverpoint</h3>
             <p>Not quite working yet!</p>
         </div>
-        <div id="sectionC" class="tab-pane fade">
-            <h3>Add Cross Cover</h3>
+        <div id="cross" class="tab-pane fade">
+            <h3>New Cross Cover</h3>
             <p>Not quite working yet!</p>
         </div>
     </div>
