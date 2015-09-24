@@ -19,48 +19,40 @@
 
 
 {% block content_block %}
+    <form id="category_form" method="post" action="{% url 'editor' %}">
+  
+      {% csrf_token %}
 
-    <div class="tab-content">
+      <div class="tab-content">
         <div id="params" class="tab-pane fade in active">
-            <h3>Bus Parameters</h3>
-            <p>Not quite working yet!</p>
+          <h3>Bus Parameters</h3>
+
+            {% for k,v in parameters.items %}
+            <div class="row">
+              <div class="col-md-6 col-md-offset-3">
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" aria-label="..." placeholder="{{ v.name }}" readonly>
+                <div class="input-group-btn">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    {% for val in v.values %}
+                      <li><a href="#">{{ val }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+              </div>
+            </div>
+            {% endfor %}
         </div>
 
         <div id="covergroup" class="tab-pane fade">
-             <h3>Select All Applicable {{ type }} Coverpoints</h3>
+          <h3>Select All Applicable {{ type }} Coverpoints</h3>
+ 
+          {% for name,blah in covergroups.items %}
 
-             <form id="category_form" method="post" action="{% url 'editor' %}">
-  
-                 {% csrf_token %}
-  
-                 {% for name,blah in covergroups.items %}
-
-<!--
-<div class="container">
-<div class="row">
-  <div class="col-lg">
-    <div class="input-group input-group-lg">
-      <span class="input-group-addon"><input type="checkbox" aria-label="..."></span>
-      <span class="input-group-addon" id="basic-addon2">{{ name }}</span>
-      <input type="text" class="form-control" aria-label="{{ name }}">
-      <div class="input-group-btn">
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sensitivity <span class="caret"></span></button>
-        <ul class="dropdown-menu dropdown-menu-right">
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Another action</a></li>
-          <li><a href="#">Something else here</a></li>
-          <li role="separator" class="divider"></li>
-          <li><a href="#">Separated link</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
--->
-                 {% endfor %}
-  
-                 <input class="btn btn-lg btn-success" type="submit" name="submit" value="Download Covergroup" />
-             </form>
+          {% endfor %}
+          <input class="btn btn-lg btn-success" type="submit" name="submit" value="Download Covergroup" />
         </div>
         <div id="coverpoint" class="tab-pane fade">
             <h3>New Coverpoint</h3>
@@ -70,6 +62,7 @@
             <h3>New Cross Cover</h3>
             <p>Not quite working yet!</p>
         </div>
-    </div>
+      </div>
+    </form>
 
 {% endblock %}
