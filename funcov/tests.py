@@ -164,7 +164,7 @@ class axi4StreamTests(TestCase):
 
   def testAxi4StreamContext(self):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
-    self.assertEqual(response.context['name'], 'AXI-4 Streaming')
+    self.assertEqual(response.context['name'], 'Streaming AXI-4')
     self.assertEqual(response.context['type'], 'axi4stream')
     self.assertTrue(len(response.context['covergroups']) > 0)
 
@@ -176,6 +176,15 @@ class axi4StreamTests(TestCase):
       self.assertTrue(v['name'] != None)
       self.assertTrue(int(v['default']) > 0)
       self.assertTrue(len(v['values']) > 0)
+
+  def testAxi4StreamCovergroups(self):
+    response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
+    covergroups = response.context['covergroups']
+    self.assertTrue(len(covergroups) > 0)
+    for k,v in covergroups.items():
+      self.assertTrue(v['enabled'] == True)
+      self.assertTrue(v['desc'] != None)
+      self.assertTrue(v['sensitivity'] != None)
 
 
 from django.contrib.auth.models import User

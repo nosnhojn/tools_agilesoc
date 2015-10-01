@@ -50,10 +50,19 @@ def editor(request):
     type = request.GET.get('type')
     if type == 'axi4stream':
       context = {
-                  'name' : "AXI-4 Streaming",
+                  'name' : "Streaming AXI-4",
                   'type' : "axi4stream",
                   'covergroups' : {
-                                    'name':'not empty',
+                                    'activeDataTransfer': {
+                                              'enabled'     : True,
+                                              'desc'        : "Capture an active data cycle where tReady and tValid are asserted",
+                                              'sensitivity' : "Positive clock edge",
+                                            },
+                                    'tData_toggle': {
+                                              'enabled'     : True,
+                                              'desc'        : "Toggle coverage of the tData bus",
+                                              'sensitivity' : "activeDataTransfer",
+                                            },
                                   },
                   'parameters' : {
                                     'tdata' : {

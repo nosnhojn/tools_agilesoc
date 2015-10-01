@@ -6,8 +6,8 @@
 
 <div class="bs-example">
     <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#params">Bus Parameters</a></li>
-        <li><a data-toggle="tab" href="#covergroup">My Covergroup</a></li>
+        <li class="active"><a data-toggle="tab" href="#covergroup">My Covergroup</a></li>
+        <li><a data-toggle="tab" href="#params">Bus Parameters</a></li>
         <li><a data-toggle="tab" href="#coverpoint">New Coverpoint</a></li>
         <li><a data-toggle="tab" href="#cross">New Cross Cover</a></li>
     </ul>
@@ -23,8 +23,35 @@
       {% csrf_token %}
 
       <div class="tab-content">
-        <div id="params" class="tab-pane fade in active">
-          <h3>Bus Parameters</h3>
+        <div id="covergroup" class="tab-pane fade in active">
+          <h3>What {{ name }} coverpoints are you interested in?</h3>
+
+          <table class="table table-striped text-left">
+            <thead>
+              <tr>
+                <th>Enabled</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Sensitivity</th>
+              </tr>
+            </thead>
+          {% for name,blah in covergroups.items %}
+            <tbody>
+              <tr>
+                <td class="text-center"><input type="checkbox" checked="checked"></input></td>
+                <td>{{ name }}</td>
+                <td>{{ blah.desc }}</td>
+                <td>{{ blah.sensitivity }}</td>
+              </tr>
+            </tbody>
+          {% endfor %}
+          </table>
+
+          <input class="btn btn-lg btn-success" type="submit" name="submit" value="Download Covergroup" />
+        </div>
+
+        <div id="params" class="tab-pane fade">
+          <h3>How is your bus parameterized?</h3>
 
             {% for k,v in parameters.items %}
             <div class="form-inline">
@@ -42,18 +69,11 @@
             {% endfor %}
         </div>
 
-        <div id="covergroup" class="tab-pane fade">
-          <h3>Select All Applicable {{ type }} Coverpoints</h3>
- 
-          {% for name,blah in covergroups.items %}
-
-          {% endfor %}
-          <input class="btn btn-lg btn-success" type="submit" name="submit" value="Download Covergroup" />
-        </div>
         <div id="coverpoint" class="tab-pane fade">
             <h3>New Coverpoint</h3>
             <p>Not quite working yet!</p>
         </div>
+
         <div id="cross" class="tab-pane fade">
             <h3>New Cross Cover</h3>
             <p>Not quite working yet!</p>

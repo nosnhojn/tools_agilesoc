@@ -39,8 +39,8 @@
       <div class="header clearfix">
         <nav>
           <ul class="nav nav-pills pull-right">
-            <li role="presentation" class="active"><a href="{% url 'index' %}">Home</a></li>
 <!--
+            <li role="presentation" class="active"><a href="{% url 'index' %}">Home</a></li>
             <li role="presentation"><a href="#">About</a></li>
             <li role="presentation"><a href="#">Contact</a></li>
 -->
@@ -49,7 +49,7 @@
             {% endif %}
           </ul>
         </nav>
-        <img src="../../static/images/funcov.png" style="height:15%; width:15%">
+        <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="height:15%; width:15%"></a>
       </div>
 
       {% block nav_block %}{% endblock %}
