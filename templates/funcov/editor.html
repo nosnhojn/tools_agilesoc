@@ -34,6 +34,8 @@
   
       {% csrf_token %}
 
+      <input name="type" value="{{ type }}" type="hidden"/>
+
       <div class="tab-content">
         <div id="covergroup" class="tab-pane fade in active">
           <h3>What {{ name }} coverpoints are you interested in?</h3>
@@ -49,22 +51,22 @@
                     <th>Sensitivity</th>
                   </tr>
                 </thead>
-                {% for c in covergroups %}
-                  <tbody>
+                <tbody>
+                  {% for c in covergroups %}
                     <tr>
-                      <td class="text-center"><input type="checkbox" checked="checked"></input></td>
+                      <td class="text-center"><input name="covergroup" value="{{ c.name }}" type="checkbox" checked="checked"></input></td>
                       <td>{{ c.name }}</td>
                       <td>{{ c.desc }}</td>
                       <td>{{ c.sensitivity }}</td>
                     </tr>
-                  </tbody>
-                {% endfor %}
+                  {% endfor %}
+                </tbody>
               </table>
             </div>
           </div>
           <a type="button" onClick="next('coverpoint')" class="btn btn-success btn-lg">Add Coverpoint</a>
           <a type="button" onClick="next('cross')" class="btn btn-success btn-lg">Add Cross Cover</a>
-          <button type="submit" class="btn btn-success btn-lg">Download</button>
+          <!--<button type="submit" class="btn btn-success btn-lg">Download</button>-->
         </div>
 
         <div id="params" class="tab-pane fade">
