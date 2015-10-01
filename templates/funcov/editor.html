@@ -8,9 +8,8 @@
     <ul class="nav nav-tabs">
         <li id="nav-covergroup" class="active"><a data-toggle="tab" href="#covergroup">My Covergroup</a></li>
         <li id="nav-params"><a data-toggle="tab" href="#params">Bus Properties</a></li>
-        <li id="nav-coverpoint"><a data-toggle="tab" href="#coverpoint">New Coverpoint</a></li>
-        <li id="nav-cross"><a data-toggle="tab" href="#cross">New Cross Cover</a></li>
-        <li id="nav-cross"><a data-toggle="tab" href="#covergroup">Ship It!</a></li>
+        <li id="nav-coverpoint"><a data-toggle="tab" href="#coverpoint">Add Coverpoint</a></li>
+        <li id="nav-cross"><a data-toggle="tab" href="#cross">Add Cross Cover</a></li>
     </ul>
 </div>
 
@@ -24,9 +23,9 @@
       function next(tab) {
         var nav = "#nav-" + tab;
         var tab = "#" + tab;
-        $('#nav-covergroup').removeClass('active');
+        $('.nav li').removeClass('active');
         $(nav).addClass('active');
-        $('#covergroup').removeClass('active');
+        $('.tab-pane').removeClass('active');
         $(tab).addClass('active in');
       }
     </script>
@@ -63,8 +62,9 @@
               </table>
             </div>
           </div>
-          <a type="button" onClick="next('coverpoint')" class="btn btn-success btn-lg">New Coverpoint</a>
-          <a type="button" onClick="next('cross')" class="btn btn-success btn-lg">New Cross Cover</a>
+          <a type="button" onClick="next('coverpoint')" class="btn btn-success btn-lg">Add Coverpoint</a>
+          <a type="button" onClick="next('cross')" class="btn btn-success btn-lg">Add Cross Cover</a>
+          <button type="submit" class="btn btn-success btn-lg">Download</button>
         </div>
 
         <div id="params" class="tab-pane fade">
@@ -102,16 +102,19 @@
               </table>
             </div>
           </div>
+          <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg">Save Settings</a>
         </div>
 
         <div id="coverpoint" class="tab-pane fade">
-            <h3>New Coverpoint</h3>
+            <h3>Add Coverpoint</h3>
             <p>Not quite working yet!</p>
+            <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg">Back to Covergroup</a>
         </div>
 
         <div id="cross" class="tab-pane fade">
-            <h3>New Cross Cover</h3>
+            <h3>Add Cross Cover</h3>
             <p>Not quite working yet!</p>
+            <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg">Back to Covergroup</a>
         </div>
       </div>
     </form>
