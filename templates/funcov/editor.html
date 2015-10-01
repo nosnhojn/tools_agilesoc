@@ -7,7 +7,7 @@
 <div class="bs-example">
     <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#covergroup">My Covergroup</a></li>
-        <li><a data-toggle="tab" href="#params">Bus Parameters</a></li>
+        <li><a data-toggle="tab" href="#params">Bus Properties</a></li>
         <li><a data-toggle="tab" href="#coverpoint">New Coverpoint</a></li>
         <li><a data-toggle="tab" href="#cross">New Cross Cover</a></li>
     </ul>
@@ -26,47 +26,67 @@
         <div id="covergroup" class="tab-pane fade in active">
           <h3>What {{ name }} coverpoints are you interested in?</h3>
 
-          <table class="table table-striped text-left">
-            <thead>
-              <tr>
-                <th>Enabled</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Sensitivity</th>
-              </tr>
-            </thead>
-          {% for name,blah in covergroups.items %}
-            <tbody>
-              <tr>
-                <td class="text-center"><input type="checkbox" checked="checked"></input></td>
-                <td>{{ name }}</td>
-                <td>{{ blah.desc }}</td>
-                <td>{{ blah.sensitivity }}</td>
-              </tr>
-            </tbody>
-          {% endfor %}
-          </table>
+          <div class="row">
+            <div class="col-lg-12">
+              <table class="table table-striped text-left">
+                <thead>
+                  <tr>
+                    <th>Enabled</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Sensitivity</th>
+                  </tr>
+                </thead>
+                {% for name,blah in covergroups.items %}
+                  <tbody>
+                    <tr>
+                      <td class="text-center"><input type="checkbox" checked="checked"></input></td>
+                      <td>{{ name }}</td>
+                      <td>{{ blah.desc }}</td>
+                      <td>{{ blah.sensitivity }}</td>
+                    </tr>
+                  </tbody>
+                {% endfor %}
+              </table>
+            </div>
+          </div>
 
           <input class="btn btn-lg btn-success" type="submit" name="submit" value="Download Covergroup" />
         </div>
 
         <div id="params" class="tab-pane fade">
-          <h3>How is your bus parameterized?</h3>
+          <h3>How is your {{ name }} interface configured?</h3>
 
-            {% for k,v in parameters.items %}
-            <div class="form-inline">
-              <div class="form-group form-group-lg">
-                <div class="row">
-                      <input type="text" class="form-control" aria-label="..." placeholder="{{ v.name }}" readonly>
-                    <select class="form-control selectpicker" style="width:100px">
-                      {% for val in v.values %}
-                        <option>{{ val }}</option>
-                      {% endfor %}
-                    </select>
-                </div>
-              </div>
+          <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+              <table class="table table-striped text-left">
+                <thead>
+                  <tr>
+                    <th>Enabled</th>
+                    <th>Port Name</th>
+                    <th>Bus Width</th>
+                  </tr>
+                </thead>
+                {% for k,v in parameters.items %}
+                  <tbody>
+                    <tr>
+                      <td class="text-center"><input type="checkbox" disabled="disabled" checked="checked"></input></td>
+                      <td>{{ k }}</td>
+                      <td>
+                        {% if v.default != None %}
+                        <select class="form-control selectpicker" style="width:100px">
+                          {% for val in v.values %}
+                            <option>{{ val }}</option>
+                          {% endfor %}
+                        </select>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  </tbody>
+                {% endfor %}
+              </table>
             </div>
-            {% endfor %}
+          </div>
         </div>
 
         <div id="coverpoint" class="tab-pane fade">

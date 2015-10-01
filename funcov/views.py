@@ -65,28 +65,36 @@ def editor(request):
                                             },
                                   },
                   'parameters' : {
-                                    'tdata' : {
-                                                'name'    : 'TDATA_WIDTH',
+                                   'tValid' : {
+                                               'default' : None,
+                                              },
+                                   'tReady' : {
+                                               'default' : None,
+                                              },
+                                   'tData'  : {
                                                 'default' : '8',
                                                 'values'  : [ 8, 16, 32, 64, 128, 256 ],
                                               },
-                                    'tkeep' : {
-                                                'name'    : 'TKEEP_WIDTH',
+                                   'tStrb'  : {
+                                                'default' : '1',
+                                                'values'  : [ 1, 2, 4, 8, 16, 32 ],
+                                               },
+                                   'tLast'  : {
+                                                'default' : None,
+                                               },
+                                   'tKeep'  : {
                                                 'default' : '4',
                                                 'values'  : range(1,16) 
                                               },
-                                    'tid' :   {
-                                                'name'    : 'TID_WIDTH',
+                                   'tId'    : {
                                                 'default' : '4',
                                                 'values'  : range(1,16) 
                                               },
-                                    'tdest' : {
-                                                'name'    : 'TDEST_WIDTH',
+                                   'tDest'  : {
                                                 'default' : '4',
                                                 'values'  : range(1,16) 
                                               },
-                                    'tuser' : {
-                                                'name'    : 'TUSER_WIDTH',
+                                   'tUser'  : {
                                                 'default' : '4',
                                                 'values'  : range(1,16) 
                                               },
