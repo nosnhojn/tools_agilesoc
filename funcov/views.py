@@ -52,53 +52,66 @@ def editor(request):
       context = {
                   'name' : "Streaming AXI-4",
                   'type' : "axi4stream",
-                  'covergroups' : {
-                                    'activeDataTransfer': {
-                                              'enabled'     : True,
-                                              'desc'        : "Capture an active data cycle where tReady and tValid are asserted",
-                                              'sensitivity' : "Positive clock edge",
-                                            },
-                                    'tData_toggle': {
-                                              'enabled'     : True,
-                                              'desc'        : "Toggle coverage of the tData bus",
-                                              'sensitivity' : "activeDataTransfer",
-                                            },
-                                  },
-                  'parameters' : {
-                                   'tValid' : {
-                                               'default' : None,
-                                              },
-                                   'tReady' : {
-                                               'default' : None,
-                                              },
-                                   'tData'  : {
-                                                'default' : '8',
-                                                'values'  : [ 8, 16, 32, 64, 128, 256 ],
-                                              },
-                                   'tStrb'  : {
-                                                'default' : '1',
-                                                'values'  : [ 1, 2, 4, 8, 16, 32 ],
-                                               },
-                                   'tLast'  : {
-                                                'default' : None,
-                                               },
-                                   'tKeep'  : {
-                                                'default' : '4',
-                                                'values'  : range(1,16) 
-                                              },
-                                   'tId'    : {
-                                                'default' : '4',
-                                                'values'  : range(1,16) 
-                                              },
-                                   'tDest'  : {
-                                                'default' : '4',
-                                                'values'  : range(1,16) 
-                                              },
-                                   'tUser'  : {
-                                                'default' : '4',
-                                                'values'  : range(1,16) 
-                                              },
-                                 },
+                  'covergroups' :
+                                  [
+                                    {
+                                      'name'        : 'activeDataCycle',
+                                      'enabled'     : True,
+                                      'desc'        : "Capture an active data cycle where tReady and tValid are asserted",
+                                      'sensitivity' : "Positive clock edge",
+                                    },
+                                    {
+                                      'name'        : 'tDataToggle',
+                                      'enabled'     : True,
+                                      'desc'        : "Toggle coverage of the tData bus",
+                                      'sensitivity' : "activeDataCycle",
+                                    },
+                                  ],
+                  'parameters' : 
+                                 [
+                                   {
+                                     'name'    : 'tValid',
+                                     'default' : None,
+                                   },
+                                   {
+                                     'name'    : 'tReady',
+                                     'default' : None,
+                                   },
+                                   {
+                                     'name'    : 'tData',
+                                     'default' : '8',
+                                     'values'  : [ 8, 16, 32, 64, 128, 256 ],
+                                   },
+                                   {
+                                     'name'    : 'tStrb',
+                                     'default' : '1',
+                                     'values'  : [ 1, 2, 4, 8, 16, 32 ],
+                                   },
+                                   {
+                                     'name'    : 'tLast',
+                                     'default' : None,
+                                   },
+                                   {
+                                     'name'    : 'tKeep',
+                                     'default' : '4',
+                                     'values'  : range(1,16) 
+                                   },
+                                   {
+                                     'name'    : 'tId',
+                                     'default' : '4',
+                                     'values'  : range(1,16) 
+                                   },
+                                   {
+                                     'name'    : 'tDest',
+                                     'default' : '4',
+                                     'values'  : range(1,16) 
+                                   },
+                                   {
+                                     'name'    : 'tUser',
+                                     'default' : '4',
+                                     'values'  : range(1,16) 
+                                   },
+                                 ],
                 }
 
     elif type == 'ahb':

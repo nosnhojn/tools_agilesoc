@@ -37,13 +37,13 @@
                     <th>Sensitivity</th>
                   </tr>
                 </thead>
-                {% for name,blah in covergroups.items %}
+                {% for c in covergroups %}
                   <tbody>
                     <tr>
                       <td class="text-center"><input type="checkbox" checked="checked"></input></td>
-                      <td>{{ name }}</td>
-                      <td>{{ blah.desc }}</td>
-                      <td>{{ blah.sensitivity }}</td>
+                      <td>{{ c.name }}</td>
+                      <td>{{ c.desc }}</td>
+                      <td>{{ c.sensitivity }}</td>
                     </tr>
                   </tbody>
                 {% endfor %}
@@ -67,18 +67,20 @@
                     <th>Bus Width</th>
                   </tr>
                 </thead>
-                {% for k,v in parameters.items %}
+                {% for p in parameters %}
                   <tbody>
                     <tr>
                       <td class="text-center"><input type="checkbox" disabled="disabled" checked="checked"></input></td>
-                      <td>{{ k }}</td>
+                      <td>{{ p.name }}</td>
                       <td>
-                        {% if v.default != None %}
+                        {% if p.default != None %}
                         <select class="form-control selectpicker" style="width:100px">
-                          {% for val in v.values %}
+                          {% for val in p.values %}
                             <option>{{ val }}</option>
                           {% endfor %}
                         </select>
+                        {% else %}
+                        -
                         {% endif %}
                       </td>
                     </tr>
