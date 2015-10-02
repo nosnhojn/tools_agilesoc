@@ -82,8 +82,8 @@
                     <th>Bus Width</th>
                   </tr>
                 </thead>
-                {% for p in parameters %}
-                  <tbody>
+                <tbody>
+                  {% for p in parameters %}
                     <tr>
                       <td class="text-center"><input type="checkbox" disabled="disabled" checked="checked"></input></td>
                       <td>{{ p.name }}</td>
@@ -99,8 +99,8 @@
                         {% endif %}
                       </td>
                     </tr>
-                  </tbody>
-                {% endfor %}
+                  {% endfor %}
+                </tbody>
               </table>
             </div>
           </div>
@@ -108,15 +108,20 @@
         </div>
 
         <div id="coverpoint" class="tab-pane fade">
-            <h3>Add Coverpoint</h3>
-            <p>Not quite working yet!</p>
-            <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg">Back to Covergroup</a>
+          <h3>Coming Soon... Defining Custom Coverpoints</h3>
+          <p>
+            <img src="../../static/images/coverpoint-not-done.png" style="width:100%"></a>
+          </p>
+
+          <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg">Back to Covergroup</a>
         </div>
 
         <div id="cross" class="tab-pane fade">
-            <h3>Add Cross Cover</h3>
-            <p>Not quite working yet!</p>
-            <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg">Back to Covergroup</a>
+          <h3>Coming Soon... Defining Custom Crosses</h3>
+          <p>
+            <img src="../../static/images/cross-not-done.png" style="width:40%"></a>
+          </p>
+          <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg">Back to Covergroup</a>
         </div>
       </div>
     </form>
