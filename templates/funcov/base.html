@@ -7,7 +7,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
+    <link rel="icon" href="../../static/images/favicon.ico">
 
     <title>FunCov - Functional Coverage Made Easy</title>
 
@@ -60,12 +60,16 @@
             {% if user.is_authenticated %}
               <li role="presentation"><a href="{% url 'auth_logout' %}">Logout</a></li>
             {% else %}
-              <li role="presentation" class="active"><a href="{% url 'auth_login' %}">Login</a></li>
-              <li role="presentation" class="active"><a href="{% url 'registration_register' %}">Register</a></li>
+              <li role="presentation"><a href="{% url 'auth_login' %}">Login</a></li>
+              <li role="presentation"><a href="{% url 'registration_register' %}">Register</a></li>
             {% endif %}
           </ul>
         </nav>
-        <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="height:15%; width:15%"></a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="width:13%"></a>
+        {% else %}
+          <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="width:30%"></a>
+        {% endif %}
       </div>
 
       {% block nav_block %}{% endblock %}
