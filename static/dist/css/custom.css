@@ -11,8 +11,8 @@ input[readonly] {
 
 /* Account for fixed navbar */
 body {
-  padding-top: 20px;
-  padding-bottom: 30px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 body,
@@ -392,6 +392,7 @@ body,
 
 .container .jumbotron {
   padding-top: 15px;
+  padding-bottom: 15px;
   border-radius: 0px;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
