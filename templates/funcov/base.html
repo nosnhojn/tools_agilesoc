@@ -50,26 +50,24 @@
 
     <div class="container">
       <div class="header clearfix">
-        <nav>
-          <ul class="nav nav-pills pull-right">
-<!--
-            <li role="presentation" class="active"><a href="{% url 'index' %}">Home</a></li>
-            <li role="presentation"><a href="#">About</a></li>
-            <li role="presentation"><a href="#">Contact</a></li>
--->
-            {% if user.is_authenticated %}
+        <div>
+        {% if user.is_authenticated %}
+          <nav>
+            <ul class="nav nav-pills pull-right">
               <li role="presentation"><a href="{% url 'auth_logout' %}">Logout</a></li>
-            {% else %}
+            </ul>
+          </nav>
+          <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="width:15%"></a>
+        {% else %}
+          <nav>
+            <ul class="nav nav-pills pull-right" style="margin-top:55px">
               <li role="presentation"><a href="{% url 'auth_login' %}">Login</a></li>
               <li role="presentation"><a href="{% url 'registration_register' %}">Register</a></li>
-            {% endif %}
-          </ul>
-        </nav>
-        {% if user.is_authenticated %}
-          <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="width:13%"></a>
-        {% else %}
+            </ul>
+          </nav>
           <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="width:30%"></a>
         {% endif %}
+        </div>
       </div>
 
       {% block nav_block %}{% endblock %}
