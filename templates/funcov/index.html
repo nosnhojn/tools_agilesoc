@@ -4,18 +4,7 @@
 
 {% block content_block %}
 
-
-    {% if user.is_authenticated %}
-      <img src="../../static/images/funcov.png" style="height:50%; width:50%">
-
-      <h2>{{ h2 }}</h2>
-      <p class="lead">{{ h3 }}</p>
-
-      {% for label,ctxt in buttons.items %}
-        <a class="btn btn-lg btn-success" href="{{ 'editor' }}?type={{ ctxt.type }}" role="button">{{ label }}</a>
-      {% endfor %}
-    {% else %}
-      <p><img src="../../static/images/home.png" style="width:100%"></p>
-    {% endif %}
+  <p><img src="../../static/images/home.png" style="width:100%"></p>
+  <a class="btn btn-lg btn-success" href="{{ 'selector' }}" role="button">Get Started !</a>
 
 {% endblock %}

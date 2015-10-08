@@ -51,21 +51,34 @@
     <div class="container">
       <div class="header clearfix">
         <div>
-        {% if user.is_authenticated %}
+        {% if request.path == '/funcov/' %}
           <nav>
-            <ul class="nav nav-pills pull-right">
+            {% if user.is_authenticated %}
+            <ul class="nav nav-pills pull-right" style="margin-top:55px">
               <li role="presentation"><a href="{% url 'auth_logout' %}">Logout</a></li>
             </ul>
-          </nav>
-          <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="width:15%"></a>
-        {% else %}
-          <nav>
+            {% else %}
             <ul class="nav nav-pills pull-right" style="margin-top:55px">
               <li role="presentation"><a href="{% url 'auth_login' %}">Login</a></li>
               <li role="presentation"><a href="{% url 'registration_register' %}">Register</a></li>
             </ul>
+            {% endif %}
           </nav>
           <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="width:30%"></a>
+        {% else %}
+          <nav>
+            {% if user.is_authenticated %}
+            <ul class="nav nav-pills pull-right">
+              <li role="presentation"><a href="{% url 'auth_logout' %}">Logout</a></li>
+            </ul>
+            {% else %}
+            <ul class="nav nav-pills pull-right">
+              <li role="presentation"><a href="{% url 'auth_login' %}">Login</a></li>
+              <li role="presentation"><a href="{% url 'registration_register' %}">Register</a></li>
+            </ul>
+            {% endif %}
+          </nav>
+          <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="width:15%"></a>
         {% endif %}
         </div>
       </div>

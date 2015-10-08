@@ -21,6 +21,21 @@ from django import forms
 
 
 
+def selector(request):
+    context = {
+                'title': '',
+                'h1': 'FunCov',
+                'h2': 'Pick an interface to get started',
+                'h3': '',
+                'buttons' : {
+                              'AXI4-Stream': {
+                                       'type' : 'axi4stream',
+                                     },
+                            },
+              }
+
+    return render(request, 'funcov/selector.html', context)
+
 def index(request):
     #filename = 'README.md' # Select your file here.                                
     #text = StringIO.StringIO('what up\n')
@@ -31,31 +46,16 @@ def index(request):
     #response['Content-Length'] = text.len
     #return response
 
-    context = {}
-    if request.user.is_authenticated():
-      context = {
-                  'title': request.user.username,
-                  'h1': 'FunCov',
-                  'h2': 'Pick an interface to get started',
-                  'h3': '',
-                  'buttons' : {
-                                'AXI4-Stream': {
-                                         'type' : 'axi4stream',
-                                       },
-                              },
-                }
-
-    else:
-      context = {
-                  'title': 'FunCov',
-                  'h1': 'FunCov',
-                  'h2': 'Functional Coverage Made Easy',
-                  'h3': 'For design and verification engineers that care',
-                  'buttons' : {
-                                'Register':'/accounts/register/',
-                                'Login':'/accounts/login/',
-                              },
-                }
+    context = {
+                'title': 'FunCov',
+                'h1': 'FunCov',
+                'h2': 'Functional Coverage Made Easy',
+                'h3': 'For design and verification engineers that care',
+                'buttons' : {
+                              'Register':'/accounts/register/',
+                              'Login':'/accounts/login/',
+                            },
+              }
 
     return render(request, 'funcov/index.html', context)
 
@@ -82,7 +82,6 @@ def parameterForm(data=None):
   return form
   
 
-@login_required
 def editor(request):
     context = {}
 
