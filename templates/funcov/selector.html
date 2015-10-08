@@ -10,7 +10,7 @@
     <p class="lead">{{ h3 }}</p>
 
     {% for label,ctxt in buttons.items %}
-      <a class="btn btn-lg btn-success" href="{% url 'editor' %}?type={{ ctxt.type }}" role="button">{{ label }}</a>
+      <a class="btn btn-lg btn-primary" href="{% url 'editor' %}?type={{ ctxt.type }}" role="button">{{ label }}</a>
     {% endfor %}
 
 {% endblock %}
