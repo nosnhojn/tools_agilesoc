@@ -78,9 +78,13 @@ def editor(request):
     else:
       type = request.GET.get('type')
       if type == 'axi4stream':
-        parameterFormSet = formset_factory(ParameterForm)
+        parameterFormSet = formset_factory(ParameterForm, extra=0)
         parameterSet = parameterFormSet(initial=axi4StreamParameters)
-        print (parameterSet)
+        print (len(parameterSet))
+        for f,s in zip(parameterSet, axi4StreamParameters):
+          if s.has_key('choices'):
+            f.fields['select'].choices = s['choices']
+
         context = {
                     'parameters' : parameterSet,
                   }

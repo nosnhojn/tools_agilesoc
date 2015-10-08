@@ -1,36 +1,45 @@
 axi4StreamParameters = [
-                         { 'name'   : 'tValid',
+                         { 'enable' : True,
+                           'name'   : 'tValid',
                            'select' : None,
                          },
-                         { 'name'   : 'tReady',
+                         { 'enable' : True,
+                           'name'   : 'tReady',
                            'select' : None,
                          },
-                         { 'name'   : 'tData',
-                           'select' : '8',
-                           'values'  : [ 8, 16, 32, 64, 128, 256 ],
-                         },
-                         { 'name'   : 'tStrb',
+                         { 'enable' : True,
+                           'name'   : 'tData',
                            'select' : '1',
-                           'values' : [ 1, 2, 4, 8, 16, 32 ],
+                           'choices'  : [ (1,'8'), (2,'16'), (3,'32'), (4,'64'), (5,'128'), (6,'256') ],
                          },
-                         { 'name'   : 'tLast',
+                         { 'enable' : True,
+                           'name'   : 'tStrb',
+                           'select' : '1',
+                           'choices' : [ (1,'1'), (2,'2'), (3,'4'), (4,'8'), (5,'16'), (6,'32')],
+                         },
+                         { 'enable' : True,
+                           'name'   : 'tLast',
                            'select' : None,
                          },
-                         { 'name'   : 'tKeep',
+                         { 'enable' : True,
+                           'name'   : 'tKeep',
                            'select' : '4',
-                           'values' : range(1,16) 
+                           'choices' : [(i, "%s" % i) for i in range(1,16)]
                          },
-                         { 'name'   : 'tId',
+                         { 'enable' : True,
+                           'name'   : 'tId',
                            'select' : '4',
-                           'values' : range(1,16) 
+                           'choices' : [(i, "%s" % i) for i in range(1,16)]
                          },
-                         { 'name'   : 'tDest',
+                         { 'enable' : True,
+                           'name'   : 'tDest',
                            'select' : '4',
-                           'values' : range(1,16) 
+                           'choices' : [(i, "%s" % i) for i in range(1,16)]
                          },
-                         { 'name'   : 'tUser',
+                         { 'enable' : True,
+                           'name'   : 'tUser',
                            'select' : '4',
-                           'values' : range(1,16) 
+                           'choices' : [(i, "%s" % i) for i in range(1,16)]
                          },
                        ]
 axi4StreamContext = {

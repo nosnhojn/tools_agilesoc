@@ -85,15 +85,11 @@
                 <tbody>
                   {% for p in parameters %}
                     <tr>
-                      <td>{{ p.name }}</td>
-                      <td>{{ p.name.label }}</td>
+                      <td>{{ p.enable }}</td>
+                      <td>{{ p.name.value }}</td>
                       <td>
-                        {% if p.select != None %}
-                        <select class="form-control selectpicker" style="width:100px">
-                          {% for val in p.values %}
-                            <option>{{ val }}</option>
-                          {% endfor %}
-                        </select>
+                        {% if p.select.value != None %}
+                        {{ p.select }}
                         {% else %}
                         -
                         {% endif %}

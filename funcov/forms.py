@@ -1,6 +1,6 @@
 from django import forms
 
 class ParameterForm(forms.Form):
-  name = forms.BooleanField(initial=True)
+  enable = forms.BooleanField(initial=True)
+  name = forms.CharField(widget = forms.HiddenInput())
   select = forms.ChoiceField()
-  pass
