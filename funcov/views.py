@@ -39,12 +39,6 @@ def index(request):
                   'h2': 'Pick an interface to get started',
                   'h3': '',
                   'buttons' : {
-                                'AHB': {
-                                         'type' : 'ahb',
-                                       },
-                                'APB': {
-                                         'type' : 'apb',
-                                       },
                                 'AXI4-Stream': {
                                          'type' : 'axi4stream',
                                        },

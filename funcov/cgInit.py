@@ -47,14 +47,50 @@ axi4StreamCovergroups = [
                           {
                             'enable'      : True,
                             'name'        : 'activeDataCycle',
-                            'desc'        : "Capture an active data cycle where tReady and tValid are asserted",
-                            'sensitivity' : "Positive clock edge",
+                            'desc'        : 'Capture an active data cycle where tReady and tValid are asserted',
+                            'sensitivity' : 'Positive clock edge',
                           },
                           {
                             'enable'      : True,
                             'name'        : 'tDataToggle',
-                            'desc'        : "Toggle coverage of the tData bus",
-                            'sensitivity' : "activeDataCycle",
+                            'desc'        : 'Toggle coverage of the tData bus',
+                            'sensitivity' : 'activeDataCycle',
+                          },
+                          {
+                            'enable'      : True,
+                            'name'        : 'tStrbValues',
+                            'desc'        : 'Value coverage of the tStrb bus',
+                            'sensitivity' : 'activeDataCycle',
+                          },
+                          {
+                            'enable'      : True,
+                            'name'        : 'tKeepValues',
+                            'desc'        : 'Value coverage of the tKeep bus',
+                            'sensitivity' : 'activeDataCycle',
+                          },
+                          {
+                            'enable'      : True,
+                            'name'        : 'tLastToggle',
+                            'desc'        : 'Toggle coverage of tLast',
+                            'sensitivity' : 'activeDataCycle',
+                          },
+                          {
+                            'enable'      : True,
+                            'name'        : 'tIdValues',
+                            'desc'        : 'Value coverage of the tId bus',
+                            'sensitivity' : 'activeDataCycle',
+                          },
+                          {
+                            'enable'      : True,
+                            'name'        : 'tDestValues',
+                            'desc'        : 'Value coverage of the tDest bus',
+                            'sensitivity' : 'activeDataCycle',
+                          },
+                          {
+                            'enable'      : True,
+                            'name'        : 'tUserValues',
+                            'desc'        : 'Value coverage of the tUser bus',
+                            'sensitivity' : 'activeDataCycle',
                           },
                         ]
 
