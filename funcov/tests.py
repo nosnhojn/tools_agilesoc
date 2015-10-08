@@ -173,7 +173,7 @@ class axi4StreamTests(TestCase):
     parameters = response.context['parameters']
     self.assertTrue(len(parameters) > 0)
     for p in parameters:
-      if p['default'] is not None:
+      if p['select'] is not None:
         self.assertTrue(len(p['values']) > 0)
 
   def testAxi4StreamCovergroups(self):

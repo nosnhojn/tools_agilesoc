@@ -66,7 +66,7 @@
           </div>
           <a type="button" onClick="next('coverpoint')" class="btn btn-success btn-lg">Add Coverpoint</a>
           <a type="button" onClick="next('cross')" class="btn btn-success btn-lg">Add Cross Cover</a>
-          <!--<button type="submit" class="btn btn-success btn-lg">Download</button>-->
+          <button type="submit" class="btn btn-success btn-lg">Download</button>
         </div>
 
         <div id="params" class="tab-pane fade">
@@ -85,10 +85,10 @@
                 <tbody>
                   {% for p in parameters %}
                     <tr>
-                      <td class="text-center"><input type="checkbox" disabled="disabled" checked="checked"></input></td>
                       <td>{{ p.name }}</td>
+                      <td>{{ p.name.label }}</td>
                       <td>
-                        {% if p.default != None %}
+                        {% if p.select != None %}
                         <select class="form-control selectpicker" style="width:100px">
                           {% for val in p.values %}
                             <option>{{ val }}</option>

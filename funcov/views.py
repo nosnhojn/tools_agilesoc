@@ -1,13 +1,37 @@
-from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from registration.forms import RegistrationForm
+from django.shortcuts import render
 from django.core.urlresolvers import reverse
+from django.core.servers.basehttp import FileWrapper
+
+from funcov.forms import ParameterForm
+from django.forms.formsets import formset_factory
+from registration.forms import RegistrationForm
+
+# python2,3 compatibility
+try:
+  from StringIO import StringIO
+except ImportError:
+  from io import StringIO
+
+from tempCovergroups import axi4StreamContext, axi4StreamParameters
+
+from django import forms
+
 
 
 def index(request):
+    #filename = 'README.md' # Select your file here.                                
+    #text = StringIO.StringIO('what up\n')
+    #wrapper = FileWrapper(text)
+    #response = HttpResponse(wrapper, content_type='application/octet-stream')
+    #response['Content-Disposition'] = 'attachment;filename=\"README.txt\"'
+    #print(text.len)
+    #response['Content-Length'] = text.len
+    #return response
+
     context = {}
     if request.user.is_authenticated():
       context = {
@@ -54,69 +78,11 @@ def editor(request):
     else:
       type = request.GET.get('type')
       if type == 'axi4stream':
+        parameterFormSet = formset_factory(ParameterForm)
+        parameterSet = parameterFormSet(initial=axi4StreamParameters)
+        print (parameterSet)
         context = {
-                    'name' : "Streaming AXI-4",
-                    'type' : "axi4stream",
-                    'covergroups' :
-                                    [
-                                      {
-                                        'name'        : 'activeDataCycle',
-                                        'enabled'     : True,
-                                        'desc'        : "Capture an active data cycle where tReady and tValid are asserted",
-                                        'sensitivity' : "Positive clock edge",
-                                      },
-                                      {
-                                        'name'        : 'tDataToggle',
-                                        'enabled'     : True,
-                                        'desc'        : "Toggle coverage of the tData bus",
-                                        'sensitivity' : "activeDataCycle",
-                                      },
-                                    ],
-                    'parameters' : 
-                                   [
-                                     {
-                                       'name'    : 'tValid',
-                                       'default' : None,
-                                     },
-                                     {
-                                       'name'    : 'tReady',
-                                       'default' : None,
-                                     },
-                                     {
-                                       'name'    : 'tData',
-                                       'default' : '8',
-                                       'values'  : [ 8, 16, 32, 64, 128, 256 ],
-                                     },
-                                     {
-                                       'name'    : 'tStrb',
-                                       'default' : '1',
-                                       'values'  : [ 1, 2, 4, 8, 16, 32 ],
-                                     },
-                                     {
-                                       'name'    : 'tLast',
-                                       'default' : None,
-                                     },
-                                     {
-                                       'name'    : 'tKeep',
-                                       'default' : '4',
-                                       'values'  : range(1,16) 
-                                     },
-                                     {
-                                       'name'    : 'tId',
-                                       'default' : '4',
-                                       'values'  : range(1,16) 
-                                     },
-                                     {
-                                       'name'    : 'tDest',
-                                       'default' : '4',
-                                       'values'  : range(1,16) 
-                                     },
-                                     {
-                                       'name'    : 'tUser',
-                                       'default' : '4',
-                                       'values'  : range(1,16) 
-                                     },
-                                   ],
+                    'parameters' : parameterSet,
                   }
 
       elif type == 'ahb':
