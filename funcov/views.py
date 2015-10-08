@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.core.servers.basehttp import FileWrapper
 
-from funcov.forms import ParameterForm
+from funcov.forms import ParameterForm, CovergroupForm
 from django.forms.formsets import formset_factory
 from registration.forms import RegistrationForm
 
@@ -16,8 +16,7 @@ try:
 except ImportError:
   from io import StringIO
 
-from tempCovergroups import axi4StreamContext, axi4StreamParameters
-
+from cgInit import axi4StreamParameters, axi4StreamCovergroups
 from django import forms
 
 
@@ -66,27 +65,50 @@ def index(request):
 
     return render(request, 'funcov/index.html', context)
 
+def covergroupForm(data=None):
+  formSet = formset_factory(CovergroupForm, extra=0)
+  if data == None:
+    form = formSet(initial=axi4StreamCovergroups, prefix='covergroups')
+  else:
+    form = formSet(data, prefix='covergroups')
+  for f,s in zip(form, axi4StreamCovergroups):
+    if s.has_key('choices'):
+      f.fields['select'].choices = s['choices']
+  return form
+
+def parameterForm(data=None):
+  formSet = formset_factory(ParameterForm, extra=0)
+  if data == None:
+    form = formSet(initial=axi4StreamParameters, prefix='parameters')
+  else:
+    form = formSet(data, prefix='parameters')
+  for f,s in zip(form, axi4StreamParameters):
+    if s.has_key('choices'):
+      f.fields['select'].choices = s['choices']
+  return form
+  
 
 @login_required
 def editor(request):
     context = {}
 
     if request.method == 'POST':
-      print (request.POST)
-      return render(request, 'funcov/editor.html', context)
+      pForm = parameterForm(request.POST)
+      cgForm = covergroupForm(request.POST)
+      if pForm.is_valid() and cgForm.is_valid():
+        # do stuff here
+        pass
+      else:
+        pass
+
+      return render(request, 'funcov/editor.html', { 'parameters' : pForm, 'covergroups' : cgForm })
 
     else:
       type = request.GET.get('type')
       if type == 'axi4stream':
-        parameterFormSet = formset_factory(ParameterForm, extra=0)
-        parameterSet = parameterFormSet(initial=axi4StreamParameters)
-        print (len(parameterSet))
-        for f,s in zip(parameterSet, axi4StreamParameters):
-          if s.has_key('choices'):
-            f.fields['select'].choices = s['choices']
-
         context = {
-                    'parameters' : parameterSet,
+                    'parameters' : parameterForm(),
+                    'covergroups' : covergroupForm(),
                   }
 
       elif type == 'ahb':

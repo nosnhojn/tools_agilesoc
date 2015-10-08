@@ -31,6 +31,8 @@
     </script>
 
     <form id="category_form" method="post" action="{% url 'editor' %}">
+      {{ parameters.management_form }}
+      {{ covergroups.management_form }}
   
       {% csrf_token %}
 
@@ -53,11 +55,14 @@
                 </thead>
                 <tbody>
                   {% for c in covergroups %}
+                    {{ c.name }}
+                    {{ c.desc }}
+                    {{ c.sensitivity }}
                     <tr>
-                      <td class="text-center"><input name="covergroup" value="{{ c.name }}" type="checkbox" checked="checked"></input></td>
-                      <td>{{ c.name }}</td>
-                      <td>{{ c.desc }}</td>
-                      <td>{{ c.sensitivity }}</td>
+                      <td>{{ c.enable }}</td>
+                      <td>{{ c.name.value }}</td>
+                      <td>{{ c.desc.value }}</td>
+                      <td>{{ c.sensitivity.value }}</td>
                     </tr>
                   {% endfor %}
                 </tbody>
@@ -73,19 +78,19 @@
           <h3>How are your {{ name }} ports configured?</h3>
 
           <div class="row">
-            <div class="col-lg-8 col-lg-offset-2">
+            <div class="col-lg-6 col-lg-offset-3">
               <table class="table table-striped text-left">
                 <thead>
                   <tr>
-                    <th>Enabled</th>
                     <th>Port Name</th>
                     <th>Bus Width</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for p in parameters %}
+                    {{ p.name }}
+                    {{ p.enable }}
                     <tr>
-                      <td>{{ p.enable }}</td>
                       <td>{{ p.name.value }}</td>
                       <td>
                         {% if p.select.value != None %}
