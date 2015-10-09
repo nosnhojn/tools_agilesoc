@@ -98,3 +98,10 @@ axi4StreamHeader = {
                      'name' : "Streaming AXI-4",
                      'type' : "axi4stream",
                    }
+
+def covergroupAsString(parameters, covergroups):
+  covergroup = ""
+  with open("group.sv", "r") as f:
+    for line in f:
+      covergroup += line
+  return covergroup
