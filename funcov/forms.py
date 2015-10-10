@@ -7,7 +7,7 @@ class ParameterForm(forms.Form):
   select = forms.ChoiceField(required=False)
 
 class CovergroupForm(forms.Form):
-  enable = forms.BooleanField(initial=True)
+  enable = forms.BooleanField(initial=True, required=False)
   name = forms.CharField(widget = forms.HiddenInput())
   desc = forms.CharField(widget = forms.HiddenInput())
   sensitivity = forms.CharField(widget = forms.HiddenInput())
