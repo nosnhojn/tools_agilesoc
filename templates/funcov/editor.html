@@ -35,7 +35,7 @@
      }
    </script>
 
-   <form id="editor_form" method="post" action="{% url 'editor' %}" onsubmit="document.getElementById('kind').value='result'; target_popup(this)">
+   <form id="editor_form" method="post" action="{% url 'editor' %}?download=1&type={{ type }}" onsubmit="document.getElementById('kind').value='result'; target_popup(this)">
      {{ parameters.management_form }}
      {{ covergroups.management_form }}
   
