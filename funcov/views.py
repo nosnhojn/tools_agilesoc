@@ -16,7 +16,7 @@ try:
 except ImportError:
   from io import StringIO
 
-from cgHandler import axi4StreamParameters, axi4StreamCovergroups, covergroupAsString
+from funcov.cgHandler import axi4StreamParameters, axi4StreamCovergroups, covergroupAsString
 from django import forms
 
 
@@ -37,19 +37,10 @@ def selector(request):
     return render(request, 'funcov/selector.html', context)
 
 def index(request):
-    #filename = 'README.md' # Select your file here.                                
-    #text = StringIO.StringIO('what up\n')
-    #wrapper = FileWrapper(text)
-    #response = HttpResponse(wrapper, content_type='application/octet-stream')
-    #response['Content-Disposition'] = 'attachment;filename=\"README.txt\"'
-    #print(text.len)
-    #response['Content-Length'] = text.len
-    #return response
-
     context = {
                 'title': 'FunCov',
                 'h1': 'FunCov',
-                'h2': 'Functional Coverage Made Easy',
+                'h2': 'Pick an interface to get started',
                 'h3': 'For design and verification engineers that care',
                 'buttons' : {
                               'Register':'/accounts/register/',
@@ -65,9 +56,6 @@ def covergroupForm(data=None):
     form = formSet(initial=axi4StreamCovergroups, prefix='covergroups')
   else:
     form = formSet(data, prefix='covergroups')
-  for f,s in zip(form, axi4StreamCovergroups):
-    if s.has_key('choices'):
-      f.fields['select'].choices = s['choices']
   return form
 
 def parameterForm(data=None):
@@ -76,9 +64,6 @@ def parameterForm(data=None):
     form = formSet(initial=axi4StreamParameters, prefix='parameters')
   else:
     form = formSet(data, prefix='parameters')
-  for f,s in zip(form, axi4StreamParameters):
-    if s.has_key('choices'):
-      f.fields['select'].choices = s['choices']
   return form
   
 import urllib
@@ -100,6 +85,8 @@ def editor(request):
       type = request.GET.get('type')
       if type == 'axi4stream':
         context = {
+                    'name' : 'Streaming AXI-4',
+                    'type' : 'axi4stream',
                     'parameters' : parameterForm(),
                     'covergroups' : covergroupForm(),
                   }

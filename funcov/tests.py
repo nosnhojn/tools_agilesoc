@@ -17,28 +17,6 @@ class userTests(TestCase):
     up.user = User.objects.create_user(self.uname, self.email, self.passwd)
     up.save()
 
-  def testNoUserIndex(self):
-    response = self.client.get(reverse('index'))
-    self.assertEquals(response.context['title'], 'FunCov')
-    self.assertEquals(response.context['h1'], 'FunCov')
-    self.assertEquals(response.context['h2'], 'Functional Coverage Made Easy')
-    self.assertEquals(response.context['h3'], 'For design and verification engineers that care')
-    self.assertEquals(response.context['buttons']['Register'], reverse('registration_register'))
-    self.assertEquals(response.context['buttons']['Login'], reverse('auth_login'))
-
-  def testUserIndex(self):
-    self.createUser()
-    self.client.login(username=self.uname, password=self.passwd)
-
-    response = self.client.get(reverse('index'))
-    self.assertEquals(response.context['title'], self.uname)
-    self.assertEquals(response.context['h1'], 'FunCov')
-    self.assertEquals(response.context['h2'], 'Pick an interface to get started')
-    self.assertEquals(response.context['h3'], '')
-    self.assertEquals(response.context['buttons']['AHB']['type'], 'ahb')
-    self.assertEquals(response.context['buttons']['APB']['type'], 'apb')
-    self.assertEquals(response.context['buttons']['AXI4-Stream']['type'], 'axi4stream')
-
   def testLoginRedirect(self):
     self.createUser()
     response = self.client.post('/accounts/login/', {'username':self.uname, 'password':self.passwd})
@@ -166,25 +144,26 @@ class axi4StreamTests(TestCase):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
     self.assertEqual(response.context['name'], 'Streaming AXI-4')
     self.assertEqual(response.context['type'], 'axi4stream')
-    self.assertTrue(len(response.context['covergroups']) > 0)
-
+ 
   def testAxi4StreamParams(self):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
     parameters = response.context['parameters']
     self.assertTrue(len(parameters) > 0)
     for p in parameters:
+      self.assertTrue(p.fields['enable'])
+      self.assertTrue(p.fields['name'])
       if p['select'] is not None:
-        self.assertTrue(len(p['values']) > 0)
-
+        self.assertTrue(len(p['select']) > 0)
+ 
   def testAxi4StreamCovergroups(self):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
     covergroups = response.context['covergroups']
     self.assertTrue(len(covergroups) > 0)
     for c in covergroups:
-      self.assertTrue(c['name'] != None)
-      self.assertTrue(c['enabled'] == True)
-      self.assertTrue(c['desc'] != None)
-      self.assertTrue(c['sensitivity'] != None)
+      self.assertTrue(c.fields['enable'])
+      self.assertTrue(c.fields['name'])
+      self.assertTrue(c.fields['desc'])
+      self.assertTrue(c.fields['sensitivity'])
 
 
 from django.contrib.auth.models import User
@@ -195,3 +174,7 @@ class dbInteractionTests(TestCase):
     up.user = User.objects.create_user('uname', 'email', 'password')
     up.save()
     self.assertEqual(len(UserProfile.objects.all()), 1)
+
+class coverageTemplateTests(TestCase):
+  def testPass(self):
+    pass
