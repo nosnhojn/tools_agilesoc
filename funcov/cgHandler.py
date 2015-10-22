@@ -123,10 +123,25 @@ axi4StreamHeader = {
                    }
 
 def coverpointAsString(parameter, covergroup):
-  if covergroup['enable'].value() == False:
-    return ""
-  else:
-    return "  %s : coverpoint %s;" % (covergroup['name'].value(), covergroup['signal'].value())
+  cp = ''
+  if covergroup['enable'].value() == True:
+    cp += '  %s : coverpoint %s' % (covergroup['name'].value(), covergroup['signal'].value())
+    if covergroup['sensitivity'].value() is not None:
+      cp += ' iff (%s)' % covergroup['sensitivity'].value()
+    if covergroup['type'].value() == 'value':
+      cp += ';'
+    elif covergroup['type'].value() == 'toggle':
+      numBits = 1
+      if parameter['select'].value() != None:
+        numBits = int(parameter['select'].value())
+      cp += '\n'
+      cp += '  {\n'
+      for i in range(0, numBits):
+        cp += '    bins bit%s_is_0 = { 1\'b0 };\n' % i
+        cp += '    bins bit%s_is_1 = { 1\'b1 };\n' % i
+      cp += '  }\n'
+
+  return cp
 
 def covergroupAsString(parameters, covergroups):
   covergroup = ""

@@ -192,10 +192,9 @@ class coverageTemplateTests(TestCase):
     self.assertTrue(coverpointAsString(self.pForm, self.cgForm) == "")
 
   def testEnabledCoverpointIsString(self):
-    self.cgForm.enable = True
     self.assertTrue(coverpointAsString(self.pForm, self.cgForm) != "")
 
-  def testEnabledCoverpointValueInsensitive(self):
+  def testCoverpointValueInsensitive(self):
     self.cgForm = CovergroupForm(initial={
                                            'name':'theName',
                                            'type':'value',
@@ -204,10 +203,66 @@ class coverageTemplateTests(TestCase):
                                          })
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), "  theName : coverpoint theSignal;")
 
-  def testEnabledCoverpointValueSensitive(self):
-    self.cgForm.enable = True
-    self.cgForm.name = 'aName'
-    self.cgForm.type = 'value'
-    self.cgForm.signal = 'aSignal'
-    self.cgForm.sensitivity = 'someSignal'
+  def testCoverpointValueSensitive(self):
+    self.cgForm = CovergroupForm(initial={
+                                           'name':'aName',
+                                           'type':'value',
+                                           'signal':'aSignal',
+                                           'sensitivity':'someSignal',
+                                         })
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), "  aName : coverpoint aSignal iff (someSignal);")
+
+  def testCoverpointToggle1BitInsensitive(self):
+    self.cgForm = CovergroupForm(initial={
+                                           'name':'aName',
+                                           'type':'toggle',
+                                           'signal':'aSignal',
+                                         })
+    cp  = '  aName : coverpoint aSignal\n'
+    cp += '  {\n'
+    cp += '    bins bit0_is_0 = { 1\'b0 };\n'
+    cp += '    bins bit0_is_1 = { 1\'b1 };\n'
+    cp += '  }\n'
+    self.assertEquals(coverpointAsString(self.pForm, self.cgForm), cp)
+
+  def testCoverpointToggleNBitInsensitive(self):
+    self.pForm = ParameterForm(initial={
+                                         'select':'7',
+                                       })
+    self.cgForm = CovergroupForm(initial={
+                                           'name':'aName',
+                                           'type':'toggle',
+                                           'signal':'aSignal',
+                                         })
+    cp  = '  aName : coverpoint aSignal\n'
+    cp += '  {\n'
+    cp += '    bins bit0_is_0 = { 1\'b0 };\n'
+    cp += '    bins bit0_is_1 = { 1\'b1 };\n'
+    cp += '    bins bit1_is_0 = { 1\'b0 };\n'
+    cp += '    bins bit1_is_1 = { 1\'b1 };\n'
+    cp += '    bins bit2_is_0 = { 1\'b0 };\n'
+    cp += '    bins bit2_is_1 = { 1\'b1 };\n'
+    cp += '    bins bit3_is_0 = { 1\'b0 };\n'
+    cp += '    bins bit3_is_1 = { 1\'b1 };\n'
+    cp += '    bins bit4_is_0 = { 1\'b0 };\n'
+    cp += '    bins bit4_is_1 = { 1\'b1 };\n'
+    cp += '    bins bit5_is_0 = { 1\'b0 };\n'
+    cp += '    bins bit5_is_1 = { 1\'b1 };\n'
+    cp += '    bins bit6_is_0 = { 1\'b0 };\n'
+    cp += '    bins bit6_is_1 = { 1\'b1 };\n'
+    cp += '  }\n'
+    self.assertEquals(coverpointAsString(self.pForm, self.cgForm), cp)
+
+  def testCoverpointToggle1BitSensitive(self):
+    self.cgForm = CovergroupForm(initial={
+                                           'name':'aName',
+                                           'type':'toggle',
+                                           'signal':'aSignal',
+                                           'sensitivity':'bucko',
+                                         })
+    cp  = '  aName : coverpoint aSignal iff (bucko)\n'
+    cp += '  {\n'
+    cp += '    bins bit0_is_0 = { 1\'b0 };\n'
+    cp += '    bins bit0_is_1 = { 1\'b1 };\n'
+    cp += '  }\n'
+    self.assertEquals(coverpointAsString(self.pForm, self.cgForm), cp)
