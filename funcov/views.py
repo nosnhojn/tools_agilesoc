@@ -16,7 +16,7 @@ try:
 except ImportError:
   from io import StringIO
 
-from funcov.cgHandler import axi4StreamParameters, axi4StreamCovergroups, covergroupAsString
+from funcov.cgHandler import axi4StreamParameters, axi4StreamCovergroups, coverageModuleAsString
 from django import forms
 
 
@@ -62,8 +62,14 @@ def parameterForm(data=None):
   formSet = formset_factory(ParameterForm, extra=0)
   if data == None:
     form = formSet(initial=axi4StreamParameters, prefix='parameters')
+    for i in range(0, len(form)):
+      if 'choices' in axi4StreamParameters[i]:
+        form[i].fields['select'].choices = axi4StreamParameters[i]['choices']
   else:
     form = formSet(data, prefix='parameters')
+    for i in range(0, len(form)):
+      if 'choices' in axi4StreamParameters[i]:
+        form[i].fields['select'].choices = axi4StreamParameters[i]['choices']
   return form
   
 import urllib
@@ -75,7 +81,7 @@ def editor(request):
       cgForm = covergroupForm(request.POST)
       if pForm.is_valid() and cgForm.is_valid():
         # do stuff here
-        cg = covergroupAsString(pForm, cgForm)
+        cg = coverageModuleAsString(pForm, cgForm)
         return render(request, 'funcov/myCovergroup.html', { 'uri' : urllib.quote(cg), 'txt' : cg })
 
       else:

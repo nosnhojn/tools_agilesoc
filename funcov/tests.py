@@ -6,8 +6,9 @@ from django.http import HttpRequest
 from django.http import HttpResponse
 
 import funcov.views
-from funcov.cgHandler import coverpointAsString
+from funcov.cgHandler import covergroupAsString, coverpointAsString
 from funcov.forms import ParameterForm, CovergroupForm
+from django.forms.formsets import formset_factory
 
 class userTests(TestCase):
   uname = 'uname'
@@ -199,9 +200,8 @@ class coverageTemplateTests(TestCase):
                                            'name':'theName',
                                            'type':'value',
                                            'signal':'theSignal',
-                                           'sensitivity':None,
                                          })
-    self.assertEquals(coverpointAsString(self.pForm, self.cgForm), "  theName : coverpoint theSignal;")
+    self.assertEquals(coverpointAsString(self.pForm, self.cgForm), "    theName : coverpoint theSignal;\n")
 
   def testCoverpointValueSensitive(self):
     self.cgForm = CovergroupForm(initial={
@@ -210,7 +210,7 @@ class coverageTemplateTests(TestCase):
                                            'signal':'aSignal',
                                            'sensitivity':'someSignal',
                                          })
-    self.assertEquals(coverpointAsString(self.pForm, self.cgForm), "  aName : coverpoint aSignal iff (someSignal);")
+    self.assertEquals(coverpointAsString(self.pForm, self.cgForm), "    aName : coverpoint aSignal iff (someSignal);\n")
 
   def testCoverpointToggle1BitInsensitive(self):
     self.cgForm = CovergroupForm(initial={
@@ -218,11 +218,11 @@ class coverageTemplateTests(TestCase):
                                            'type':'toggle',
                                            'signal':'aSignal',
                                          })
-    cp  = '  aName : coverpoint aSignal\n'
-    cp += '  {\n'
-    cp += '    bins bit0_is_0 = { 1\'b0 };\n'
-    cp += '    bins bit0_is_1 = { 1\'b1 };\n'
-    cp += '  }\n'
+    cp  = '    aName : coverpoint aSignal\n'
+    cp += '    {\n'
+    cp += '      bins bit0_is_0 = { 1\'b0 };\n'
+    cp += '      bins bit0_is_1 = { 1\'b1 };\n'
+    cp += '    }\n'
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), cp)
 
   def testCoverpointToggleNBitInsensitive(self):
@@ -234,23 +234,23 @@ class coverageTemplateTests(TestCase):
                                            'type':'toggle',
                                            'signal':'aSignal',
                                          })
-    cp  = '  aName : coverpoint aSignal\n'
-    cp += '  {\n'
-    cp += '    bins bit0_is_0 = { 1\'b0 };\n'
-    cp += '    bins bit0_is_1 = { 1\'b1 };\n'
-    cp += '    bins bit1_is_0 = { 1\'b0 };\n'
-    cp += '    bins bit1_is_1 = { 1\'b1 };\n'
-    cp += '    bins bit2_is_0 = { 1\'b0 };\n'
-    cp += '    bins bit2_is_1 = { 1\'b1 };\n'
-    cp += '    bins bit3_is_0 = { 1\'b0 };\n'
-    cp += '    bins bit3_is_1 = { 1\'b1 };\n'
-    cp += '    bins bit4_is_0 = { 1\'b0 };\n'
-    cp += '    bins bit4_is_1 = { 1\'b1 };\n'
-    cp += '    bins bit5_is_0 = { 1\'b0 };\n'
-    cp += '    bins bit5_is_1 = { 1\'b1 };\n'
-    cp += '    bins bit6_is_0 = { 1\'b0 };\n'
-    cp += '    bins bit6_is_1 = { 1\'b1 };\n'
-    cp += '  }\n'
+    cp  = '    aName : coverpoint aSignal\n'
+    cp += '    {\n'
+    cp += '      bins bit0_is_0 = { 1\'b0 };\n'
+    cp += '      bins bit0_is_1 = { 1\'b1 };\n'
+    cp += '      bins bit1_is_0 = { 1\'b0 };\n'
+    cp += '      bins bit1_is_1 = { 1\'b1 };\n'
+    cp += '      bins bit2_is_0 = { 1\'b0 };\n'
+    cp += '      bins bit2_is_1 = { 1\'b1 };\n'
+    cp += '      bins bit3_is_0 = { 1\'b0 };\n'
+    cp += '      bins bit3_is_1 = { 1\'b1 };\n'
+    cp += '      bins bit4_is_0 = { 1\'b0 };\n'
+    cp += '      bins bit4_is_1 = { 1\'b1 };\n'
+    cp += '      bins bit5_is_0 = { 1\'b0 };\n'
+    cp += '      bins bit5_is_1 = { 1\'b1 };\n'
+    cp += '      bins bit6_is_0 = { 1\'b0 };\n'
+    cp += '      bins bit6_is_1 = { 1\'b1 };\n'
+    cp += '    }\n'
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), cp)
 
   def testCoverpointToggle1BitSensitive(self):
@@ -260,9 +260,51 @@ class coverageTemplateTests(TestCase):
                                            'signal':'aSignal',
                                            'sensitivity':'bucko',
                                          })
-    cp  = '  aName : coverpoint aSignal iff (bucko)\n'
-    cp += '  {\n'
-    cp += '    bins bit0_is_0 = { 1\'b0 };\n'
-    cp += '    bins bit0_is_1 = { 1\'b1 };\n'
-    cp += '  }\n'
+    cp  = '    aName : coverpoint aSignal iff (bucko)\n'
+    cp += '    {\n'
+    cp += '      bins bit0_is_0 = { 1\'b0 };\n'
+    cp += '      bins bit0_is_1 = { 1\'b1 };\n'
+    cp += '    }\n'
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), cp)
+
+  def testCovergroupTemplate(self):
+    _2coverpoints = [
+                      {
+                        'name'        : 'ActiveDataCycle',
+                        'type'        : 'value',
+                        'signal'      : 'signal1',
+                        'sensitivityLabel' : 'dud',
+                      },
+                      {
+                        'name'        : 'tDataToggle',
+                        'type'        : 'toggle',
+                        'signal'      : 'signal2',
+                        'sensitivityLabel' : 'dud',
+                        'sensitivity' : 'activeDataCycle',
+                      },
+                    ]
+    cgFormSet = formset_factory(CovergroupForm, extra=0)
+    cgForm = cgFormSet(initial=_2coverpoints)
+
+    _2parameters = [
+                     {
+                       'name'   : 'signal2',
+                       'select' : '2',
+                     },
+                     {
+                       'name'   : 'signal1',
+                     },
+                   ]
+    pFormSet = formset_factory(ParameterForm, extra=0)
+    pForm = pFormSet(initial=_2parameters)
+
+    cp = ''
+    cp += '    ActiveDataCycle : coverpoint signal1;\n'
+    cp += '    tDataToggle : coverpoint signal2 iff (activeDataCycle)\n'
+    cp += '    {\n'
+    cp += '      bins bit0_is_0 = { 1\'b0 };\n'
+    cp += '      bins bit0_is_1 = { 1\'b1 };\n'
+    cp += '      bins bit1_is_0 = { 1\'b0 };\n'
+    cp += '      bins bit1_is_1 = { 1\'b1 };\n'
+    cp += '    }\n'
+    self.assertEquals(covergroupAsString(pForm, cgForm), cp)
