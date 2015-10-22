@@ -63,12 +63,15 @@
                  {% for c in covergroups %}
                    {{ c.name }}
                    {{ c.desc }}
+                   {{ c.type }}
+                   {{ c.signal }}
+                   {{ c.sensitivityLabel }}
                    {{ c.sensitivity }}
                    <tr>
                      <td>{{ c.enable }}</td>
                      <td>{{ c.name.value }}</td>
                      <td>{{ c.desc.value }}</td>
-                     <td>{{ c.sensitivity.value }}</td>
+                     <td>{{ c.sensitivityLabel.value }}</td>
                    </tr>
                  {% endfor %}
                </tbody>

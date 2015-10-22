@@ -6,6 +6,8 @@ from django.http import HttpRequest
 from django.http import HttpResponse
 
 import funcov.views
+from funcov.cgHandler import coverpointAsString
+from funcov.forms import ParameterForm, CovergroupForm
 
 class userTests(TestCase):
   uname = 'uname'
@@ -163,6 +165,9 @@ class axi4StreamTests(TestCase):
       self.assertTrue(c.fields['enable'])
       self.assertTrue(c.fields['name'])
       self.assertTrue(c.fields['desc'])
+      self.assertTrue(c.fields['type'])
+      self.assertTrue(c.fields['signal'])
+      self.assertTrue(c.fields['sensitivityLabel'])
       self.assertTrue(c.fields['sensitivity'])
 
 
@@ -176,5 +181,33 @@ class dbInteractionTests(TestCase):
     self.assertEqual(len(UserProfile.objects.all()), 1)
 
 class coverageTemplateTests(TestCase):
-  def testPass(self):
-    pass
+  def setUp(self):
+    self.pForm = ParameterForm()
+    self.cgForm = CovergroupForm()
+
+  def testDisabledCoverpointIsNullString(self):
+    self.cgForm = CovergroupForm(initial={
+                                           'enable':False,
+                                         })
+    self.assertTrue(coverpointAsString(self.pForm, self.cgForm) == "")
+
+  def testEnabledCoverpointIsString(self):
+    self.cgForm.enable = True
+    self.assertTrue(coverpointAsString(self.pForm, self.cgForm) != "")
+
+  def testEnabledCoverpointValueInsensitive(self):
+    self.cgForm = CovergroupForm(initial={
+                                           'name':'theName',
+                                           'type':'value',
+                                           'signal':'theSignal',
+                                           'sensitivity':None,
+                                         })
+    self.assertEquals(coverpointAsString(self.pForm, self.cgForm), "  theName : coverpoint theSignal;")
+
+  def testEnabledCoverpointValueSensitive(self):
+    self.cgForm.enable = True
+    self.cgForm.name = 'aName'
+    self.cgForm.type = 'value'
+    self.cgForm.signal = 'aSignal'
+    self.cgForm.sensitivity = 'someSignal'
+    self.assertEquals(coverpointAsString(self.pForm, self.cgForm), "  aName : coverpoint aSignal iff (someSignal);")

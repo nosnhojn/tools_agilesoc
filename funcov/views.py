@@ -79,6 +79,8 @@ def editor(request):
         return render(request, 'funcov/myCovergroup.html', { 'uri' : urllib.quote(cg), 'txt' : cg })
 
       else:
+        print (pForm.errors)
+        print (cgForm.errors)
         return HttpResponseRedirect(reverse('index'))
 
     else:
