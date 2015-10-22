@@ -160,9 +160,30 @@ def coverageModuleAsString(pForm, cgForm):
     for line in f:
       module += line
 
+  module += portsAsString(pForm)
+
+  with open("middle.sv", "r") as f:
+    for line in f:
+      module += line
+
   module += covergroupAsString(pForm, cgForm)
 
   with open("end.sv", "r") as f:
     for line in f:
       module += line
   return module
+
+def portAsString(parameter):
+  if parameter['select'].value() != None:
+    return '  input [%s:0] %s' % (int(parameter['select'].value())-1, parameter['name'].value())
+  else:
+    return '  input %s' % parameter['name'].value()
+
+def portsAsString(parameters):
+  ports = ''
+  for i in range(0,len(parameters)):
+    if i < len(parameters)-1:
+      ports += portAsString(parameters[i]) + ',\n'
+    else:
+      ports += portAsString(parameters[i]) + '\n'
+  return ports

@@ -6,7 +6,7 @@ from django.http import HttpRequest
 from django.http import HttpResponse
 
 import funcov.views
-from funcov.cgHandler import covergroupAsString, coverpointAsString
+from funcov.cgHandler import covergroupAsString, coverpointAsString, portAsString, portsAsString
 from funcov.forms import ParameterForm, CovergroupForm
 from django.forms.formsets import formset_factory
 
@@ -308,3 +308,31 @@ class coverageTemplateTests(TestCase):
     cp += '      bins bit1_is_1 = { 1\'b1 };\n'
     cp += '    }\n'
     self.assertEquals(covergroupAsString(pForm, cgForm), cp)
+
+  def test1BitParameter(self):
+    self.pForm = ParameterForm(initial={
+                                         'name':'port',
+                                         'select':None,
+                                       })
+    self.assertEquals(portAsString(self.pForm), '  input port')
+
+  def testNBitParameter(self):
+    self.pForm = ParameterForm(initial={
+                                         'name':'port',
+                                         'select':'41',
+                                       })
+    self.assertEquals(portAsString(self.pForm), '  input [40:0] port')
+
+  def testPortsAsString(self):
+    _2parameters = [
+                     {
+                       'name'   : 'signal2',
+                       'select' : '2',
+                     },
+                     {
+                       'name'   : 'signal1',
+                     },
+                   ]
+    pFormSet = formset_factory(ParameterForm, extra=0)
+    pForm = pFormSet(initial=_2parameters)
+    self.assertEquals(portsAsString(pForm), '  input [1:0] signal2,\n  input signal1\n')
