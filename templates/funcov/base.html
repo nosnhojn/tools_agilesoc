@@ -50,37 +50,17 @@
 
     <div class="container">
       <div class="header clearfix">
-        <div>
-        {% if request.path == '/funcov/' %}
           <nav>
-            {% if user.is_authenticated %}
-            <ul class="nav nav-pills pull-right" style="margin-top:55px">
-              <li role="presentation"><a href="{% url 'auth_logout' %}">Logout</a></li>
-            </ul>
-            {% else %}
-            <ul class="nav nav-pills pull-right" style="margin-top:55px">
-              <!--<li role="presentation"><a href="{% url 'auth_login' %}">Login</a></li>-->
-              <li role="presentation"><a href="{% url 'registration_register' %}"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> New Features <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span></a></li>
-            </ul>
-            {% endif %}
-          </nav>
-          <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="width:30%"></a>
-        {% else %}
-          <nav>
-            {% if user.is_authenticated %}
             <ul class="nav nav-pills pull-right">
+            {% if user.is_authenticated %}
               <li role="presentation"><a href="{% url 'auth_logout' %}">Logout</a></li>
-            </ul>
             {% else %}
-            <ul class="nav nav-pills pull-right">
               <!--<li role="presentation"><a href="{% url 'auth_login' %}">Login</a></li>-->
-              <li role="presentation"><a href="{% url 'registration_register' %}"><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> New Features <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span></a></li>
-            </ul>
+              <li role="presentation"><a href="{% url 'registration_register' %}"><h3><span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span> New Features</a></h3></li>
             {% endif %}
+            </ul>
           </nav>
-          <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="width:15%"></a>
-        {% endif %}
-        </div>
+          <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="width:18%"></a>
       </div>
 
       {% block nav_block %}{% endblock %}
