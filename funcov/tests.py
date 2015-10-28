@@ -220,8 +220,8 @@ class coverageTemplateTests(TestCase):
                                          })
     cp  = '    aName : coverpoint aSignal\n'
     cp += '    {\n'
-    cp += '      bins bit0_is_0 = { 1\'b0 };\n'
-    cp += '      bins bit0_is_1 = { 1\'b1 };\n'
+    cp += '      wildcard bins bit0_is_0 = { 1\'b0 };\n'
+    cp += '      wildcard bins bit0_is_1 = { 1\'b1 };\n'
     cp += '    }\n'
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), cp)
 
@@ -236,20 +236,20 @@ class coverageTemplateTests(TestCase):
                                          })
     cp  = '    aName : coverpoint aSignal\n'
     cp += '    {\n'
-    cp += '      bins bit0_is_0 = { 1\'b0 };\n'
-    cp += '      bins bit0_is_1 = { 1\'b1 };\n'
-    cp += '      bins bit1_is_0 = { 1\'b0 };\n'
-    cp += '      bins bit1_is_1 = { 1\'b1 };\n'
-    cp += '      bins bit2_is_0 = { 1\'b0 };\n'
-    cp += '      bins bit2_is_1 = { 1\'b1 };\n'
-    cp += '      bins bit3_is_0 = { 1\'b0 };\n'
-    cp += '      bins bit3_is_1 = { 1\'b1 };\n'
-    cp += '      bins bit4_is_0 = { 1\'b0 };\n'
-    cp += '      bins bit4_is_1 = { 1\'b1 };\n'
-    cp += '      bins bit5_is_0 = { 1\'b0 };\n'
-    cp += '      bins bit5_is_1 = { 1\'b1 };\n'
-    cp += '      bins bit6_is_0 = { 1\'b0 };\n'
-    cp += '      bins bit6_is_1 = { 1\'b1 };\n'
+    cp += '      wildcard bins bit0_is_0 = { 7\'bxxxxxx0 };\n'
+    cp += '      wildcard bins bit0_is_1 = { 7\'bxxxxxx1 };\n'
+    cp += '      wildcard bins bit1_is_0 = { 7\'bxxxxx0x };\n'
+    cp += '      wildcard bins bit1_is_1 = { 7\'bxxxxx1x };\n'
+    cp += '      wildcard bins bit2_is_0 = { 7\'bxxxx0xx };\n'
+    cp += '      wildcard bins bit2_is_1 = { 7\'bxxxx1xx };\n'
+    cp += '      wildcard bins bit3_is_0 = { 7\'bxxx0xxx };\n'
+    cp += '      wildcard bins bit3_is_1 = { 7\'bxxx1xxx };\n'
+    cp += '      wildcard bins bit4_is_0 = { 7\'bxx0xxxx };\n'
+    cp += '      wildcard bins bit4_is_1 = { 7\'bxx1xxxx };\n'
+    cp += '      wildcard bins bit5_is_0 = { 7\'bx0xxxxx };\n'
+    cp += '      wildcard bins bit5_is_1 = { 7\'bx1xxxxx };\n'
+    cp += '      wildcard bins bit6_is_0 = { 7\'b0xxxxxx };\n'
+    cp += '      wildcard bins bit6_is_1 = { 7\'b1xxxxxx };\n'
     cp += '    }\n'
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), cp)
 
@@ -262,8 +262,8 @@ class coverageTemplateTests(TestCase):
                                          })
     cp  = '    aName : coverpoint aSignal iff (bucko)\n'
     cp += '    {\n'
-    cp += '      bins bit0_is_0 = { 1\'b0 };\n'
-    cp += '      bins bit0_is_1 = { 1\'b1 };\n'
+    cp += '      wildcard bins bit0_is_0 = { 1\'b0 };\n'
+    cp += '      wildcard bins bit0_is_1 = { 1\'b1 };\n'
     cp += '    }\n'
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), cp)
 
@@ -302,10 +302,10 @@ class coverageTemplateTests(TestCase):
     cp += '    ActiveDataCycle : coverpoint signal1;\n'
     cp += '    tDataToggle : coverpoint signal2 iff (activeDataCycle)\n'
     cp += '    {\n'
-    cp += '      bins bit0_is_0 = { 1\'b0 };\n'
-    cp += '      bins bit0_is_1 = { 1\'b1 };\n'
-    cp += '      bins bit1_is_0 = { 1\'b0 };\n'
-    cp += '      bins bit1_is_1 = { 1\'b1 };\n'
+    cp += '      wildcard bins bit0_is_0 = { 2\'bx0 };\n'
+    cp += '      wildcard bins bit0_is_1 = { 2\'bx1 };\n'
+    cp += '      wildcard bins bit1_is_0 = { 2\'b0x };\n'
+    cp += '      wildcard bins bit1_is_1 = { 2\'b1x };\n'
     cp += '    }\n'
     self.assertEquals(covergroupAsString(pForm, cgForm), cp)
 

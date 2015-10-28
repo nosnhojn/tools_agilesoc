@@ -84,7 +84,7 @@ axi4StreamCovergroups = [
                             'name'        : 'tLastToggle',
                             'desc'        : 'Toggle coverage of tLast',
                             'type'        : 'value',
-                            'signal'      : 'dLast',
+                            'signal'      : 'tLast',
                             'sensitivityLabel' : 'activeDataCycle',
                             'sensitivity' : 'activeDataCycle',
                           },
@@ -137,8 +137,12 @@ def coverpointAsString(parameter, covergroup):
       cp += '\n'
       cp += '    {\n'
       for i in range(0, numBits):
-        cp += '      bins bit%s_is_0 = { 1\'b0 };\n' % i
-        cp += '      bins bit%s_is_1 = { 1\'b1 };\n' % i
+        bits1 = ['x'] * numBits
+        bits0 = ['x'] * numBits
+        bits1[numBits-i-1] = '1'
+        bits0[numBits-i-1] = '0'
+        cp += '      wildcard bins bit%s_is_0 = { %0d\'b%s };\n' % ( i, numBits, ''.join(bits0))
+        cp += '      wildcard bins bit%s_is_1 = { %0d\'b%s };\n' % ( i, numBits, ''.join(bits1))
       cp += '    }\n'
 
   return cp

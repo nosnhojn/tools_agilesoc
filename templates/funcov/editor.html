@@ -10,6 +10,7 @@
         <li id="nav-params"><a data-toggle="tab" href="#params">Bus Properties</a></li>
         <li id="nav-coverpoint"><a data-toggle="tab" href="#coverpoint">Add Coverpoint</a></li>
         <li id="nav-cross"><a data-toggle="tab" href="#cross">Add Cross Cover</a></li>
+        <li id="nav-transition"><a data-toggle="tab" href="#transition">Add Transition</a></li>
     </ul>
 </div>
 
@@ -78,9 +79,16 @@
              </table>
            </div>
          </div>
-         <button type="submit" class="btn btn-success btn-lg">Download</button>
+<!--
+         <p>
          <a type="button" onClick="next('coverpoint')" class="btn btn-primary btn-lg">Add Coverpoint</a>
          <a type="button" onClick="next('cross')" class="btn btn-primary btn-lg">Add Cross Cover</a>
+         <a type="button" onClick="next('transition')" class="btn btn-primary btn-lg">Add Transition</a>
+         </p>
+-->
+         <p>
+         <button type="submit" class="btn btn-success btn-lg">Download</button>
+         </p>
        </div>
 
        <div id="params" class="tab-pane fade">
@@ -130,6 +138,14 @@
          <h3>Coming Soon... Defining Custom Crosses</h3>
          <p>
            <img src="../../static/images/cross-not-done.png" style="width:40%"></a>
+         </p>
+         <a type="button" onClick="next('covergroup')" class="btn btn-primary btn-lg">Back to Covergroup</a>
+       </div>
+
+       <div id="transition" class="tab-pane fade">
+         <h3>Coming Soon... Defining Custom Transitions</h3>
+         <p>
+           <img src="../../static/images/transitions-not-done.png" style="width:40%"></a>
          </p>
          <a type="button" onClick="next('covergroup')" class="btn btn-primary btn-lg">Back to Covergroup</a>
        </div>
