@@ -17,7 +17,7 @@ except ImportError:
   from io import StringIO
 
 from funcov.cgHandler import coverageModuleAsString, coverageModuleAsString
-from funcov.tempDataTypes import axi4StreamParameters, axi4StreamCovergroups
+from funcov.tempDataTypes import axi4StreamParameters, axi4StreamCovergroups, ahbParameters, ahbCovergroups, apbParameters, apbCovergroups
 from django import forms
 
 
@@ -70,13 +70,13 @@ def parameterForm(init=None, data=None):
   if data == None:
     form = formSet(initial=init, prefix='parameters')
     for i in range(0, len(form)):
-      if 'choices' in axi4StreamParameters[i]:
-        form[i].fields['select'].choices = axi4StreamParameters[i]['choices']
+      if 'choices' in init[i]:
+        form[i].fields['select'].choices = init[i]['choices']
   else:
     form = formSet(data, prefix='parameters')
     for i in range(0, len(form)):
-      if 'choices' in axi4StreamParameters[i]:
-        form[i].fields['select'].choices = axi4StreamParameters[i]['choices']
+      if 'choices' in init[i]:
+        form[i].fields['select'].choices = init[i]['choices']
   return form
   
 import urllib
@@ -84,8 +84,21 @@ def editor(request):
     context = {}
 
     if request.method == 'POST':
-      pForm = parameterForm(request.POST)
-      cgForm = covergroupForm(request.POST)
+      p = None
+      cg = None
+      type = request.POST.get('type')
+      if type == 'axi4stream':
+        p = axi4StreamParameters
+        cg = axi4StreamCovergroups
+      elif type == 'ahb':
+        p = ahbParameters
+        cg = ahbCovergroups
+      elif type == 'apb':
+        p = apbParameters
+        cg = apbCovergroups
+
+      pForm = parameterForm(data=request.POST, init=p)
+      cgForm = covergroupForm(data=request.POST, init=cg)
       if pForm.is_valid() and cgForm.is_valid():
         # do stuff here
         cg = coverageModuleAsString(pForm, cgForm)
@@ -102,24 +115,24 @@ def editor(request):
         context = {
                     'name' : 'Streaming AXI-4',
                     'type' : 'axi4stream',
-                    'parameters' : parameterForm(axi4StreamParameters),
-                    'covergroups' : covergroupForm(axi4StreamCovergroups),
+                    'parameters' : parameterForm(init=axi4StreamParameters),
+                    'covergroups' : covergroupForm(init=axi4StreamCovergroups),
                   }
 
       elif type == 'ahb':
         context = {
                     'name' : "AHB",
                     'type' : "ahb",
-                    'parameters' : parameterForm(ahbParameters),
-                    'covergroups' : covergroupForm(ahbCovergroups),
+                    'parameters' : parameterForm(init=ahbParameters),
+                    'covergroups' : covergroupForm(init=ahbCovergroups),
                   }
 
       elif type == 'apb':
         context = {
                     'name' : "APB",
                     'type' : "apb",
-                    'parameters' : parameterForm(apbParameters),
-                    'covergroups' : covergroupForm(apbCovergroups),
+                    'parameters' : parameterForm(init=apbParameters),
+                    'covergroups' : covergroupForm(init=apbCovergroups),
                   }
 
       else:

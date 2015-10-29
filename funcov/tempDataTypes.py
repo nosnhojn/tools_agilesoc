@@ -1,3 +1,76 @@
+##############################################################################################################
+# AHB
+##############################################################################################################
+ahbParameters = [
+                         { 'enable' : True,
+                           'name'   : 'tValid',
+                           'select' : None,
+                         },
+                ]
+
+ahbCovergroups = [
+                   {
+                     'enable'      : True,
+                     'name'        : 'ActiveDataCycle',
+                     'desc'        : 'Capture an active data cycle where tReady and tValid are asserted',
+                     'type'        : 'value',
+                     'signal'      : 'activeDataCycle',
+                     'sensitivityLabel' : 'Positive clock edge',
+                   },
+                 ]
+
+##############################################################################################################
+# APB
+##############################################################################################################
+apbParameters = [
+                  { 'enable'  : True,
+                    'name'    : 'pAddr',
+                    'select'  : '8',
+                    'choices' : [(i, "%s" % i) for i in range(1,32)]
+                  },
+                  { 'enable'  : True,
+                    'name'    : 'pSel',
+                    'select'  : '1',
+                    'choices' : [(i, "%s" % i) for i in range(1,32)]
+                  },
+                  { 'enable'  : True,
+                    'name'    : 'pEnable',
+                    'select'  : None,
+                  },
+                  { 'enable'  : True,
+                    'name'    : 'pWrite',
+                    'select'  : None,
+                  },
+                  { 'enable'  : True,
+                    'name'    : 'pWdata',
+                    'select'  : '8',
+                    'choices' : [ ('8','8'), ('16','16'), ('32','32') ],
+                  },
+                  { 'enable'  : True,
+                    'name'    : 'pReady',
+                    'select'  : None,
+                  },
+                  { 'enable'  : True,
+                    'name'    : 'pRdata',
+                    'select'  : '8',
+                    'choices' : [ ('8','8'), ('16','16'), ('32','32') ],
+                  },
+                ]
+
+apbCovergroups = [
+                   {
+                     'enable'      : True,
+                     'name'        : 'ActiveDataCycle',
+                     'desc'        : 'Capture an active data cycle where tReady and tValid are asserted',
+                     'type'        : 'value',
+                     'signal'      : 'activeDataCycle',
+                     'sensitivityLabel' : 'Positive clock edge',
+                   },
+                 ]
+
+##############################################################################################################
+# streaming axi4
+##############################################################################################################
 axi4StreamParameters = [
                          { 'enable' : True,
                            'name'   : 'tValid',
