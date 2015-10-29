@@ -105,30 +105,6 @@ class editorViewTests(TestCase):
     self.client.get(reverse('editor'), { 'type':'bagels' })
     mock_HttpResponseRedirect.assert_called_with(reverse('index'))
 
-  @patch('funcov.views.render', return_value=HttpResponse())
-  def testRendersAhb(self, mock_render):
-    self.client.get(reverse('editor'), { 'type':'ahb' })
-    args, kwargs = mock_render.call_args
-    self.assertEqual(args[1], 'funcov/editor.html')
-
-  def testAhbContext(self):
-    response = self.client.get(reverse('editor'), { 'type':'ahb' })
-    self.assertEqual(response.context['name'], 'AHB')
-    self.assertEqual(response.context['type'], 'ahb')
-    self.assertTrue(len(response.context['covergroups']) > 0)
-
-  @patch('funcov.views.render', return_value=HttpResponse())
-  def testRendersApb(self, mock_render):
-    self.client.get(reverse('editor'), { 'type':'apb' })
-    args, kwargs = mock_render.call_args
-    self.assertEqual(args[1], 'funcov/editor.html')
-
-  def testApbContext(self):
-    response = self.client.get(reverse('editor'), { 'type':'apb' })
-    self.assertEqual(response.context['name'], 'APB')
-    self.assertEqual(response.context['type'], 'apb')
-    self.assertTrue(len(response.context['covergroups']) > 0)
-
 
 class axi4StreamTests(TestCase):
   def setUp(self):

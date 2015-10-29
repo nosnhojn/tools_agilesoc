@@ -16,7 +16,8 @@ try:
 except ImportError:
   from io import StringIO
 
-from funcov.cgHandler import axi4StreamParameters, axi4StreamCovergroups, coverageModuleAsString
+from funcov.cgHandler import coverageModuleAsString, coverageModuleAsString
+from funcov.tempDataTypes import axi4StreamParameters, axi4StreamCovergroups
 from django import forms
 
 
@@ -30,6 +31,12 @@ def selector(request):
                 'buttons' : {
                               'AXI4-Stream': {
                                        'type' : 'axi4stream',
+                                     },
+                              'AHB': {
+                                       'type' : 'ahb',
+                                     },
+                              'APB': {
+                                       'type' : 'apb',
                                      },
                             },
               }
@@ -50,18 +57,18 @@ def index(request):
 
     return render(request, 'funcov/index.html', context)
 
-def covergroupForm(data=None):
+def covergroupForm(init=None, data=None):
   formSet = formset_factory(CovergroupForm, extra=0)
   if data == None:
-    form = formSet(initial=axi4StreamCovergroups, prefix='covergroups')
+    form = formSet(initial=init, prefix='covergroups')
   else:
     form = formSet(data, prefix='covergroups')
   return form
 
-def parameterForm(data=None):
+def parameterForm(init=None, data=None):
   formSet = formset_factory(ParameterForm, extra=0)
   if data == None:
-    form = formSet(initial=axi4StreamParameters, prefix='parameters')
+    form = formSet(initial=init, prefix='parameters')
     for i in range(0, len(form)):
       if 'choices' in axi4StreamParameters[i]:
         form[i].fields['select'].choices = axi4StreamParameters[i]['choices']
@@ -95,26 +102,24 @@ def editor(request):
         context = {
                     'name' : 'Streaming AXI-4',
                     'type' : 'axi4stream',
-                    'parameters' : parameterForm(),
-                    'covergroups' : covergroupForm(),
+                    'parameters' : parameterForm(axi4StreamParameters),
+                    'covergroups' : covergroupForm(axi4StreamCovergroups),
                   }
 
       elif type == 'ahb':
         context = {
                     'name' : "AHB",
                     'type' : "ahb",
-                    'covergroups' : {
-                                      'name':'not empty',
-                                    },
+                    'parameters' : parameterForm(ahbParameters),
+                    'covergroups' : covergroupForm(ahbCovergroups),
                   }
 
       elif type == 'apb':
         context = {
                     'name' : "APB",
                     'type' : "apb",
-                    'covergroups' : {
-                                      'name':'not empty',
-                                    },
+                    'parameters' : parameterForm(apbParameters),
+                    'covergroups' : covergroupForm(apbCovergroups),
                   }
 
       else:
