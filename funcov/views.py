@@ -101,6 +101,8 @@ def editor(request):
       elif type == 'ahb':
         p = ahbParameters
         cg = ahbCovergroups
+        b = 'ahbbegin.sv'
+        m = 'ahbmiddle.sv'
       elif type == 'apb':
         p = apbParameters
         cg = apbCovergroups
