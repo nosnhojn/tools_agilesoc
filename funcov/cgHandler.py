@@ -34,21 +34,21 @@ def covergroupAsString(parameters, covergroups):
 
   return cg
 
-def coverageModuleAsString(pForm, cgForm):
+def coverageModuleAsString(pForm, cgForm, begin, middle, end):
   module = ""
-  with open("begin.sv", "r") as f:
+  with open(begin, "r") as f:
     for line in f:
       module += line
 
   module += portsAsString(pForm)
 
-  with open("middle.sv", "r") as f:
+  with open(middle, "r") as f:
     for line in f:
       module += line
 
   module += covergroupAsString(pForm, cgForm)
 
-  with open("end.sv", "r") as f:
+  with open(end, "r") as f:
     for line in f:
       module += line
   return module

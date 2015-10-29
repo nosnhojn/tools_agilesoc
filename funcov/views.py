@@ -87,21 +87,26 @@ def editor(request):
       p = None
       cg = None
       type = request.POST.get('type')
+      e = 'end.sv'
       if type == 'axi4stream':
         p = axi4StreamParameters
         cg = axi4StreamCovergroups
+        b = 'axi4begin.sv'
+        m = 'axi4middle.sv'
       elif type == 'ahb':
         p = ahbParameters
         cg = ahbCovergroups
       elif type == 'apb':
         p = apbParameters
         cg = apbCovergroups
+        b = 'apbbegin.sv'
+        m = 'apbmiddle.sv'
 
       pForm = parameterForm(data=request.POST, init=p)
       cgForm = covergroupForm(data=request.POST, init=cg)
       if pForm.is_valid() and cgForm.is_valid():
         # do stuff here
-        cg = coverageModuleAsString(pForm, cgForm)
+        cg = coverageModuleAsString(pForm, cgForm, b, m, e)
         return render(request, 'funcov/myCovergroup.html', { 'uri' : urllib.quote(cg), 'txt' : cg })
 
       else:
