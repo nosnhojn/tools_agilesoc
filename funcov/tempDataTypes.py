@@ -15,7 +15,7 @@ ahbCovergroups = [
                      'desc'        : 'Capture an active data cycle where tReady and tValid are asserted',
                      'type'        : 'value',
                      'signal'      : 'activeDataCycle',
-                     'sensitivityLabel' : 'Positive clock edge',
+                     'sensitivityLabel' : 'Negative clock edge',
                    },
                  ]
 
@@ -55,6 +55,10 @@ apbParameters = [
                     'select'  : '8',
                     'choices' : [ ('8','8'), ('16','16'), ('32','32') ],
                   },
+                  { 'enable'  : True,
+                    'name'    : 'pSlvErr',
+                    'select'  : None,
+                  },
                 ]
 
 apbCovergroups = [
@@ -64,7 +68,7 @@ apbCovergroups = [
                      'desc'        : 'Capture an active data cycle where pReady and pEnable are asserted',
                      'type'        : 'value',
                      'signal'      : 'activeDataCycle',
-                     'sensitivityLabel' : 'Positive clock edge',
+                     'sensitivityLabel' : 'Negative clock edge',
                    },
                    {
                      'enable'      : True,
@@ -90,8 +94,7 @@ apbCovergroups = [
                      'desc'        : 'Toggle coverage of the pEnable bus',
                      'type'        : 'toggle',
                      'signal'      : 'pEnable',
-                     'sensitivityLabel' : 'activeDataCycle',
-                     'sensitivity' : 'activeDataCycle',
+                     'sensitivityLabel' : 'Negative clock edge',
                    },
                    {
                      'enable'      : True,
@@ -117,8 +120,7 @@ apbCovergroups = [
                      'desc'        : 'Toggle coverage of the pReady bus',
                      'type'        : 'toggle',
                      'signal'      : 'pReady',
-                     'sensitivityLabel' : 'activeDataCycle',
-                     'sensitivity' : 'activeDataCycle',
+                     'sensitivityLabel' : 'Negative clock edge',
                    },
                    {
                      'enable'      : True,
@@ -126,6 +128,15 @@ apbCovergroups = [
                      'desc'        : 'Toggle coverage of the pRdata bus',
                      'type'        : 'toggle',
                      'signal'      : 'pRdata',
+                     'sensitivityLabel' : 'activeDataCycle',
+                     'sensitivity' : 'activeDataCycle',
+                   },
+                   {
+                     'enable'      : True,
+                     'name'        : 'pSlvErrToggle',
+                     'desc'        : 'Toggle coverage of the pSlvErr bus',
+                     'type'        : 'toggle',
+                     'signal'      : 'pSlvErr',
                      'sensitivityLabel' : 'activeDataCycle',
                      'sensitivity' : 'activeDataCycle',
                    },
@@ -186,7 +197,7 @@ axi4StreamCovergroups = [
                             'desc'        : 'Capture an active data cycle where tReady and tValid are asserted',
                             'type'        : 'value',
                             'signal'      : 'activeDataCycle',
-                            'sensitivityLabel' : 'Positive clock edge',
+                            'sensitivityLabel' : 'Negative clock edge',
                           },
                           {
                             'enable'      : True,
