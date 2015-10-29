@@ -21,6 +21,11 @@ from funcov.tempDataTypes import axi4StreamParameters, axi4StreamCovergroups, ah
 from django import forms
 
 
+def about(request):
+    return render(request, 'funcov/about.html')
+
+def contact(request):
+    return render(request, 'funcov/contact.html')
 
 def selector(request):
     context = {

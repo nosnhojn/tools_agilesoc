@@ -51,16 +51,15 @@
     <div class="container">
       <div class="header clearfix">
           <nav>
-            <!--<ul class="nav nav-pills pull-right" style="margin-top:12px">-->
-            <ul class="nav nav-pills pull-right" style="margin-top:5px">
+            <ul class="nav nav-pills pull-right" style="margin-top:12px">
             {% if user.is_authenticated %}
               <li role="presentation"><a href="{% url 'auth_logout' %}">Logout</a></li>
             {% else %}
-              <!--<li style="font-size:large" role="presentation"><a href="{% url 'auth_login' %}">About</a></li>
-              <li style="font-size:large" role="presentation"><a href="{% url 'auth_login' %}">Login</a></li>
-              <li style="font-size:large" role="presentation"><a href="{% url 'registration_register' %}">New Features</span> </a></li>-->
-              <li style="font-size:x-large" role="presentation"><a href="{% url 'registration_register' %}">New Features <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a></li>
+              <!--<li role="presentation"><a href="{% url 'auth_login' %}">Login</a></li>-->
+              <li role="presentation"><a href="{% url 'registration_register' %}">New Features</span> </a></li>
             {% endif %}
+              <li role="presentation"><a href="{% url 'about' %}">About</a></li>
+              <li role="presentation"><a href="{% url 'contact' %}">Contact Us</a></li>
             </ul>
           </nav>
           <a href="{% url 'index' %}"><img src="../../static/images/funcov.png" style="width:18%"></a>
