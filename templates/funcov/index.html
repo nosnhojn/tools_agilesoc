@@ -4,11 +4,58 @@
 
 {% block content_block %}
 
-  <p><img src="../../static/images/home.png" style="width:100%"></p>
-  <a class="btn btn-lg btn-success" href="{{ 'selector' }}" role="button">
-    <span style="font-size:30px">
-      <strong>Get Started <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span></strong>
-    </span>
-  </a>
+  <div class="row">
+    <h2>Customized Functional Coverage</h2>
+    <p><img src="../../static/images/home.png" style="width:100%"></p>
+    <a class="btn btn-lg btn-success" href="{{ 'selector' }}" role="button">
+      <span style="font-size:30px">
+        <strong>Get Started <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span></strong>
+      </span>
+    </a>
+  </div>
+  <br/>
+  <hr/>
+  <div class="row">
+    <h2>Functional Coverage Crowdsourcing</h2>
+    <div class="col-lg-7 col-md-7">
+      <p>
+        Functional coverage crowdsourcing is engineers from across our industry collectively refusing to reinvent the wheel, over... and over... again. But FunCov is more than just crowdsourcing.
+      </p>
+    </div>
+    <div class="col-lg-5 col-md-5">
+      <p><img src="../../static/images/crowd-sourcing.png" style="width:100%"></p>
+    </div>
+  </div>
+  <a type="button" href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">Product Road Map <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a>
+  <br/>
+  <hr/>
+
+  <div class="row">
+    <h2>Functional coverage models for free?</h2>
+    <div class="col-lg-5 col-md-5">
+      <p><img src="../../static/images/easy-peasy.png" style="width:100%"></p>
+    </div>
+    <div class="col-lg-7 col-md-7">
+      <p>
+        Pretty much! FunCov includes default coverage models for an array of protocols - including AHB, APB and AXI4-Stream. Over time, and through contributions from our users, the library will grow to include others.
+      </p>
+    </div>
+  </div>
+  <a type="button" href="{{ 'editor' }}/?type=axi4stream" class="btn btn-success btn-lg">Show Me <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a>
+  <br/>
+  <hr/>
+
+  <div class="row">
+    <h2>Who is FunCov?</h2>
+    <div class="col-lg-5 col-md-5">
+      <p><img src="../../static/images/the-team.png" style="width:100%"></p>
+    </div>
+    <div class="col-lg-7 col-md-7">
+      <p>
+        FunCov is a collaborative effort between engineers from <a href="http://www.agilesoc.com">AgileSoC.com</a> and <a href="http://www.realityreused.com">RealityReused.com</a>. We believe there's been <em>fun</em> in functional coverage since before the idea even existed, but no one has noticed, until now.
+      </p>
+    </div>
+  </div>
+  <a type="button" href="{{ 'about' }}" class="btn btn-primary btn-lg">About <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a>
 
 {% endblock %}
