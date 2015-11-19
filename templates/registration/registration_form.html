@@ -1,11 +1,12 @@
 {% extends "funcov/base.html" %}
 
 {% load widget_tweaks %}
+{% load staticfiles %}
 
 {% block content_block %}
   <div class="row">
     <h2>New Feature Road Map</h2>
-    <img src="../../static/images/road-map.png" style="width:85%">
+    <img src="{% static "images/road-map.png" %}" style="width:85%">
   </div>
   <hr/>
   <div class="row">
