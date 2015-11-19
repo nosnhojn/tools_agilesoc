@@ -26,6 +26,7 @@ SECRET_KEY = '3ip5nc826_osv%qg^)4tzbdb-fyxec*yza_x00c%u*6gsgn9np'
 DEBUG = False
 
 ALLOWED_HOSTS = [ 'nosnhojn.pythonanywhere.com',
+                  'tools.agilesoc.com',
                   'localhost',
                   '127.0.0.1', ]
 
