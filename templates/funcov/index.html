@@ -28,20 +28,6 @@
   <hr/>
 
   <div class="row">
-    <h2>Functional Coverage Models For Free?</h2>
-    <div class="col-lg-5 col-md-5">
-      <p><img src="{% static "images/easy-peasy.png" %}" style="width:100%"></p>
-    </div>
-    <div class="col-lg-7 col-md-7">
-      <p>
-        It appears so! FunCov includes Verilog coverage models for an array of protocols - including AHB, APB and AXI4-Stream. Over time, with help from our users, the library will grow to include others.
-      </p>
-    </div>
-  </div>
-  <a type="button" href="{{ 'selector' }}" class="btn btn-success btn-lg">Show Me <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a>
-  <hr/>
-
-  <div class="row">
     <h2>Who's Building FunCov?</h2>
     <div class="col-lg-7 col-md-7">
       <p>
@@ -52,6 +38,24 @@
       <p><img src="{% static "images/the-team.png" %}" style="width:100%"></p>
     </div>
   </div>
-  <a type="button" href="{{ 'about' }}" class="btn btn-primary btn-lg">About <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a>
+  <a type="button" href="{{ 'about' }}" class="btn btn-success btn-lg">About <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a>
+  <hr/>
+
+  <div class="row">
+    <h2>Functional Coverage Models For Free?</h2>
+    <div class="col-lg-5 col-md-5">
+      <p><img src="{% static "images/easy-peasy.png" %}" style="width:100%"></p>
+    </div>
+    <div class="col-lg-7 col-md-7">
+      <p>
+        It appears so! FunCov includes Verilog coverage models for an array of protocols - including AHB, APB and AXI4-Stream. Over time, with help from our users, the library will grow to include others.
+      </p>
+    </div>
+  </div>
+  <a class="btn btn-lg btn-primary" href="{{ 'selector' }}" role="button">
+    <span style="font-size:30px">
+      <strong>Show Me <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span></strong>
+    </span>
+  </a>
 
 {% endblock %}
