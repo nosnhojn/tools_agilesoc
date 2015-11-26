@@ -10,7 +10,7 @@ from funcov.forms import ParameterForm, CovergroupForm
 from django.forms.formsets import formset_factory
 from registration.forms import RegistrationForm
 
-from funcov.models import Covergroup
+from funcov.models import Covergroup, Coverpoint
 
 # python2,3 compatibility
 try:
@@ -19,7 +19,7 @@ except ImportError:
   from io import StringIO
 
 from funcov.cgHandler import coverageModuleAsString, coverageModuleAsString
-from funcov.tempDataTypes import axi4StreamParameters, axi4StreamCovergroups, ahbParameters, ahbCovergroups, apbParameters, apbCovergroups
+from funcov.tempDataTypes import axi4StreamParameters, axi4StreamCoverpoints, ahbParameters, ahbCoverpoints, apbParameters, apbCoverpoints
 from django import forms
 
 
@@ -97,17 +97,17 @@ def editor(request):
       e = 'end.sv'
       if type == 'axi4stream':
         p = axi4StreamParameters
-        cg = axi4StreamCovergroups
+        cg = axi4StreamCoverpoints
         b = 'axi4begin.sv'
         m = 'axi4middle.sv'
       elif type == 'ahb':
         p = ahbParameters
-        cg = ahbCovergroups
+        cg = ahbCoverpoints
         b = 'ahbbegin.sv'
         m = 'ahbmiddle.sv'
       elif type == 'apb':
         p = apbParameters
-        cg = apbCovergroups
+        cg = apbCoverpoints
         b = 'apbbegin.sv'
         m = 'apbmiddle.sv'
 
@@ -126,29 +126,33 @@ def editor(request):
     else:
       type = request.GET.get('type')
       if type == 'axi4stream':
-        cg = Covergroup()
         cg = Covergroup.objects.filter(type = type)[0]
+        cps = Coverpoint.objects.filter(covergroup = type)
         context = {
                     'name' : cg.name,
                     'type' : cg.type,
                     'parameters' : parameterForm(init=axi4StreamParameters),
-                    'covergroups' : covergroupForm(init=axi4StreamCovergroups),
+                    'coverpoints' : covergroupForm(init=cps.values()),
                   }
 
       elif type == 'ahb':
+        cg = Covergroup.objects.filter(type = type)[0]
+        cps = Coverpoint.objects.filter(covergroup = type)
         context = {
-                    'name' : "AHB",
-                    'type' : "ahb",
+                    'name' : cg.name,
+                    'type' : cg.type,
                     'parameters' : parameterForm(init=ahbParameters),
-                    'covergroups' : covergroupForm(init=ahbCovergroups),
+                    'coverpoints' : covergroupForm(init=cps.values()),
                   }
 
       elif type == 'apb':
+        cg = Covergroup.objects.filter(type = type)[0]
+        cps = Coverpoint.objects.filter(covergroup = type)
         context = {
-                    'name' : "APB",
-                    'type' : "apb",
+                    'name' : cg.name,
+                    'type' : cg.type,
                     'parameters' : parameterForm(init=apbParameters),
-                    'covergroups' : covergroupForm(init=apbCovergroups),
+                    'coverpoints' : covergroupForm(init=cps.values()),
                   }
 
       else:

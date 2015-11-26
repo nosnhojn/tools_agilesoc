@@ -139,16 +139,24 @@ class axi4StreamTests(TestCase):
  
   def testAxi4StreamCovergroups(self):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
-    covergroups = response.context['covergroups']
-    self.assertTrue(len(covergroups) > 0)
-    for c in covergroups:
-      self.assertTrue(c.fields['enable'])
-      self.assertTrue(c.fields['name'])
-      self.assertTrue(c.fields['desc'])
-      self.assertTrue(c.fields['type'])
-      self.assertTrue(c.fields['signal'])
-      self.assertTrue(c.fields['sensitivityLabel'])
-      self.assertTrue(c.fields['sensitivity'])
+    coverpoints = response.context['coverpoints']
+    self.assertTrue(len(coverpoints) > 0)
+    for c in coverpoints:
+      #print (dir(c.fields['sensitivity']))
+      #print (dir(c.fields))
+      #print (c.fields['sensitivity'])
+      #print (c.fields.get('enable'))
+      #print (dir(c.fields.get('enable')))
+      #print (dir(c.fields.get('name')))
+      #print (vars(c.fields.get('name')))
+      #print (c.initial['desc'])
+      self.assertTrue(c.initial['enable'] != None)
+      self.assertTrue(c.initial['name'] != None)
+      self.assertTrue(c.initial['desc'] != None)
+      self.assertTrue(c.initial['type'] != None)
+      self.assertTrue(c.initial['expr'] != None)
+      self.assertTrue(c.initial['sensitivityLabel'] != None)
+      self.assertTrue(c.initial['sensitivity'] != None)
 
 
 from django.contrib.auth.models import User
@@ -222,7 +230,7 @@ class coverageTemplateTests(TestCase):
     self.cgForm = CovergroupForm(initial={
                                            'name':'theName',
                                            'type':'value',
-                                           'signal':'theSignal',
+                                           'expr':'theSignal',
                                          })
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), "    theName : coverpoint theSignal;\n")
 
@@ -230,7 +238,7 @@ class coverageTemplateTests(TestCase):
     self.cgForm = CovergroupForm(initial={
                                            'name':'aName',
                                            'type':'value',
-                                           'signal':'aSignal',
+                                           'expr':'aSignal',
                                            'sensitivity':'someSignal',
                                          })
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), "    aName : coverpoint aSignal iff (someSignal);\n")
@@ -239,7 +247,7 @@ class coverageTemplateTests(TestCase):
     self.cgForm = CovergroupForm(initial={
                                            'name':'aName',
                                            'type':'toggle',
-                                           'signal':'aSignal',
+                                           'expr':'aSignal',
                                          })
     cp  = '    aName : coverpoint aSignal\n'
     cp += '    {\n'
@@ -255,7 +263,7 @@ class coverageTemplateTests(TestCase):
     self.cgForm = CovergroupForm(initial={
                                            'name':'aName',
                                            'type':'toggle',
-                                           'signal':'aSignal',
+                                           'expr':'aSignal',
                                          })
     cp  = '    aName : coverpoint aSignal\n'
     cp += '    {\n'
@@ -280,7 +288,7 @@ class coverageTemplateTests(TestCase):
     self.cgForm = CovergroupForm(initial={
                                            'name':'aName',
                                            'type':'toggle',
-                                           'signal':'aSignal',
+                                           'expr':'aSignal',
                                            'sensitivity':'bucko',
                                          })
     cp  = '    aName : coverpoint aSignal iff (bucko)\n'
@@ -295,13 +303,13 @@ class coverageTemplateTests(TestCase):
                       {
                         'name'        : 'ActiveDataCycle',
                         'type'        : 'value',
-                        'signal'      : 'signal1',
+                        'expr'      : 'signal1',
                         'sensitivityLabel' : 'dud',
                       },
                       {
                         'name'        : 'tDataToggle',
                         'type'        : 'toggle',
-                        'signal'      : 'signal2',
+                        'expr'      : 'signal2',
                         'sensitivityLabel' : 'dud',
                         'sensitivity' : 'activeDataCycle',
                       },

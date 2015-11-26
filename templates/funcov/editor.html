@@ -38,7 +38,7 @@
 
    <form id="editor_form" method="post" action="{% url 'editor' %}?download=1&type={{ type }}" onsubmit="document.getElementById('kind').value='result'; target_popup(this)">
      {{ parameters.management_form }}
-     {{ covergroups.management_form }}
+     {{ coverpoints.management_form }}
   
      {% csrf_token %}
 
@@ -61,11 +61,11 @@
                  </tr>
                </thead>
                <tbody>
-                 {% for c in covergroups %}
+                 {% for c in coverpoints %}
                    {{ c.name }}
                    {{ c.desc }}
                    {{ c.type }}
-                   {{ c.signal }}
+                   {{ c.expr }}
                    {{ c.sensitivityLabel }}
                    {{ c.sensitivity }}
                    <tr>

@@ -1,7 +1,7 @@
 def coverpointAsString(parameter, covergroup):
   cp = ''
   if covergroup['enable'].value() == True:
-    cp += '    %s : coverpoint %s' % (covergroup['name'].value(), covergroup['signal'].value())
+    cp += '    %s : coverpoint %s' % (covergroup['name'].value(), covergroup['expr'].value())
     if covergroup['sensitivity'].value() != '' and covergroup['sensitivity'].value() != None:
       cp += ' iff (%s)' % covergroup['sensitivity'].value()
     if covergroup['type'].value() == 'value':
@@ -27,7 +27,7 @@ def covergroupAsString(parameters, covergroups):
   cg = ""
   for c in covergroups:
     if c['type'].value() == 'toggle':
-      index = next(i for (i, p) in enumerate(parameters) if p['name'].value() == c['signal'].value())
+      index = next(i for (i, p) in enumerate(parameters) if p['name'].value() == c['expr'].value())
       cg += coverpointAsString(parameters[index], c)
     else:
       cg += coverpointAsString(None, c)

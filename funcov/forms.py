@@ -11,6 +11,6 @@ class CovergroupForm(forms.Form):
   name = forms.CharField(widget = forms.HiddenInput())
   desc = forms.CharField(widget = forms.HiddenInput())
   type = forms.CharField(widget = forms.HiddenInput())
-  signal = forms.CharField(widget = forms.HiddenInput())
+  expr = forms.CharField(widget = forms.HiddenInput())
   sensitivityLabel = forms.CharField(widget = forms.HiddenInput())
   sensitivity = forms.CharField(widget = forms.HiddenInput(), required=False)

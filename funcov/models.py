@@ -18,6 +18,7 @@ class Coverpoint(models.Model):
   desc = models.CharField(max_length=128, default = '')
   type = models.CharField(max_length=128, default = '')
   expr = models.CharField(max_length=128, default = '')
+  sensitivity = models.CharField(max_length=128, default = '')
   sensitivityLabel = models.CharField(max_length=128, default = '')
   covergroup = models.CharField(max_length=128, default = '')
   owner = models.CharField(max_length=128, default = '')
