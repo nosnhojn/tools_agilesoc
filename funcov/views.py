@@ -19,7 +19,7 @@ except ImportError:
   from io import StringIO
 
 from funcov.cgHandler import coverageModuleAsString, coverageModuleAsString
-from funcov.tempDataTypes import axi4StreamParameters, axi4StreamCoverpoints, ahbParameters, ahbCoverpoints, apbParameters, apbCoverpoints
+from funcov.tempDataTypes import axi4StreamParameters, ahbParameters, apbParameters
 from django import forms
 
 
@@ -97,17 +97,17 @@ def editor(request):
       e = 'end.sv'
       if type == 'axi4stream':
         p = axi4StreamParameters
-        cg = axi4StreamCoverpoints
+        cg = Coverpoint.objects.filter(covergroup = type)
         b = 'axi4begin.sv'
         m = 'axi4middle.sv'
       elif type == 'ahb':
         p = ahbParameters
-        cg = ahbCoverpoints
+        cg = Coverpoint.objects.filter(covergroup = type)
         b = 'ahbbegin.sv'
         m = 'ahbmiddle.sv'
       elif type == 'apb':
         p = apbParameters
-        cg = apbCoverpoints
+        cg = Coverpoint.objects.filter(covergroup = type)
         b = 'apbbegin.sv'
         m = 'apbmiddle.sv'
 
