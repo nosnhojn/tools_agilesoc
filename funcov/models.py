@@ -9,3 +9,18 @@ class UserProfile(models.Model):
   # Override the __unicode__() method to return out something meaningful!
   def __unicode__(self):
     return self.user.username
+
+
+class Coverpoint(models.Model):
+  name = models.CharField(max_length=128, default = '')
+  enable = models.BooleanField(default=True)
+  name = models.CharField(max_length=128, default = '')
+  desc = models.CharField(max_length=128, default = '')
+  type = models.CharField(max_length=128, default = '')
+  expr = models.CharField(max_length=128, default = '')
+  sensitivityLabel = models.CharField(max_length=128, default = '')
+  covergroup = models.CharField(max_length=128, default = '')
+  owner = models.CharField(max_length=128, default = '')
+
+  def __unicode__(self):
+    return self.name

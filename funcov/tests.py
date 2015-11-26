@@ -149,13 +149,47 @@ class axi4StreamTests(TestCase):
 
 
 from django.contrib.auth.models import User
-from funcov.models import UserProfile
+from funcov.models import UserProfile, Coverpoint
 class dbInteractionTests(TestCase):
+  def setUp(self):
+    cp = Coverpoint()
+    cp.enable = True
+    cp.name = 'n'
+    cp.desc = 'a d'
+    cp.type = 't'
+    cp.expr = 'e'
+    cp.sensitivityLabel = 'sL'
+    cp.covergroup = 'c'
+    cp.owner = 'o'
+    cp.save()
+
   def testCreateNewUserProfile(self):
     up = UserProfile()
     up.user = User.objects.create_user('uname', 'email', 'password')
     up.save()
     self.assertEqual(len(UserProfile.objects.all()), 1)
+ 
+  def testCreateNewCoverpoint(self):
+    self.assertEqual(len(Coverpoint.objects.all()), 1)
+    qs = Coverpoint.objects.filter(
+                                   enable = True
+                          ).filter(
+                                   name = 'n'
+                          ).filter(
+                                   desc = 'a d'
+                          ).filter(
+                                   type = 't'
+                          ).filter(
+                                   expr = 'e'
+                          ).filter(
+                                   sensitivityLabel = 'sL'
+                          ).filter(
+                                   covergroup = 'c'
+                          ).filter(
+                                   owner = 'o'
+                          )
+    self.assertEqual(len(qs), 1)
+
 
 class coverageTemplateTests(TestCase):
   def setUp(self):
