@@ -24,3 +24,11 @@ class Coverpoint(models.Model):
 
   def __unicode__(self):
     return self.name
+
+
+class Covergroup(models.Model):
+  name = models.CharField(max_length=128, default = '')
+  type = models.CharField(max_length=128, default = '')
+
+  def __unicode__(self):
+    return self.name

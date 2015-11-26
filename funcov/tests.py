@@ -10,6 +10,8 @@ from funcov.cgHandler import covergroupAsString, coverpointAsString, portAsStrin
 from funcov.forms import ParameterForm, CovergroupForm
 from django.forms.formsets import formset_factory
 
+import populate
+
 class userTests(TestCase):
   uname = 'uname'
   passwd = 'passwd'
@@ -108,6 +110,7 @@ class editorViewTests(TestCase):
 
 class axi4StreamTests(TestCase):
   def setUp(self):
+    populate.populate()
     up = UserProfile()
     up.user = User.objects.create_user('a', 'b', 'c')
     up.save()
@@ -149,7 +152,7 @@ class axi4StreamTests(TestCase):
 
 
 from django.contrib.auth.models import User
-from funcov.models import UserProfile, Coverpoint
+from funcov.models import UserProfile, Coverpoint, Covergroup
 class dbInteractionTests(TestCase):
   def setUp(self):
     cp = Coverpoint()
@@ -162,6 +165,11 @@ class dbInteractionTests(TestCase):
     cp.covergroup = 'c'
     cp.owner = 'o'
     cp.save()
+
+    cg = Covergroup()
+    cg.name = 'n'
+    cg.type = 't'
+    cg.save()
 
   def testCreateNewUserProfile(self):
     up = UserProfile()
@@ -188,6 +196,11 @@ class dbInteractionTests(TestCase):
                           ).filter(
                                    owner = 'o'
                           )
+    self.assertEqual(len(qs), 1)
+
+  def testCreateNewCoverpoint(self):
+    self.assertEqual(len(Covergroup.objects.all()), 1)
+    qs = Covergroup.objects.filter(name = 'n').filter(type = 't')
     self.assertEqual(len(qs), 1)
 
 

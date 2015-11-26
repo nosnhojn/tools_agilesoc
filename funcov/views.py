@@ -10,6 +10,8 @@ from funcov.forms import ParameterForm, CovergroupForm
 from django.forms.formsets import formset_factory
 from registration.forms import RegistrationForm
 
+from funcov.models import Covergroup
+
 # python2,3 compatibility
 try:
   from StringIO import StringIO
@@ -124,9 +126,11 @@ def editor(request):
     else:
       type = request.GET.get('type')
       if type == 'axi4stream':
+        cg = Covergroup()
+        cg = Covergroup.objects.filter(type = type)[0]
         context = {
-                    'name' : 'Streaming AXI-4',
-                    'type' : 'axi4stream',
+                    'name' : cg.name,
+                    'type' : cg.type,
                     'parameters' : parameterForm(init=axi4StreamParameters),
                     'covergroups' : covergroupForm(init=axi4StreamCovergroups),
                   }
