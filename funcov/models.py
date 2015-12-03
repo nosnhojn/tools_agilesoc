@@ -27,6 +27,15 @@ class Coverpoint(models.Model):
     return self.name
 
 
+class Parameter(models.Model):
+  enable = models.BooleanField(default=True)
+  name = models.CharField(max_length=128, default='')
+  select = models.CharField(max_length=128, choices = [], blank=True)
+
+  def __unicode__(self):
+    return self.name
+
+
 class Covergroup(models.Model):
   name = models.CharField(max_length=128, default = '')
   type = models.CharField(max_length=128, default = '')
