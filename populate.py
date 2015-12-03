@@ -90,25 +90,24 @@ def add_parameter(name, enable, select, choices, owner, covergroup):
                                         #select=select,
                                         owner=owner,
                                         covergroup=covergroup)[0]
+    p.save()
+
+    for i in range(0,len(choices)):
+      pc = ParameterChoice.objects.get_or_create(paramID=p.paramID,
+                                                 choice=choices[0])[0]
+      pc.paramID = p.paramID
+      pc.choice = choices[0]
+      if i == 0:
+        p.select=pc
+      pc.save()
+
     p.name=name
     p.enable=enable
-#   p.select=select
-#   p.choices=choices
     p.owner=owner
     p.covergroup=covergroup
     p.save()
 
-    for c in choices:
-      pc = ParameterChoice.objects.get_or_create(paramID=p.paramID,
-                                                 choice=c)[0]
-      pc.paramID = p.paramID
-      pc.choice = c
-      pc.save()
-
-    if p.select:
-      p.select.queryset = ParameterChoice.objects.filter(paramID=p.paramID)
-      p.save()
-
+    p.save()
     return p
 
 def add_coverpoint(name, enable, desc, type, expr, owner, sensitivity, sensitivityLabel, covergroup):
