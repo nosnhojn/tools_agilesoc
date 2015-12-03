@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.core.servers.basehttp import FileWrapper
 
-from funcov.forms import ParameterForm, CovergroupForm
+from funcov.forms import ParameterForm, CoverpointForm
 from django.forms.formsets import formset_factory
 from registration.forms import RegistrationForm
 
@@ -65,7 +65,7 @@ def index(request):
     return render(request, 'funcov/index.html', context)
 
 def covergroupForm(init=None, data=None):
-  formSet = formset_factory(CovergroupForm, extra=0)
+  formSet = formset_factory(CoverpointForm, extra=0)
   if data == None:
     form = formSet(initial=init, prefix='covergroups')
   else:

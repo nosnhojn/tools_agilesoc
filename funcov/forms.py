@@ -3,7 +3,7 @@ from django.forms.formsets import formset_factory
 
 from django.db import models
 from django.forms import ModelForm
-from models import Coverpoint
+from funcov.models import Coverpoint
 
 
 class ParameterForm(forms.Form):
@@ -12,7 +12,7 @@ class ParameterForm(forms.Form):
   select = forms.ChoiceField(required=False)
 
 
-class CovergroupForm(ModelForm):
+class CoverpointForm(ModelForm):
   class Meta:
     model = Coverpoint
     fields = [ 'enable', 'name', 'desc', 'type', 'expr', 'sensitivityLabel', 'sensitivity' ]

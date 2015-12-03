@@ -7,7 +7,7 @@ from django.http import HttpResponse
 
 import funcov.views
 from funcov.cgHandler import covergroupAsString, coverpointAsString, portAsString, portsAsString
-from funcov.forms import ParameterForm, CovergroupForm
+from funcov.forms import ParameterForm, CoverpointForm
 from django.forms.formsets import formset_factory
 
 import populate
@@ -132,8 +132,8 @@ class axi4StreamTests(TestCase):
     parameters = response.context['parameters']
     self.assertTrue(len(parameters) > 0)
     for p in parameters:
-      self.assertTrue(p.fields['enable'])
-      self.assertTrue(p.fields['name'])
+      self.assertTrue(p.initial['enable'])
+      self.assertTrue(p.initial['name'] != None)
       if p['select'] is not None:
         self.assertTrue(len(p['select']) > 0)
  
@@ -142,15 +142,7 @@ class axi4StreamTests(TestCase):
     coverpoints = response.context['coverpoints']
     self.assertTrue(len(coverpoints) > 0)
     for c in coverpoints:
-      #print (dir(c.fields['sensitivity']))
-      #print (dir(c.fields))
-      #print (c.fields['sensitivity'])
-      #print (c.fields.get('enable'))
-      #print (dir(c.fields.get('enable')))
-      #print (dir(c.fields.get('name')))
-      #print (vars(c.fields.get('name')))
-      #print (c.initial['desc'])
-      self.assertTrue(c.initial['enable'] != None)
+      self.assertTrue(c.initial['enable'])
       self.assertTrue(c.initial['name'] != None)
       self.assertTrue(c.initial['desc'] != None)
       self.assertTrue(c.initial['type'] != None)
@@ -215,10 +207,10 @@ class dbInteractionTests(TestCase):
 class coverageTemplateTests(TestCase):
   def setUp(self):
     self.pForm = ParameterForm()
-    self.cgForm = CovergroupForm()
+    self.cgForm = CoverpointForm()
 
   def testDisabledCoverpointIsNullString(self):
-    self.cgForm = CovergroupForm(initial={
+    self.cgForm = CoverpointForm(initial={
                                            'enable':False,
                                          })
     self.assertTrue(coverpointAsString(self.pForm, self.cgForm) == "")
@@ -227,7 +219,7 @@ class coverageTemplateTests(TestCase):
     self.assertTrue(coverpointAsString(self.pForm, self.cgForm) != "")
 
   def testCoverpointValueInsensitive(self):
-    self.cgForm = CovergroupForm(initial={
+    self.cgForm = CoverpointForm(initial={
                                            'name':'theName',
                                            'type':'value',
                                            'expr':'theSignal',
@@ -235,7 +227,7 @@ class coverageTemplateTests(TestCase):
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), "    theName : coverpoint theSignal;\n")
 
   def testCoverpointValueSensitive(self):
-    self.cgForm = CovergroupForm(initial={
+    self.cgForm = CoverpointForm(initial={
                                            'name':'aName',
                                            'type':'value',
                                            'expr':'aSignal',
@@ -244,7 +236,7 @@ class coverageTemplateTests(TestCase):
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), "    aName : coverpoint aSignal iff (someSignal);\n")
 
   def testCoverpointToggle1BitInsensitive(self):
-    self.cgForm = CovergroupForm(initial={
+    self.cgForm = CoverpointForm(initial={
                                            'name':'aName',
                                            'type':'toggle',
                                            'expr':'aSignal',
@@ -260,7 +252,7 @@ class coverageTemplateTests(TestCase):
     self.pForm = ParameterForm(initial={
                                          'select':'7',
                                        })
-    self.cgForm = CovergroupForm(initial={
+    self.cgForm = CoverpointForm(initial={
                                            'name':'aName',
                                            'type':'toggle',
                                            'expr':'aSignal',
@@ -285,7 +277,7 @@ class coverageTemplateTests(TestCase):
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), cp)
 
   def testCoverpointToggle1BitSensitive(self):
-    self.cgForm = CovergroupForm(initial={
+    self.cgForm = CoverpointForm(initial={
                                            'name':'aName',
                                            'type':'toggle',
                                            'expr':'aSignal',
@@ -314,7 +306,7 @@ class coverageTemplateTests(TestCase):
                         'sensitivity' : 'activeDataCycle',
                       },
                     ]
-    cgFormSet = formset_factory(CovergroupForm, extra=0)
+    cgFormSet = formset_factory(CoverpointForm, extra=0)
     cgForm = cgFormSet(initial=_2coverpoints)
 
     _2parameters = [
