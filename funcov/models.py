@@ -12,11 +12,11 @@ class UserProfile(models.Model):
 
 
 class ParameterChoice(models.Model):
-  paramID = models.CharField(max_length=128, default = '')
+  param = models.CharField(max_length=128, default = '')
   choice = models.CharField(max_length=128, default = '')
 
   def __unicode__(self):
-    return self.paramID
+    return self.choice
 
 
 class Coverpoint(models.Model):
@@ -36,7 +36,6 @@ class Coverpoint(models.Model):
 
 
 class Parameter(models.Model):
-  paramID = models.AutoField(primary_key=True)
   enable = models.BooleanField(default=True)
   name = models.CharField(max_length=128, default='')
   owner = models.CharField(max_length=128, default = '')

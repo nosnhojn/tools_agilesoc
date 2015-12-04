@@ -9,28 +9,16 @@ from funcov.models import Coverpoint, Parameter, ParameterChoice
 class ParameterForm(forms.Form):
   enable = forms.BooleanField(initial=True, widget = forms.HiddenInput())
   name = forms.CharField(widget = forms.HiddenInput())
-  #select = forms.ModelChoiceField(queryset=ParameterChoice.objects.all(), to_field_name='choice')
   select = forms.ModelChoiceField(queryset=None)
 
   def __init__(self, *args, **kwargs):
     super(ParameterForm, self).__init__(*args, **kwargs)
-    self.fields['select'].queryset = ParameterChoice.objects.all()
-
-#class ParameterForm(ModelForm):
-  #class Meta:
-    #model = Parameter
-    #fields = [ 'enable', 'name', 'select' ]
-    #widgets = {
-                #'enable' : forms.HiddenInput(),
-                #'name' : forms.HiddenInput(),
-                #'select' : forms.Select(choices=[('a','b')]),
-              #}
-#
-# def __init__(self, *args, **kwargs):
-#   super(ParameterForm, self).__init__(*args, **kwargs)
-#   if self.instance:
-#     print(self.instance.paramID)
-#     self.fields['select'].queryset = ParameterChoice.objects.filter(paramID=self.instance.paramID)
+    qs = ParameterChoice.objects.filter(param=self.initial['name'])
+    if len(qs) == 0:
+      self.fields['select'] = None
+    else:
+      self.fields['select'].queryset = qs
+      self.fields['select'].initial = qs[0]
 
 
 class CoverpointForm(ModelForm):

@@ -5,12 +5,12 @@ ahbParameters = [
                   { 'enable'  : True,
                     'name'    : 'hAddr',
                     'select'  : '8',
-                    'choices' : [(i, "%s" % i) for i in range(1,32)]
+                    'choices' : [('%s' % i) for i in range(1,32)]
                   },
                   { 'enable'  : True,
                     'name'    : 'hTrans',
                     'select'  : '2',
-                    'choices' : [ ('2','2') ],
+                    'choices' : [ '2' ],
                   },
                   { 'enable'  : True,
                     'name'    : 'hWrite',
@@ -20,32 +20,32 @@ ahbParameters = [
                   { 'enable'  : True,
                     'name'    : 'hSize',
                     'select'  : '3',
-                    'choices' : [ ('3','3') ],
+                    'choices' : [ '3' ],
                   },
                   { 'enable'  : True,
                     'name'    : 'hBurst',
                     'select'  : '3',
-                    'choices' : [ ('3','3') ],
+                    'choices' : [ '3' ],
                   },
                   { 'enable'  : True,
                     'name'    : 'hProt',
                     'select'  : '4',
-                    'choices' : [ ('4','4') ],
+                    'choices' : [ '4' ],
                   },
                   { 'enable'  : True,
                     'name'    : 'hWdata',
                     'select'  : '8',
-                    'choices' : [ ('8','8'), ('16','16'), ('32','32'), ('64','64'), ('128','128') ],
+                    'choices' : [ '8', '16', '32', '64', '128' ],
                   },
                   { 'enable'  : True,
                     'name'    : 'hSel',
                     'select'  : '1',
-                    'choices' : [(i, "%s" % i) for i in range(1,32)]
+                    'choices' : [("%s" % i) for i in range(1,32)]
                   },
                   { 'enable'  : True,
                     'name'    : 'hRdata',
                     'select'  : '8',
-                    'choices' : [ ('8','8'), ('16','16'), ('32','32'), ('64','64'), ('128','128') ],
+                    'choices' : [ '8', '16', '32', '64', '128' ],
                   },
                   { 'enable'  : True,
                     'name'    : 'hReady',
@@ -55,7 +55,7 @@ ahbParameters = [
                   { 'enable'  : True,
                     'name'    : 'hResp',
                     'select'  : '2',
-                    'choices' : [ ('2','2') ],
+                    'choices' : [ '2' ],
                   },
                 ]
 
@@ -177,12 +177,12 @@ apbParameters = [
                   { 'enable'  : True,
                     'name'    : 'pAddr',
                     'select'  : '8',
-                    'choices' : [(i, "%s" % i) for i in range(1,32)]
+                    'choices' : [("%s" % i) for i in range(1,32)]
                   },
                   { 'enable'  : True,
                     'name'    : 'pSel',
                     'select'  : '1',
-                    'choices' : [(i, "%s" % i) for i in range(1,32)]
+                    'choices' : [("%s" % i) for i in range(1,32)]
                   },
                   { 'enable'  : True,
                     'name'    : 'pEnable',
@@ -197,7 +197,7 @@ apbParameters = [
                   { 'enable'  : True,
                     'name'    : 'pWdata',
                     'select'  : '8',
-                    'choices' : [ ('8','8'), ('16','16'), ('32','32') ],
+                    'choices' : [ '8', '16', '32' ],
                   },
                   { 'enable'  : True,
                     'name'    : 'pReady',
@@ -207,7 +207,7 @@ apbParameters = [
                   { 'enable'  : True,
                     'name'    : 'pRdata',
                     'select'  : '8',
-                    'choices' : [ ('8','8'), ('16','16'), ('32','32') ],
+                    'choices' : [ '8', '16', '32' ],
                   },
                   { 'enable'  : True,
                     'name'    : 'pSlvErr',
@@ -317,12 +317,12 @@ axi4StreamParameters = [
                          { 'enable' : True,
                            'name'   : 'tData',
                            'select' : '8',
-                           'choices'  : [ ('8','8'), ('16','16'), ('32','32'), ('64','64'), ('128','128'), ('256','256') ],
+                           'choices'  : [ '8','16','32','64','128','256', ],
                          },
                          { 'enable' : True,
                            'name'   : 'tStrb',
                            'select' : 1,
-                           'choices' : [ (1,1), (2,2), (4,4), (8,8), (16,16), (32,32)],
+                           'choices' : [ '1', '2', '4', '8', '16', '32'],
                          },
                          { 'enable' : True,
                            'name'   : 'tLast',
@@ -332,22 +332,22 @@ axi4StreamParameters = [
                          { 'enable' : True,
                            'name'   : 'tKeep',
                            'select' : 4,
-                           'choices' : [(i, "%s" % i) for i in range(1,16)]
+                           'choices' : [("%s" % i) for i in range(1,16)]
                          },
                          { 'enable' : True,
                            'name'   : 'tId',
                            'select' : 4,
-                           'choices' : [(i, "%s" % i) for i in range(1,16)]
+                           'choices' : [("%s" % i) for i in range(1,16)]
                          },
                          { 'enable' : True,
                            'name'   : 'tDest',
                            'select' : 4,
-                           'choices' : [(i, "%s" % i) for i in range(1,16)]
+                           'choices' : [("%s" % i) for i in range(1,16)]
                          },
                          { 'enable' : True,
                            'name'   : 'tUser',
                            'select' : 4,
-                           'choices' : [(i, "%s" % i) for i in range(1,16)]
+                           'choices' : [("%s" % i) for i in range(1,16)]
                          },
                        ]
 

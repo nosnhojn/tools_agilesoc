@@ -76,11 +76,16 @@ def parameterForm(init=None, data=None):
   formSet = formset_factory(ParameterForm, extra=0)
   if data == None:
     form = formSet(initial=init, prefix='parameters')
-  # for i in range(0, len(form)):
+    #for i in range(0, len(form)):
+      #print (form[i].fields['name'])
+      #form[i].fields['select'].queryset = ParameterChoice.objects.filter(param=form[i].fields['name'])
   #   if 'choices' in init[i]:
   #     form[i].fields['select'].choices = init[i]['choices']
   else:
     form = formSet(data, prefix='parameters')
+    #for i in range(0, len(form)):
+      #print (form[i].fields['name'])
+      #form[i].fields['select'].queryset = ParameterChoice.objects.filter(param=form[i].fields['name'])
   # for i in range(0, len(form)):
   #   if 'choices' in init[i]:
   #     form[i].fields['select'].choices = init[i]['choices']
