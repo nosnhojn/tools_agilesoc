@@ -11,17 +11,36 @@ class UserProfile(models.Model):
     return self.user.username
 
 
+class ParameterChoice(models.Model):
+  param = models.CharField(max_length=128, default = '')
+  choice = models.CharField(max_length=128, default = '')
+
+  def __unicode__(self):
+    return self.choice
+
+
 class Coverpoint(models.Model):
   name = models.CharField(max_length=128, default = '')
-  enable = models.BooleanField(default=True)
+  enable = models.BooleanField(default=True, blank=True)
   name = models.CharField(max_length=128, default = '')
   desc = models.CharField(max_length=128, default = '')
   type = models.CharField(max_length=128, default = '')
   expr = models.CharField(max_length=128, default = '')
-  sensitivity = models.CharField(max_length=128, default = '')
+  sensitivity = models.CharField(max_length=128, default = '', blank=True)
   sensitivityLabel = models.CharField(max_length=128, default = '')
   covergroup = models.CharField(max_length=128, default = '')
   owner = models.CharField(max_length=128, default = '')
+
+  def __unicode__(self):
+    return self.name
+
+
+class Parameter(models.Model):
+  enable = models.BooleanField(default=True)
+  name = models.CharField(max_length=128, default='')
+  owner = models.CharField(max_length=128, default = '')
+  covergroup = models.CharField(max_length=128, default = '')
+  select = models.ForeignKey(ParameterChoice, blank=True, null=True)
 
   def __unicode__(self):
     return self.name

@@ -4,8 +4,8 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tools_agilesoc.settings')
 import django
 django.setup()
 
-from funcov.models import Covergroup, Coverpoint
-from funcov.tempDataTypes import axi4StreamCoverpoints, ahbCoverpoints, apbCoverpoints
+from funcov.models import Covergroup, Coverpoint, Parameter, ParameterChoice
+from funcov.tempDataTypes import axi4StreamCoverpoints, ahbCoverpoints, apbCoverpoints, axi4StreamParameters, ahbParameters, apbParameters
 
 
 def populate():
@@ -51,6 +51,30 @@ def populate():
                    sensitivityLabel = cp['sensitivityLabel'],
                    covergroup = 'ahb')
 
+  for p in axi4StreamParameters:
+    add_parameter(name = p['name'],
+                  enable = p['enable'],
+                  select = p['select'],
+                  choices = p['choices'],
+                  owner = 'nosnhojn',
+                  covergroup = 'axi4stream')
+
+  for p in apbParameters:
+    add_parameter(name = p['name'],
+                  enable = p['enable'],
+                  select = p['select'],
+                  choices = p['choices'],
+                  owner = 'nosnhojn',
+                  covergroup = 'apb')
+
+  for p in ahbParameters:
+    add_parameter(name = p['name'],
+                  enable = p['enable'],
+                  select = p['select'],
+                  choices = p['choices'],
+                  owner = 'nosnhojn',
+                  covergroup = 'ahb')
+
 
 def add_covergroup(name, type):
     cg = Covergroup.objects.get_or_create(name=name, type=type)[0]
@@ -58,6 +82,28 @@ def add_covergroup(name, type):
     cg.type=type
     cg.save()
     return cg
+
+
+def add_parameter(name, enable, select, choices, owner, covergroup):
+    p = Parameter.objects.get_or_create(name=name,
+                                        enable=enable,
+                                        #select=select,
+                                        owner=owner,
+                                        covergroup=covergroup)[0]
+    p.name=name
+    p.enable=enable
+    p.owner=owner
+    p.covergroup=covergroup
+    p.save()
+
+    for i in range(0,len(choices)):
+      pc = ParameterChoice.objects.get_or_create(param=p.name,
+                                                 choice=choices[i])[0]
+      pc.param = p.name
+      pc.choice = choices[i]
+      pc.save()
+
+    return p
 
 def add_coverpoint(name, enable, desc, type, expr, owner, sensitivity, sensitivityLabel, covergroup):
     cp = Coverpoint.objects.get_or_create(name=name,

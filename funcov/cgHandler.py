@@ -1,3 +1,5 @@
+from funcov.models import ParameterChoice
+
 def coverpointAsString(parameter, covergroup):
   cp = ''
   if covergroup['enable'].value() == True:
@@ -9,7 +11,7 @@ def coverpointAsString(parameter, covergroup):
     elif covergroup['type'].value() == 'toggle':
       numBits = 1
       if parameter['select'].value() != None:
-        numBits = int(parameter['select'].value())
+        numBits = int(ParameterChoice.objects.filter(id=parameter['select'].value())[0].choice)
       cp += '\n'
       cp += '    {\n'
       for i in range(0, numBits):
@@ -55,7 +57,8 @@ def coverageModuleAsString(pForm, cgForm, begin, middle, end):
 
 def portAsString(parameter):
   if parameter['select'].value() != None:
-    return '  input [%s:0] %s' % (int(parameter['select'].value())-1, parameter['name'].value())
+    width = ParameterChoice.objects.filter(id=parameter['select'].value())[0].choice
+    return '  input [%s:0] %s' % (int(width)-1, parameter['name'].value())
   else:
     return '  input %s' % parameter['name'].value()
 

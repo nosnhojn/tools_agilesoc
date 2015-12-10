@@ -6,11 +6,11 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.core.servers.basehttp import FileWrapper
 
-from funcov.forms import ParameterForm, CovergroupForm
+from funcov.forms import ParameterForm, CoverpointForm
 from django.forms.formsets import formset_factory
 from registration.forms import RegistrationForm
 
-from funcov.models import Covergroup, Coverpoint
+from funcov.models import Covergroup, Coverpoint, Parameter, ParameterChoice
 
 # python2,3 compatibility
 try:
@@ -65,7 +65,7 @@ def index(request):
     return render(request, 'funcov/index.html', context)
 
 def covergroupForm(init=None, data=None):
-  formSet = formset_factory(CovergroupForm, extra=0)
+  formSet = formset_factory(CoverpointForm, extra=0)
   if data == None:
     form = formSet(initial=init, prefix='covergroups')
   else:
@@ -75,16 +75,18 @@ def covergroupForm(init=None, data=None):
 def parameterForm(init=None, data=None):
   formSet = formset_factory(ParameterForm, extra=0)
   if data == None:
-    form = formSet(initial=init, prefix='parameters')
-    for i in range(0, len(form)):
-      if 'choices' in init[i]:
-        form[i].fields['select'].choices = init[i]['choices']
+    fs = formSet(initial=init, prefix='parameters')
+    for f in fs:
+      qs = ParameterChoice.objects.filter(param=f.initial['name'])
+      if len(qs) == 0:
+        f.fields['select'] = None
+      else:
+        f.fields['select'].queryset = qs
+        f.fields['select'].initial = qs[0]
   else:
-    form = formSet(data, prefix='parameters')
-    for i in range(0, len(form)):
-      if 'choices' in init[i]:
-        form[i].fields['select'].choices = init[i]['choices']
-  return form
+    fs = formSet(data, prefix='parameters')
+
+  return fs
   
 import urllib
 def editor(request):
@@ -96,23 +98,23 @@ def editor(request):
       type = request.POST.get('type')
       e = 'end.sv'
       if type == 'axi4stream':
-        p = axi4StreamParameters
+        p = Parameter.objects.filter(covergroup = type)
         cg = Coverpoint.objects.filter(covergroup = type)
         b = 'axi4begin.sv'
         m = 'axi4middle.sv'
       elif type == 'ahb':
-        p = ahbParameters
+        p = Parameter.objects.filter(covergroup = type)
         cg = Coverpoint.objects.filter(covergroup = type)
         b = 'ahbbegin.sv'
         m = 'ahbmiddle.sv'
       elif type == 'apb':
-        p = apbParameters
+        p = Parameter.objects.filter(covergroup = type)
         cg = Coverpoint.objects.filter(covergroup = type)
         b = 'apbbegin.sv'
         m = 'apbmiddle.sv'
 
-      pForm = parameterForm(data=request.POST, init=p)
-      cgForm = covergroupForm(data=request.POST, init=cg)
+      pForm = parameterForm(data=request.POST)
+      cgForm = covergroupForm(data=request.POST)
       if pForm.is_valid() and cgForm.is_valid():
         # do stuff here
         cg = coverageModuleAsString(pForm, cgForm, b, m, e)
@@ -128,30 +130,33 @@ def editor(request):
       if type == 'axi4stream':
         cg = Covergroup.objects.filter(type = type)[0]
         cps = Coverpoint.objects.filter(covergroup = type)
+        ps = Parameter.objects.filter(covergroup = type)
         context = {
                     'name' : cg.name,
                     'type' : cg.type,
-                    'parameters' : parameterForm(init=axi4StreamParameters),
+                    'parameters' : parameterForm(init=ps.values()),
                     'coverpoints' : covergroupForm(init=cps.values()),
                   }
 
       elif type == 'ahb':
         cg = Covergroup.objects.filter(type = type)[0]
         cps = Coverpoint.objects.filter(covergroup = type)
+        ps = Parameter.objects.filter(covergroup = type)
         context = {
                     'name' : cg.name,
                     'type' : cg.type,
-                    'parameters' : parameterForm(init=ahbParameters),
+                    'parameters' : parameterForm(init=ps.values()),
                     'coverpoints' : covergroupForm(init=cps.values()),
                   }
 
       elif type == 'apb':
         cg = Covergroup.objects.filter(type = type)[0]
         cps = Coverpoint.objects.filter(covergroup = type)
+        ps = Parameter.objects.filter(covergroup = type)
         context = {
                     'name' : cg.name,
                     'type' : cg.type,
-                    'parameters' : parameterForm(init=apbParameters),
+                    'parameters' : parameterForm(init=ps.values()),
                     'coverpoints' : covergroupForm(init=cps.values()),
                   }
 
