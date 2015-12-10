@@ -131,7 +131,6 @@ def editor(request):
         cg = Covergroup.objects.filter(type = type)[0]
         cps = Coverpoint.objects.filter(covergroup = type)
         ps = Parameter.objects.filter(covergroup = type)
-        print(ps.values())
         context = {
                     'name' : cg.name,
                     'type' : cg.type,

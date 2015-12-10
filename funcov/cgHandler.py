@@ -1,4 +1,4 @@
-from funcov.models import Parameter, ParameterChoice
+from funcov.models import ParameterChoice
 
 def coverpointAsString(parameter, covergroup):
   cp = ''
@@ -12,7 +12,6 @@ def coverpointAsString(parameter, covergroup):
       numBits = 1
       if parameter['select'].value() != None:
         numBits = int(ParameterChoice.objects.filter(id=parameter['select'].value())[0].choice)
-        print (numBits)
       cp += '\n'
       cp += '    {\n'
       for i in range(0, numBits):

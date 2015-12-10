@@ -134,8 +134,8 @@ class axi4StreamTests(TestCase):
     for p in parameters:
       self.assertTrue(p.initial['enable'])
       self.assertTrue(p.initial['name'] != None)
-      if p['select'] is not None:
-        self.assertTrue(len(p['select']) > 0)
+      #if p['select'] != None:
+      #  self.assertTrue(len(p['select']) > 0)
  
   def testAxi4StreamCovergroups(self):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
@@ -152,7 +152,7 @@ class axi4StreamTests(TestCase):
 
 
 from django.contrib.auth.models import User
-from funcov.models import UserProfile, Coverpoint, Covergroup
+from funcov.models import UserProfile, Coverpoint, Covergroup, ParameterChoice
 class dbInteractionTests(TestCase):
   def setUp(self):
     cp = Coverpoint()
@@ -204,6 +204,7 @@ class dbInteractionTests(TestCase):
     self.assertEqual(len(qs), 1)
 
 
+from populate import add_parameter
 class coverageTemplateTests(TestCase):
   def setUp(self):
     self.pForm = ParameterForm()
@@ -249,9 +250,14 @@ class coverageTemplateTests(TestCase):
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), cp)
 
   def testCoverpointToggleNBitInsensitive(self):
+    add_parameter(name = 'aSignal', enable = True, select = '7', choices = [ '7' ], owner = 'blah', covergroup = 'blah')
     self.pForm = ParameterForm(initial={
-                                         'select':'7',
+                                         'name':'aSignal',
                                        })
+    qs = ParameterChoice.objects.filter(param='aSignal')
+    self.pForm.fields['select'].queryset = qs
+    self.pForm.fields['select'].initial = qs[0]
+
     self.cgForm = CoverpointForm(initial={
                                            'name':'aName',
                                            'type':'toggle',
@@ -309,10 +315,10 @@ class coverageTemplateTests(TestCase):
     cgFormSet = formset_factory(CoverpointForm, extra=0)
     cgForm = cgFormSet(initial=_2coverpoints)
 
+    add_parameter(name = 'signal2', enable = True, select = '2', choices = [ '2' ], owner = 'blah', covergroup = 'blah')
     _2parameters = [
                      {
                        'name'   : 'signal2',
-                       'select' : '2',
                      },
                      {
                        'name'   : 'signal1',
@@ -320,6 +326,11 @@ class coverageTemplateTests(TestCase):
                    ]
     pFormSet = formset_factory(ParameterForm, extra=0)
     pForm = pFormSet(initial=_2parameters)
+    for form in pForm:
+      if form.initial['name'] == 'signal2':
+        qs = ParameterChoice.objects.filter(param='signal2')
+        form.fields['select'].queryset = qs
+        form.fields['select'].initial = qs[0]
 
     cp = ''
     cp += '    ActiveDataCycle : coverpoint signal1;\n'
@@ -340,17 +351,20 @@ class coverageTemplateTests(TestCase):
     self.assertEquals(portAsString(self.pForm), '  input port')
 
   def testNBitParameter(self):
+    add_parameter(name = 'port', enable = True, select = '41', choices = [ '41' ], owner = 'blah', covergroup = 'blah')
     self.pForm = ParameterForm(initial={
                                          'name':'port',
-                                         'select':'41',
                                        })
+    qs = ParameterChoice.objects.filter(param='port')
+    self.pForm.fields['select'].queryset = qs
+    self.pForm.fields['select'].initial = qs[0]
     self.assertEquals(portAsString(self.pForm), '  input [40:0] port')
 
   def testPortsAsString(self):
+    add_parameter(name = 'signal2', enable = True, select = '2', choices = [ '2' ], owner = 'blah', covergroup = 'blah')
     _2parameters = [
                      {
                        'name'   : 'signal2',
-                       'select' : '2',
                      },
                      {
                        'name'   : 'signal1',
@@ -358,4 +372,9 @@ class coverageTemplateTests(TestCase):
                    ]
     pFormSet = formset_factory(ParameterForm, extra=0)
     pForm = pFormSet(initial=_2parameters)
+    for form in pForm:
+      if form.initial['name'] == 'signal2':
+        qs = ParameterChoice.objects.filter(param='signal2')
+        form.fields['select'].queryset = qs
+        form.fields['select'].initial = qs[0]
     self.assertEquals(portsAsString(pForm), '  input [1:0] signal2,\n  input signal1\n')
