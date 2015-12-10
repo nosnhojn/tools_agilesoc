@@ -9,16 +9,7 @@ from funcov.models import Coverpoint, Parameter, ParameterChoice
 class ParameterForm(forms.Form):
   enable = forms.BooleanField(initial=True, widget = forms.HiddenInput())
   name = forms.CharField(widget = forms.HiddenInput())
-  select = forms.ModelChoiceField(queryset=None)
-
-  def __init__(self, *args, **kwargs):
-    super(ParameterForm, self).__init__(*args, **kwargs)
-    qs = ParameterChoice.objects.filter(param=self.initial['name'])
-    if len(qs) == 0:
-      self.fields['select'] = None
-    else:
-      self.fields['select'].queryset = qs
-      self.fields['select'].initial = qs[0]
+  select = forms.ModelChoiceField(queryset=ParameterChoice.objects.all(), required=False)
 
 
 class CoverpointForm(ModelForm):

@@ -75,21 +75,18 @@ def covergroupForm(init=None, data=None):
 def parameterForm(init=None, data=None):
   formSet = formset_factory(ParameterForm, extra=0)
   if data == None:
-    form = formSet(initial=init, prefix='parameters')
-    #for i in range(0, len(form)):
-      #print (form[i].fields['name'])
-      #form[i].fields['select'].queryset = ParameterChoice.objects.filter(param=form[i].fields['name'])
-  #   if 'choices' in init[i]:
-  #     form[i].fields['select'].choices = init[i]['choices']
+    fs = formSet(initial=init, prefix='parameters')
+    for f in fs:
+      qs = ParameterChoice.objects.filter(param=f.initial['name'])
+      if len(qs) == 0:
+        f.fields['select'] = None
+      else:
+        f.fields['select'].queryset = qs
+        f.fields['select'].initial = qs[0]
   else:
-    form = formSet(data, prefix='parameters')
-    #for i in range(0, len(form)):
-      #print (form[i].fields['name'])
-      #form[i].fields['select'].queryset = ParameterChoice.objects.filter(param=form[i].fields['name'])
-  # for i in range(0, len(form)):
-  #   if 'choices' in init[i]:
-  #     form[i].fields['select'].choices = init[i]['choices']
-  return form
+    fs = formSet(data, prefix='parameters')
+
+  return fs
   
 import urllib
 def editor(request):
@@ -116,8 +113,8 @@ def editor(request):
         b = 'apbbegin.sv'
         m = 'apbmiddle.sv'
 
-      pForm = parameterForm(data=request.POST, init=p)
-      cgForm = covergroupForm(data=request.POST, init=cg)
+      pForm = parameterForm(data=request.POST)
+      cgForm = covergroupForm(data=request.POST)
       if pForm.is_valid() and cgForm.is_valid():
         # do stuff here
         cg = coverageModuleAsString(pForm, cgForm, b, m, e)
