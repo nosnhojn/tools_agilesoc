@@ -10,6 +10,9 @@ from funcov.cgHandler import covergroupAsString, coverpointAsString, portAsStrin
 from funcov.forms import ParameterForm, CoverpointForm
 from django.forms.formsets import formset_factory
 
+from django.contrib.auth.models import User
+from funcov.models import UserProfile, Coverpoint, Covergroup, ParameterChoice, Parameter
+
 import populate
 
 class userTests(TestCase):
@@ -122,10 +125,21 @@ class axi4StreamTests(TestCase):
     args, kwargs = mock_render.call_args
     self.assertEqual(args[1], 'funcov/editor.html')
 
-  def testAxi4StreamContext(self):
+  @patch('funcov.views.parameterFormSet')
+  @patch('funcov.views.coverpointFormSet')
+  def testAxi4StreamContext(self, mock_coverpointFormSet, mock_parameterFormSet):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
+    cfs = Coverpoint.objects.filter(covergroup = 'axi4stream')
+    pfs = Parameter.objects.filter(covergroup = 'axi4stream')
+
     self.assertEqual(response.context['name'], 'Streaming AXI-4')
     self.assertEqual(response.context['type'], 'axi4stream')
+    args, kwargs = mock_parameterFormSet.call_args
+    mismatches = [t for t in kwargs['init'] if t not in pfs.values()]
+    self.assertEqual(len(mismatches), 0);
+    args, kwargs = mock_coverpointFormSet.call_args
+    mismatches = [t for t in kwargs['init'] if t not in cfs.values()]
+    self.assertEqual(len(mismatches), 0);
  
   def testAxi4StreamParams(self):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
@@ -149,10 +163,9 @@ class axi4StreamTests(TestCase):
       self.assertTrue(c.initial['expr'] != None)
       self.assertTrue(c.initial['sensitivityLabel'] != None)
       self.assertTrue(c.initial['sensitivity'] != None)
+    
 
 
-from django.contrib.auth.models import User
-from funcov.models import UserProfile, Coverpoint, Covergroup, ParameterChoice
 class dbInteractionTests(TestCase):
   def setUp(self):
     cp = Coverpoint()

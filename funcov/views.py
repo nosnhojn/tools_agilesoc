@@ -64,7 +64,7 @@ def index(request):
 
     return render(request, 'funcov/index.html', context)
 
-def covergroupForm(init=None, data=None):
+def coverpointFormSet(init=None, data=None):
   formSet = formset_factory(CoverpointForm, extra=0)
   if data == None:
     form = formSet(initial=init, prefix='covergroups')
@@ -72,7 +72,7 @@ def covergroupForm(init=None, data=None):
     form = formSet(data, prefix='covergroups')
   return form
 
-def parameterForm(init=None, data=None):
+def parameterFormSet(init=None, data=None):
   formSet = formset_factory(ParameterForm, extra=0)
   if data == None:
     fs = formSet(initial=init, prefix='parameters')
@@ -113,8 +113,8 @@ def editor(request):
         b = 'apbbegin.sv'
         m = 'apbmiddle.sv'
 
-      pForm = parameterForm(data=request.POST)
-      cgForm = covergroupForm(data=request.POST)
+      pForm = parameterFormSet(data=request.POST)
+      cgForm = coverpointFormSet(data=request.POST)
       if pForm.is_valid() and cgForm.is_valid():
         # do stuff here
         cg = coverageModuleAsString(pForm, cgForm, b, m, e)
@@ -127,40 +127,19 @@ def editor(request):
 
     else:
       type = request.GET.get('type')
-      if type == 'axi4stream':
-        cg = Covergroup.objects.filter(type = type)[0]
-        cps = Coverpoint.objects.filter(covergroup = type)
-        ps = Parameter.objects.filter(covergroup = type)
-        context = {
-                    'name' : cg.name,
-                    'type' : cg.type,
-                    'parameters' : parameterForm(init=ps.values()),
-                    'coverpoints' : covergroupForm(init=cps.values()),
-                  }
 
-      elif type == 'ahb':
-        cg = Covergroup.objects.filter(type = type)[0]
-        cps = Coverpoint.objects.filter(covergroup = type)
-        ps = Parameter.objects.filter(covergroup = type)
+      cg = Covergroup.objects.filter(type = type)
+      if len(cg) != 0:
+        cg = cg[0]
+        cfs = Coverpoint.objects.filter(covergroup = type)
+        pfs = Parameter.objects.filter(covergroup = type)
         context = {
                     'name' : cg.name,
                     'type' : cg.type,
-                    'parameters' : parameterForm(init=ps.values()),
-                    'coverpoints' : covergroupForm(init=cps.values()),
+                    'parameters' : parameterFormSet(init=pfs.values()),
+                    'coverpoints' : coverpointFormSet(init=cfs.values()),
                   }
-
-      elif type == 'apb':
-        cg = Covergroup.objects.filter(type = type)[0]
-        cps = Coverpoint.objects.filter(covergroup = type)
-        ps = Parameter.objects.filter(covergroup = type)
-        context = {
-                    'name' : cg.name,
-                    'type' : cg.type,
-                    'parameters' : parameterForm(init=ps.values()),
-                    'coverpoints' : covergroupForm(init=cps.values()),
-                  }
+        return render(request, 'funcov/editor.html', context)
 
       else:
         return HttpResponseRedirect(reverse('index'))
-
-      return render(request, 'funcov/editor.html', context)
