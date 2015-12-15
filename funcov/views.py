@@ -87,8 +87,12 @@ def parameterFormSet(init=None, data=None):
     fs = formSet(data, prefix='parameters')
 
   return fs
-  
-import urllib
+
+try:  
+  from urllib.parse import quote
+except ImportError:
+  from urllib import quote
+
 def editor(request):
     context = {}
 
@@ -113,16 +117,17 @@ def editor(request):
         b = 'apbbegin.sv'
         m = 'apbmiddle.sv'
 
+      #print (request.POST)
       pForm = parameterFormSet(data=request.POST)
       cgForm = coverpointFormSet(data=request.POST)
       if pForm.is_valid() and cgForm.is_valid():
         # do stuff here
         cg = coverageModuleAsString(pForm, cgForm, b, m, e)
-        return render(request, 'funcov/myCovergroup.html', { 'uri' : urllib.quote(cg), 'txt' : cg })
+        return render(request, 'funcov/myCovergroup.html', { 'uri' : quote(cg), 'txt' : cg })
 
       else:
-        print (pForm.errors)
-        print (cgForm.errors)
+        #print (pForm.errors)
+        #print (cgForm.errors)
         return HttpResponseRedirect(reverse('index'))
 
     else:

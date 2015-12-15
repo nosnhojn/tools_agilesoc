@@ -91,6 +91,7 @@ class indexViewTests(TestCase):
 
 class editorViewTests(TestCase):
   def setUp(self):
+    populate.populate()
     up = UserProfile()
     up.user = User.objects.create_user('a', 'b', 'c')
     up.save()
@@ -110,15 +111,6 @@ class editorViewTests(TestCase):
     self.client.get(reverse('editor'), { 'type':'bagels' })
     mock_HttpResponseRedirect.assert_called_with(reverse('index'))
 
-
-class axi4StreamTests(TestCase):
-  def setUp(self):
-    populate.populate()
-    up = UserProfile()
-    up.user = User.objects.create_user('a', 'b', 'c')
-    up.save()
-    self.client.login(username='a', password='c')
-
   @patch('funcov.views.render', return_value=HttpResponse())
   def testRendersStreamAxi4(self, mock_render):
     self.client.get(reverse('editor'), { 'type':'axi4stream' })
@@ -129,18 +121,35 @@ class axi4StreamTests(TestCase):
   @patch('funcov.views.coverpointFormSet')
   def testAxi4StreamContext(self, mock_coverpointFormSet, mock_parameterFormSet):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
-    cfs = Coverpoint.objects.filter(covergroup = 'axi4stream')
-    pfs = Parameter.objects.filter(covergroup = 'axi4stream')
+    cps = Coverpoint.objects.filter(covergroup = 'axi4stream')
+    ps = Parameter.objects.filter(covergroup = 'axi4stream')
 
     self.assertEqual(response.context['name'], 'Streaming AXI-4')
     self.assertEqual(response.context['type'], 'axi4stream')
     args, kwargs = mock_parameterFormSet.call_args
-    mismatches = [t for t in kwargs['init'] if t not in pfs.values()]
+    mismatches = [t for t in kwargs['init'] if t not in ps.values()]
     self.assertEqual(len(mismatches), 0);
     args, kwargs = mock_coverpointFormSet.call_args
-    mismatches = [t for t in kwargs['init'] if t not in cfs.values()]
+    mismatches = [t for t in kwargs['init'] if t not in cps.values()]
     self.assertEqual(len(mismatches), 0);
+
+  @patch('funcov.views.render', return_value=HttpResponse())
+  def validatedPostToMyCovergroup(self, mock_render):
+    data = {
+        u'parameters-INITIAL_FORMS': [u'1'],
+        u'parameters-TOTAL_FORMS': [u'0'],
+
+        u'covergroups-INITIAL_FORMS': [u'1'],
+        u'covergroups-TOTAL_FORMS': [u'0'],
+
+        u'type': [u'axi4stream'],
+        u'kind': [u'result'],
+    }
+    response = self.client.post(reverse('editor'), data)
  
+    args, kwargs = mock_render.call_args
+    self.assertEqual(args[1], 'funcov/myCovergroup.html')
+
   def testAxi4StreamParams(self):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
     parameters = response.context['parameters']
