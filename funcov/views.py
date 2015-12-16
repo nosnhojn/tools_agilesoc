@@ -11,6 +11,7 @@ from django.forms.formsets import formset_factory
 from registration.forms import RegistrationForm
 
 from funcov.models import Covergroup, Coverpoint, Parameter, ParameterChoice
+from funcov.tempStrings import apbbegin, apbmiddle, ahbbegin, ahbmiddle, axi4begin, axi4middle, end
 
 # python2,3 compatibility
 try:
@@ -94,22 +95,22 @@ def editor(request):
       p = None
       cg = None
       type = request.POST.get('type')
-      e = 'end.sv'
+      e = end
       if type == 'axi4stream':
         p = Parameter.objects.filter(covergroup = type)
         cg = Coverpoint.objects.filter(covergroup = type)
-        b = 'axi4begin.sv'
-        m = 'axi4middle.sv'
+        b = axi4begin
+        m = axi4middle
       elif type == 'ahb':
         p = Parameter.objects.filter(covergroup = type)
         cg = Coverpoint.objects.filter(covergroup = type)
-        b = 'ahbbegin.sv'
-        m = 'ahbmiddle.sv'
+        b = ahbbegin
+        m = ahbmiddle
       elif type == 'apb':
         p = Parameter.objects.filter(covergroup = type)
         cg = Coverpoint.objects.filter(covergroup = type)
-        b = 'apbbegin.sv'
-        m = 'apbmiddle.sv'
+        b = apbbegin
+        m = apbmiddle
 
       pForm = parameterFormSet(data=request.POST)
       cgForm = coverpointFormSet(data=request.POST)
