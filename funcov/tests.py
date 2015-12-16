@@ -13,8 +13,9 @@ from django.forms.formsets import formset_factory
 from django.contrib.auth.models import User
 from funcov.models import UserProfile, Coverpoint, Covergroup, ParameterChoice, Parameter
 
-import populate
+from populate import populate, add_parameter
 
+###############################################################################################    
 class userTests(TestCase):
   uname = 'uname'
   passwd = 'passwd'
@@ -62,6 +63,7 @@ class userTests(TestCase):
 
 
 
+###############################################################################################    
 class generalViewTests(TestCase):
   def testUrlTranslationViewExists(self):
     response = self.client.get('/FuNcOv/')
@@ -73,6 +75,7 @@ class generalViewTests(TestCase):
 
 
 
+###############################################################################################    
 class indexViewTests(TestCase):
   @patch('funcov.views.render') # mocked relative the to the module using it, not the definition
   def testIndexRendersIndexHtml(self, mock_render):
@@ -89,9 +92,10 @@ class indexViewTests(TestCase):
 
 
 
+###############################################################################################    
 class editorViewTests(TestCase):
   def setUp(self):
-    populate.populate()
+    populate()
     up = UserProfile()
     up.user = User.objects.create_user('a', 'b', 'c')
     up.save()
@@ -245,9 +249,30 @@ class editorViewTests(TestCase):
       self.assertTrue(c.initial['expr'] != None)
       self.assertTrue(c.initial['sensitivityLabel'] != None)
       self.assertTrue(c.initial['sensitivity'] != None)
-    
 
 
+
+###############################################################################################    
+class selectorViewTests(TestCase):
+  def setUp(self):
+    populate()
+
+  @patch('funcov.views.render', return_value=HttpResponse())
+  def testContextIncludesAllGroups(self, mock_render):
+    expectedButtons = {
+                        'Streaming AXI-4': { 'type' : 'axi4stream', },
+                        'AHB': { 'type' : 'ahb', },
+                        'APB': { 'type' : 'apb', },
+                      }
+    self.client.get(reverse('selector'))
+
+    args, kwargs = mock_render.call_args
+    self.assertEqual(args[1], 'funcov/selector.html')
+    self.assertEqual(args[2]['buttons'], expectedButtons)
+
+
+
+###############################################################################################    
 class dbInteractionTests(TestCase):
   def setUp(self):
     cp = Coverpoint()
@@ -299,7 +324,8 @@ class dbInteractionTests(TestCase):
     self.assertEqual(len(qs), 1)
 
 
-from populate import add_parameter
+
+###############################################################################################    
 class coverageTemplateTests(TestCase):
   def setUp(self):
     self.pForm = ParameterForm()

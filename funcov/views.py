@@ -18,8 +18,13 @@ try:
 except ImportError:
   from io import StringIO
 
+try:  
+  from urllib.parse import quote
+except ImportError:
+  from urllib import quote
+
+
 from funcov.cgHandler import coverageModuleAsString, coverageModuleAsString
-from funcov.tempDataTypes import axi4StreamParameters, ahbParameters, apbParameters
 from django import forms
 
 
@@ -30,22 +35,16 @@ def contact(request):
     return render(request, 'funcov/contact.html')
 
 def selector(request):
+    buttons = {}
+    for cg in Covergroup.objects.all():
+      buttons[cg.name] = { 'type' : cg.type }
+
     context = {
                 'title': '',
                 'h1': 'FunCov',
                 'h2': 'Pick an interface to get started',
                 'h3': '',
-                'buttons' : {
-                              'AXI4-Stream': {
-                                       'type' : 'axi4stream',
-                                     },
-                              'AHB': {
-                                       'type' : 'ahb',
-                                     },
-                              'APB': {
-                                       'type' : 'apb',
-                                     },
-                            },
+                'buttons' : buttons,
               }
 
     return render(request, 'funcov/selector.html', context)
@@ -87,11 +86,6 @@ def parameterFormSet(init=None, data=None):
     fs = formSet(data, prefix='parameters')
 
   return fs
-
-try:  
-  from urllib.parse import quote
-except ImportError:
-  from urllib import quote
 
 def editor(request):
     context = {}
