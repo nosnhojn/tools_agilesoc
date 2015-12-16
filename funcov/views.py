@@ -117,7 +117,6 @@ def editor(request):
         b = 'apbbegin.sv'
         m = 'apbmiddle.sv'
 
-      #print (request.POST)
       pForm = parameterFormSet(data=request.POST)
       cgForm = coverpointFormSet(data=request.POST)
       if pForm.is_valid() and cgForm.is_valid():

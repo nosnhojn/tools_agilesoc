@@ -119,7 +119,7 @@ class editorViewTests(TestCase):
 
   @patch('funcov.views.parameterFormSet')
   @patch('funcov.views.coverpointFormSet')
-  def testAxi4StreamContext(self, mock_coverpointFormSet, mock_parameterFormSet):
+  def testGetContext(self, mock_coverpointFormSet, mock_parameterFormSet):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
     cps = Coverpoint.objects.filter(covergroup = 'axi4stream')
     ps = Parameter.objects.filter(covergroup = 'axi4stream')
@@ -133,8 +133,49 @@ class editorViewTests(TestCase):
     mismatches = [t for t in kwargs['init'] if t not in cps.values()]
     self.assertEqual(len(mismatches), 0);
 
+  @patch('funcov.views.parameterFormSet')
+  @patch('funcov.views.coverpointFormSet')
+  def testFormsetsCreatedByByEditor(self, mock_coverpointFormSet, mock_parameterFormSet):
+    data = {
+        u'parameters-INITIAL_FORMS': [u'1'],
+        u'parameters-TOTAL_FORMS': [u'0'],
+
+        u'covergroups-INITIAL_FORMS': [u'1'],
+        u'covergroups-TOTAL_FORMS': [u'0'],
+
+        u'type': [u'axi4stream'],
+        u'kind': [u'result'],
+    }
+    response = self.client.post(reverse('editor'), data)
+
+    mock_coverpointFormSet.assert_called_with(data=data)
+    mock_parameterFormSet.assert_called_with(data=data)
+
+  @patch('funcov.views.coverageModuleAsString', return_value='')
+  def testFormsetsPassedToAsString(self, mock_coverageModuleAsString):
+    data = {
+        u'parameters-INITIAL_FORMS': [u'1'],
+        u'parameters-TOTAL_FORMS': [u'1'],
+        u'parameters-0-enable': True,
+        u'parameters-0-name': 'a',
+        u'parameters-0-owner': 'b',
+        u'parameters-0-covergroup': 'c',
+
+        u'covergroups-INITIAL_FORMS': [u'1'],
+        u'covergroups-TOTAL_FORMS': [u'0'],
+
+        u'type': [u'axi4stream'],
+        u'kind': [u'result'],
+    }
+    response = self.client.post(reverse('editor'), data)
+
+    args, kwargs = mock_coverageModuleAsString.call_args
+    self.assertEqual(len(args[0]), 1) # parameters
+    self.assertEqual(len(args[1]), 0) # covergroups
+
+  @patch('funcov.views.coverageModuleAsString', return_value='jake')
   @patch('funcov.views.render', return_value=HttpResponse())
-  def validatedPostToMyCovergroup(self, mock_render):
+  def testValidatedPostToMyCovergroup(self, mock_render, mock_coverageModuleAsString):
     data = {
         u'parameters-INITIAL_FORMS': [u'1'],
         u'parameters-TOTAL_FORMS': [u'0'],
@@ -149,6 +190,38 @@ class editorViewTests(TestCase):
  
     args, kwargs = mock_render.call_args
     self.assertEqual(args[1], 'funcov/myCovergroup.html')
+    self.assertEqual(args[2], {'uri':'jake', 'txt':'jake'})
+
+  @patch('funcov.views.HttpResponseRedirect', return_value=HttpResponse())
+  def testBadCoverpointPostInput(self, mock_HttpResponseRedirect):
+    data = {
+        u'parameters-INITIAL_FORMS': [u'1'],
+        u'parameters-TOTAL_FORMS': [u'0'],
+
+        u'covergroups-INITIAL_FORMS': [u'1'],
+        u'covergroups-TOTAL_FORMS': [u'1'],    # this is an error
+
+        u'type': [u'axi4stream'],
+        u'kind': [u'result'],
+    }
+    response = self.client.post(reverse('editor'), data)
+    mock_HttpResponseRedirect.assert_called_with(reverse('index'))
+
+  @patch('funcov.views.HttpResponseRedirect', return_value=HttpResponse())
+  def testBadParameterPostInput(self, mock_HttpResponseRedirect):
+    data = {
+        u'parameters-INITIAL_FORMS': [u'1'],
+        u'parameters-TOTAL_FORMS': [u'1'],    # this is an error
+
+        u'covergroups-INITIAL_FORMS': [u'1'],
+        u'covergroups-TOTAL_FORMS': [u'0'],
+
+        u'type': [u'axi4stream'],
+        u'kind': [u'result'],
+    }
+    response = self.client.post(reverse('editor'), data)
+    mock_HttpResponseRedirect.assert_called_with(reverse('index'))
+
 
   def testAxi4StreamParams(self):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
