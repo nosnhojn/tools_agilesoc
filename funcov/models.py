@@ -49,6 +49,8 @@ class Parameter(models.Model):
 class Covergroup(models.Model):
   name = models.CharField(max_length=128, default = '')
   type = models.CharField(max_length=128, default = '')
+  beginning = models.CharField(max_length=10000, default = '')
+  middle = models.CharField(max_length=100, default = '')
 
   def __unicode__(self):
     return self.name

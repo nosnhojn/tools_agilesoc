@@ -7,16 +7,24 @@ django.setup()
 from funcov.models import Covergroup, Coverpoint, Parameter, ParameterChoice
 from funcov.tempDataTypes import axi4StreamCoverpoints, ahbCoverpoints, apbCoverpoints, axi4StreamParameters, ahbParameters, apbParameters
 
+from funcov.tempStrings import axi4begin, axi4middle, ahbbegin, ahbmiddle, apbbegin, apbmiddle
+
 
 def populate():
   add_covergroup(name='Streaming AXI-4',
-                 type='axi4stream')
+                 type='axi4stream',
+                 beginning=axi4begin,
+                 middle=axi4middle)
 
   add_covergroup(name='AHB',
-                 type='ahb')
+                 type='ahb',
+                 beginning=ahbbegin,
+                 middle=ahbmiddle)
 
   add_covergroup(name='APB',
-                 type='apb')
+                 type='apb',
+                 beginning=apbbegin,
+                 middle=apbmiddle)
 
   for cp in axi4StreamCoverpoints:
     add_coverpoint(name = cp['name'],
@@ -76,10 +84,12 @@ def populate():
                   covergroup = 'ahb')
 
 
-def add_covergroup(name, type):
+def add_covergroup(name, type, beginning, middle):
     cg = Covergroup.objects.get_or_create(name=name, type=type)[0]
     cg.name=name
     cg.type=type
+    cg.beginning=beginning
+    cg.middle=middle
     cg.save()
     return cg
 
@@ -87,7 +97,6 @@ def add_covergroup(name, type):
 def add_parameter(name, enable, select, choices, owner, covergroup):
     p = Parameter.objects.get_or_create(name=name,
                                         enable=enable,
-                                        #select=select,
                                         owner=owner,
                                         covergroup=covergroup)[0]
     p.name=name

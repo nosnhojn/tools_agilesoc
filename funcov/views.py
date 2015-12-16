@@ -92,32 +92,18 @@ def editor(request):
     context = {}
 
     if request.method == 'POST':
-      p = None
-      cg = None
       type = request.POST.get('type')
-      e = end
-      if type == 'axi4stream':
-        p = Parameter.objects.filter(covergroup = type)
-        cg = Coverpoint.objects.filter(covergroup = type)
-        b = axi4begin
-        m = axi4middle
-      elif type == 'ahb':
-        p = Parameter.objects.filter(covergroup = type)
-        cg = Coverpoint.objects.filter(covergroup = type)
-        b = ahbbegin
-        m = ahbmiddle
-      elif type == 'apb':
-        p = Parameter.objects.filter(covergroup = type)
-        cg = Coverpoint.objects.filter(covergroup = type)
-        b = apbbegin
-        m = apbmiddle
 
       pForm = parameterFormSet(data=request.POST)
       cgForm = coverpointFormSet(data=request.POST)
       if pForm.is_valid() and cgForm.is_valid():
         # do stuff here
-        cg = coverageModuleAsString(pForm, cgForm, b, m, e)
-        return render(request, 'funcov/myCovergroup.html', { 'uri' : quote(cg), 'txt' : cg })
+        cg = Covergroup.objects.filter(type = type)[0]
+        beginning = cg.beginning
+        middle = cg.middle
+
+        cgAsString = coverageModuleAsString(pForm, cgForm, beginning, middle, end)
+        return render(request, 'funcov/myCovergroup.html', { 'uri' : quote(cgAsString), 'txt' : cgAsString })
 
       else:
         #print (pForm.errors)
