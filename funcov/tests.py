@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 from funcov.models import UserProfile, Coverpoint, Covergroup, ParameterChoice, Parameter
 
 from populate import populate, add_parameter
+from funcov.testStrings import emptyAxi4streamCg
 
 ###############################################################################################    
 class userTests(TestCase):
@@ -176,6 +177,24 @@ class editorViewTests(TestCase):
     args, kwargs = mock_coverageModuleAsString.call_args
     self.assertEqual(len(args[0]), 1) # parameters
     self.assertEqual(len(args[1]), 0) # covergroups
+
+  @patch('funcov.views.render', return_value=HttpResponse())
+  def testCovergroupOutput(self, mock_render):
+    self.maxDiff = 10000
+    data = {
+        u'parameters-INITIAL_FORMS': [u'1'],
+        u'parameters-TOTAL_FORMS': [u'0'],
+
+        u'covergroups-INITIAL_FORMS': [u'1'],
+        u'covergroups-TOTAL_FORMS': [u'0'],
+
+        u'type': [u'axi4stream'],
+        u'kind': [u'result'],
+    }
+    response = self.client.post(reverse('editor'), data)
+ 
+    args, kwargs = mock_render.call_args
+    self.assertEqual(args[2]['txt'], emptyAxi4streamCg)
 
   @patch('funcov.views.coverageModuleAsString', return_value='jake')
   @patch('funcov.views.render', return_value=HttpResponse())
