@@ -300,6 +300,8 @@ class editorViewTests(TestCase):
     self.assertTrue(type(args[2]['saveas']) == SaveAsForm)
     self.assertEqual(len(args[2]['parameters']), 1)
     self.assertEqual(len(args[2]['coverpoints']), 0)
+    self.assertTrue(args[2]['errormsg'])
+    self.assertEqual(args[2]['tab'], 'save')
 
   @patch('funcov.views.HttpResponseRedirect', return_value=HttpResponse())
   def testBadSaveDataRedirect(self, mock_HttpResponseRedirect):

@@ -119,6 +119,14 @@ def editor(request):
           pForm = parameterFormSet(data=request.POST)
           cgForm = coverpointFormSet(data=request.POST)
           if pForm.is_valid() and cgForm.is_valid():
+            for f in pForm:
+              qs = ParameterChoice.objects.filter(param=f.cleaned_data['name'])
+              if len(qs) == 0:
+                f.fields['select'] = None
+              else:
+                f.fields['select'].queryset = qs
+                f.fields['select'].initial = qs[0]
+
             cg = Covergroup.objects.filter(type = type)[0]
 
             context = {
@@ -127,6 +135,8 @@ def editor(request):
                         'parameters' : pForm,
                         'coverpoints' : cgForm,
                         'saveas' : SaveAsForm(),
+                        'errormsg' : saveAs.errors,
+                        'tab' : 'save',
                       }
             return render(request, 'funcov/editor.html', context)
           else:

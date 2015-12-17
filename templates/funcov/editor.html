@@ -11,7 +11,7 @@
         <li id="nav-coverpoint"><a data-toggle="tab" href="#coverpoint">Add Coverpoint</a></li>
         <li id="nav-cross"><a data-toggle="tab" href="#cross">Add Cross Cover</a></li>
         <li id="nav-transition"><a data-toggle="tab" href="#transition">Add Transition</a></li>
-        <li id="nav-save"><a data-toggle="tab" href="#save">Save</a></li>
+        <!--<li id="nav-save"><a data-toggle="tab" href="#save">Save</a></li>-->
     </ul>
 </div>
 
@@ -21,146 +21,162 @@
 
 {% block content_block %}
 
-   <script>
-     function next(tab) {
-       var nav = "#nav-" + tab;
-       var tab = "#" + tab;
-       $('.nav li').removeClass('active');
-       $(nav).addClass('active');
-       $('.tab-pane').removeClass('active');
-       $(tab).addClass('active in');
-     }
+  <script>
+    function next(tab) {
+      var nav = "#nav-" + tab;
+      var tab = "#" + tab;
+      $('.nav li').removeClass('active');
+      $(nav).addClass('active');
+      $('.tab-pane').removeClass('active');
+      $(tab).addClass('active in');
+    }
 
-     function target_popup(form) {
-         window.open('', 'formpopup', 'width=700,height=620,scrollbars,menubar=no,location=no,titlebar=no,toolbar=no');
-         form.target = 'formpopup';
-     }
-   </script>
+    $( window ).ready(function() {
+      if ('{{ tab }}' == 'save') {
+        next('save');
+      }
+    });
 
-   <form id="editor_form" method="post">
-     {{ parameters.management_form }}
-     {{ coverpoints.management_form }}
+    function mySubmit() {
+      if (document.getElementById('form-action').value == 'save') {
+        $('#editor_form').attr('action', '{% url 'editor' %}?type={{ type }}');
+        $('#editor_form').attr('target', '_self');
+      } else {
+        $('#editor_form').attr('action', '{% url 'editor' %}?download=1&type={{ type }}');
+        window.open('', 'formpopup', 'width=700,height=620,scrollbars,menubar=no,location=no,titlebar=no,toolbar=no');
+        $('#editor_form').attr('target', 'formpopup');
+      }
+    }
+  </script>
+
+  <form id="editor_form" method="post" onsubmit="mySubmit()">
+    {{ parameters.management_form }}
+    {{ coverpoints.management_form }}
   
-     {% csrf_token %}
+    {% csrf_token %}
 
-     <input name="type" value="{{ type }}" type="hidden"/>
-     <input name="form-action" id="form-action" value="download" type="hidden"/>
+    <input name="type" value="{{ type }}" type="hidden"/>
+    <input name="form-action" id="form-action" value="download" type="hidden"/>
 
-     <div class="tab-content">
-       <div id="covergroup" class="tab-pane fade in active">
-         <h3>What {{ name }} coverpoints are you interested in?</h3>
+    <div class="tab-content">
+      <div id="covergroup" class="tab-pane fade in active">
+        <h3>What {{ name }} coverpoints are you interested in?</h3>
 
-         <div class="row">
-           <div class="col-lg-12">
-             <table class="table table-striped text-left">
-               <thead>
-                 <tr>
-                   <th>Enabled</th>
-                   <th>Name</th>
-                   <th>Description</th>
-                   <th>Sensitivity</th>
-                 </tr>
-               </thead>
-               <tbody>
-                 {% for c in coverpoints %}
-                   {{ c.name }}
-                   {{ c.desc }}
-                   {{ c.type }}
-                   {{ c.expr }}
-                   {{ c.sensitivityLabel }}
-                   {{ c.sensitivity }}
-                   <tr>
-                     <td>{{ c.enable }}</td>
-                     <td>{{ c.name.value }}</td>
-                     <td>{{ c.desc.value }}</td>
-                     <td>{{ c.sensitivityLabel.value }}</td>
-                   </tr>
-                 {% endfor %}
-               </tbody>
-             </table>
-           </div>
-         </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <table class="table table-striped text-left">
+              <thead>
+                <tr>
+                  <th>Enabled</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Sensitivity</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for c in coverpoints %}
+                  {{ c.name }}
+                  {{ c.desc }}
+                  {{ c.type }}
+                  {{ c.expr }}
+                  {{ c.sensitivityLabel }}
+                  {{ c.sensitivity }}
+                  <tr>
+                    <td>{{ c.enable }}</td>
+                    <td>{{ c.name.value }}</td>
+                    <td>{{ c.desc.value }}</td>
+                    <td>{{ c.sensitivityLabel.value }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
 <!--
-         <p>
-         <a type="button" onClick="next('coverpoint')" class="btn btn-primary btn-lg">Add Coverpoint</a>
-         <a type="button" onClick="next('cross')" class="btn btn-primary btn-lg">Add Cross Cover</a>
-         <a type="button" onClick="next('transition')" class="btn btn-primary btn-lg">Add Transition</a>
-         </p>
+        <p>
+        <a type="button" onClick="next('coverpoint')" class="btn btn-primary btn-lg">Add Coverpoint</a>
+        <a type="button" onClick="next('cross')" class="btn btn-primary btn-lg">Add Cross Cover</a>
+        <a type="button" onClick="next('transition')" class="btn btn-primary btn-lg">Add Transition</a>
+        </p>
 -->
-         <p>
-           <button type="submit" onclick="document.getElementById('form-action').value='download'; $(editor_form).attr('onsubmit', 'target_popup(this)'); $('#editor_form').attr('action', '{% url 'editor' %}?download=1&type={{ type }}');" class="btn btn-success btn-lg">Download Covergroup</button>
-         </p>
-       </div>
+        <p>
+          <button type="submit" onclick="document.getElementById('form-action').value='download'" value="submit" class="btn btn-success btn-lg">Download Covergroup</button>
+        </p>
+      </div>
 
-       <div id="params" class="tab-pane fade">
-         <h3>How are your {{ name }} ports configured?</h3>
+      <div id="params" class="tab-pane fade">
+        <h3>How are your {{ name }} ports configured?</h3>
 
-         <div class="row">
-           <div class="col-lg-6 col-lg-offset-3">
-             <table class="table table-striped text-left">
-               <thead>
-                 <tr>
-                   <th>Port Name</th>
-                   <th>Bus Width</th>
-                 </tr>
-               </thead>
-               <tbody>
-                 {% for p in parameters %}
-                   {{ p.name }}
-                   {{ p.enable }}
-                   <tr>
-                     <td>{{ p.name.value }}</td>
-                     <td>
-                       {% if p.select %}
-                       {{ p.select }}
-                       {% else %}
-                       -
-                       {% endif %}
-                     </td>
-                   </tr>
-                 {% endfor %}
-               </tbody>
-             </table>
-           </div>
-         </div>
-         <a type="button" onClick="next('covergroup')" class="btn btn-primary btn-lg">Save Settings</a>
-       </div>
+        <div class="row">
+          <div class="col-lg-6 col-lg-offset-3">
+            <table class="table table-striped text-left">
+              <thead>
+                <tr>
+                  <th>Port Name</th>
+                  <th>Bus Width</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for p in parameters %}
+                  {{ p.name }}
+                  {{ p.enable }}
+                  <tr>
+                    <td>{{ p.name.value }}</td>
+                    <td>
+                      {% if p.select %}
+                      {{ p.select }}
+                      {% else %}
+                      -
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <a type="button" onClick="next('covergroup')" class="btn btn-primary btn-lg">Save Settings</a>
+      </div>
 
-       <div id="coverpoint" class="tab-pane fade">
-         <h3>Coming Soon... Defining Custom Coverpoints</h3>
-         <p>
-           <img src="{% static "images/coverpoint-not-done.png" %}" style="width:100%"></a>
-         </p>
+      <div id="coverpoint" class="tab-pane fade">
+        <h3>Coming Soon... Defining Custom Coverpoints</h3>
+        <p>
+          <img src="{% static "images/coverpoint-not-done.png" %}" style="width:100%"></a>
+        </p>
 
-         <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-hand-left" aria-hidden="true"></span> My Covergroup</a>
-         <a type="button" href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">New Features <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a>
-       </div>
+        <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-hand-left" aria-hidden="true"></span> My Covergroup</a>
+        <a type="button" href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">New Features <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a>
+      </div>
 
-       <div id="cross" class="tab-pane fade">
-         <h3>Coming Soon... Defining Custom Crosses</h3>
-         <p>
-           <img src="{% static "images/cross-not-done.png" %}" style="width:40%"></a>
-         </p>
-         <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-hand-left" aria-hidden="true"></span> My Covergroup</a>
-         <a type="button" href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">New Features <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a>
-       </div>
+      <div id="cross" class="tab-pane fade">
+        <h3>Coming Soon... Defining Custom Crosses</h3>
+        <p>
+          <img src="{% static "images/cross-not-done.png" %}" style="width:40%"></a>
+        </p>
+        <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-hand-left" aria-hidden="true"></span> My Covergroup</a>
+        <a type="button" href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">New Features <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a>
+      </div>
 
-       <div id="transition" class="tab-pane fade">
-         <h3>Coming Soon... Defining Custom Transitions</h3>
-         <p>
-           <img src="{% static "images/transitions-not-done.png" %}" style="width:40%"></a>
-         </p>
-         <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-hand-left" aria-hidden="true"></span> My Covergroup</a>
-         <a type="button" href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">New Features <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a>
-       </div>
+      <div id="transition" class="tab-pane fade">
+        <h3>Coming Soon... Defining Custom Transitions</h3>
+        <p>
+          <img src="{% static "images/transitions-not-done.png" %}" style="width:40%"></a>
+        </p>
+        <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-hand-left" aria-hidden="true"></span> My Covergroup</a>
+        <a type="button" href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">New Features <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a>
+      </div>
 
-       <div id="save" class="tab-pane fade">
-         {% if user.is_authenticated %}
-           {{ saveas.as_p }}
-           <button type="submit" onclick="document.getElementById('form-action').value='save';" class="btn btn-success btn-lg">Save</button>
-         {% else %}
-         {% endif %}
-       </div>
-     </div>
-   </form>
+<!--
+      <div id="save" class="tab-pane fade">
+        {% if user.is_authenticated %}
+          {{ saveas.as_p }}
+          {{ errormsg }}
+          <button type="submit" onclick="document.getElementById('form-action').value='save'" value="submit" class="btn btn-success btn-lg">Save</button>
+      
+        {% else %}
+        {% endif %}
+      </div>
+-->
+    </div>
+  </form>
 {% endblock %}

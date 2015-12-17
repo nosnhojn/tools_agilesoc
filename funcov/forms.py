@@ -7,7 +7,7 @@ from funcov.models import Coverpoint, Parameter, ParameterChoice
 
 
 class SaveAsForm(forms.Form):
-  name = forms.CharField(label='Save As', initial='', min_length=1, max_length=50)
+  name = forms.CharField(label='Save As', initial='', max_length=50)
   private = forms.BooleanField(initial=True)
 
 
