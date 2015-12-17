@@ -7,7 +7,7 @@ from django.http import HttpResponse
 
 import funcov.views
 from funcov.cgHandler import covergroupAsString, coverpointAsString, portAsString, portsAsString
-from funcov.forms import ParameterForm, CoverpointForm
+from funcov.forms import ParameterForm, CoverpointForm, SaveAsForm
 from django.forms.formsets import formset_factory
 
 from django.contrib.auth.models import User
@@ -149,7 +149,7 @@ class editorViewTests(TestCase):
         u'covergroups-TOTAL_FORMS': [u'0'],
 
         u'type': [u'axi4stream'],
-        u'kind': [u'result'],
+        u'form-action': [u'download'],
     }
     response = self.client.post(reverse('editor'), data)
 
@@ -170,7 +170,7 @@ class editorViewTests(TestCase):
         u'covergroups-TOTAL_FORMS': [u'0'],
 
         u'type': [u'axi4stream'],
-        u'kind': [u'result'],
+        u'form-action': [u'download'],
     }
     response = self.client.post(reverse('editor'), data)
 
@@ -189,7 +189,7 @@ class editorViewTests(TestCase):
         u'covergroups-TOTAL_FORMS': [u'0'],
 
         u'type': [u'axi4stream'],
-        u'kind': [u'result'],
+        u'form-action': [u'download'],
     }
     response = self.client.post(reverse('editor'), data)
  
@@ -207,7 +207,7 @@ class editorViewTests(TestCase):
         u'covergroups-TOTAL_FORMS': [u'0'],
 
         u'type': [u'axi4stream'],
-        u'kind': [u'result'],
+        u'form-action': [u'download'],
     }
     response = self.client.post(reverse('editor'), data)
  
@@ -225,7 +225,7 @@ class editorViewTests(TestCase):
         u'covergroups-TOTAL_FORMS': [u'1'],    # this is an error
 
         u'type': [u'axi4stream'],
-        u'kind': [u'result'],
+        u'form-action': [u'download'],
     }
     response = self.client.post(reverse('editor'), data)
     mock_HttpResponseRedirect.assert_called_with(reverse('index'))
@@ -240,11 +240,10 @@ class editorViewTests(TestCase):
         u'covergroups-TOTAL_FORMS': [u'0'],
 
         u'type': [u'axi4stream'],
-        u'kind': [u'result'],
+        u'form-action': [u'download'],
     }
     response = self.client.post(reverse('editor'), data)
     mock_HttpResponseRedirect.assert_called_with(reverse('index'))
-
 
   def testAxi4StreamParams(self):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
@@ -269,6 +268,55 @@ class editorViewTests(TestCase):
       self.assertTrue(c.initial['sensitivityLabel'] != None)
       self.assertTrue(c.initial['sensitivity'] != None)
 
+  def testAxi4StreamSaveAs(self):
+    response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
+    saveAs = response.context['saveas']
+    self.assertTrue(saveAs.fields['private'])
+    self.assertTrue(saveAs.fields['name'])
+
+  @patch('funcov.views.render', return_value=HttpResponse())
+  def testInvalidSaveIsARedo(self, mock_render):
+    data = {
+        u'parameters-INITIAL_FORMS': [u'1'],
+        u'parameters-TOTAL_FORMS': [u'1'],
+        u'parameters-0-enable': True,
+        u'parameters-0-name': 'a',
+        u'parameters-0-owner': 'b',
+        u'parameters-0-covergroup': 'c',
+
+        u'covergroups-INITIAL_FORMS': [u'1'],
+        u'covergroups-TOTAL_FORMS': [u'0'],
+
+        u'form-action': [u'save'],
+        u'saveas-name' : [u''],
+        u'type': [u'axi4stream'],
+    }
+    response = self.client.post(reverse('editor'), data)
+
+    args, kwargs = mock_render.call_args
+    self.assertEqual(args[1], 'funcov/editor.html')
+    self.assertEqual(args[2]['name'], 'Streaming AXI-4')
+    self.assertEqual(args[2]['type'], 'axi4stream')
+    self.assertTrue(type(args[2]['saveas']) == SaveAsForm)
+    self.assertEqual(len(args[2]['parameters']), 1)
+    self.assertEqual(len(args[2]['coverpoints']), 0)
+
+  @patch('funcov.views.HttpResponseRedirect', return_value=HttpResponse())
+  def testBadSaveDataRedirect(self, mock_HttpResponseRedirect):
+    data = {
+        u'parameters-INITIAL_FORMS': [u'1'],
+        u'parameters-TOTAL_FORMS': [u'1'],
+
+        u'covergroups-INITIAL_FORMS': [u'1'],
+        u'covergroups-TOTAL_FORMS': [u'0'],
+
+        u'form-action': [u'save'],
+        u'saveas-name' : [u''],
+        u'type': [u'axi4stream'],
+    }
+    response = self.client.post(reverse('editor'), data)
+
+    mock_HttpResponseRedirect.assert_called_with(reverse('index'))
 
 
 ###############################################################################################    

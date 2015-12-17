@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.core.servers.basehttp import FileWrapper
 
-from funcov.forms import ParameterForm, CoverpointForm
+from funcov.forms import ParameterForm, CoverpointForm, SaveAsForm
 from django.forms.formsets import formset_factory
 from registration.forms import RegistrationForm
 
@@ -93,22 +93,44 @@ def editor(request):
 
     if request.method == 'POST':
       type = request.POST.get('type')
+      formAction = request.POST.get('form-action')
 
-      pForm = parameterFormSet(data=request.POST)
-      cgForm = coverpointFormSet(data=request.POST)
-      if pForm.is_valid() and cgForm.is_valid():
-        # do stuff here
-        cg = Covergroup.objects.filter(type = type)[0]
-        beginning = cg.beginning
-        middle = cg.middle
+      if formAction == 'download':
+        pForm = parameterFormSet(data=request.POST)
+        cgForm = coverpointFormSet(data=request.POST)
+        if pForm.is_valid() and cgForm.is_valid():
+          cg = Covergroup.objects.filter(type = type)[0]
+          beginning = cg.beginning
+          middle = cg.middle
 
-        cgAsString = coverageModuleAsString(pForm, cgForm, beginning, middle, end)
-        return render(request, 'funcov/myCovergroup.html', { 'uri' : quote(cgAsString), 'txt' : cgAsString })
+          cgAsString = coverageModuleAsString(pForm, cgForm, beginning, middle, end)
+          return render(request, 'funcov/myCovergroup.html', { 'uri' : quote(cgAsString), 'txt' : cgAsString })
 
-      else:
-        #print (pForm.errors)
-        #print (cgForm.errors)
-        return HttpResponseRedirect(reverse('index'))
+        else:
+          #print (pForm.errors)
+          #print (cgForm.errors)
+          return HttpResponseRedirect(reverse('index'))
+
+      elif formAction == 'save':
+        saveAs = SaveAsForm(data=request.POST)
+        if saveAs.is_valid():
+          pass
+        else:
+          pForm = parameterFormSet(data=request.POST)
+          cgForm = coverpointFormSet(data=request.POST)
+          if pForm.is_valid() and cgForm.is_valid():
+            cg = Covergroup.objects.filter(type = type)[0]
+
+            context = {
+                        'name' : cg.name,
+                        'type' : cg.type,
+                        'parameters' : pForm,
+                        'coverpoints' : cgForm,
+                        'saveas' : SaveAsForm(),
+                      }
+            return render(request, 'funcov/editor.html', context)
+          else:
+            return HttpResponseRedirect(reverse('index'))
 
     else:
       type = request.GET.get('type')
@@ -123,6 +145,7 @@ def editor(request):
                     'type' : cg.type,
                     'parameters' : parameterFormSet(init=pfs.values()),
                     'coverpoints' : coverpointFormSet(init=cfs.values()),
+                    'saveas' : SaveAsForm(),
                   }
         return render(request, 'funcov/editor.html', context)
 

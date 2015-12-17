@@ -11,6 +11,7 @@
         <li id="nav-coverpoint"><a data-toggle="tab" href="#coverpoint">Add Coverpoint</a></li>
         <li id="nav-cross"><a data-toggle="tab" href="#cross">Add Cross Cover</a></li>
         <li id="nav-transition"><a data-toggle="tab" href="#transition">Add Transition</a></li>
+        <li id="nav-save"><a data-toggle="tab" href="#save">Save</a></li>
     </ul>
 </div>
 
@@ -36,14 +37,14 @@
      }
    </script>
 
-   <form id="editor_form" method="post" action="{% url 'editor' %}?download=1&type={{ type }}" onsubmit="document.getElementById('kind').value='result'; target_popup(this)">
+   <form id="editor_form" method="post">
      {{ parameters.management_form }}
      {{ coverpoints.management_form }}
   
      {% csrf_token %}
 
      <input name="type" value="{{ type }}" type="hidden"/>
-     <input name="kind" id="kind" value="" type="hidden"/>
+     <input name="form-action" id="form-action" value="download" type="hidden"/>
 
      <div class="tab-content">
        <div id="covergroup" class="tab-pane fade in active">
@@ -87,7 +88,7 @@
          </p>
 -->
          <p>
-         <button type="submit" class="btn btn-success btn-lg">Download Covergroup</button>
+           <button type="submit" onclick="document.getElementById('form-action').value='download'; $(editor_form).attr('onsubmit', 'target_popup(this)'); $('#editor_form').attr('action', '{% url 'editor' %}?download=1&type={{ type }}');" class="btn btn-success btn-lg">Download Covergroup</button>
          </p>
        </div>
 
@@ -152,7 +153,14 @@
          <a type="button" onClick="next('covergroup')" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-hand-left" aria-hidden="true"></span> My Covergroup</a>
          <a type="button" href="{% url 'registration_register' %}" class="btn btn-primary btn-lg">New Features <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> </a>
        </div>
+
+       <div id="save" class="tab-pane fade">
+         {% if user.is_authenticated %}
+           {{ saveas.as_p }}
+           <button type="submit" onclick="document.getElementById('form-action').value='save';" class="btn btn-success btn-lg">Save</button>
+         {% else %}
+         {% endif %}
+       </div>
      </div>
    </form>
-
 {% endblock %}

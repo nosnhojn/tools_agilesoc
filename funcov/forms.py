@@ -6,6 +6,11 @@ from django.forms import ModelForm
 from funcov.models import Coverpoint, Parameter, ParameterChoice
 
 
+class SaveAsForm(forms.Form):
+  name = forms.CharField(label='Save As', initial='', min_length=1, max_length=50)
+  private = forms.BooleanField(initial=True)
+
+
 class ParameterForm(forms.Form):
   enable = forms.BooleanField(initial=True, widget = forms.HiddenInput())
   name = forms.CharField(widget = forms.HiddenInput())
