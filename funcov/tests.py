@@ -7,7 +7,7 @@ from django.http import HttpResponse
 
 import funcov.views
 from funcov.cgHandler import covergroupAsString, coverpointAsString, portAsString, portsAsString
-from funcov.forms import ParameterForm, CoverpointForm, SaveAsForm
+from funcov.forms import ParameterForm, CoverpointForm, CovergroupForm
 from django.forms.formsets import formset_factory
 
 from django.contrib.auth.models import User
@@ -297,7 +297,7 @@ class editorViewTests(TestCase):
     self.assertEqual(args[1], 'funcov/editor.html')
     self.assertEqual(args[2]['name'], 'Streaming AXI-4')
     self.assertEqual(args[2]['type'], 'axi4stream')
-    self.assertTrue(type(args[2]['saveas']) == SaveAsForm)
+    self.assertTrue(type(args[2]['saveas']) == CovergroupForm)
     self.assertEqual(len(args[2]['parameters']), 1)
     self.assertEqual(len(args[2]['coverpoints']), 0)
     self.assertTrue(args[2]['errormsg'])

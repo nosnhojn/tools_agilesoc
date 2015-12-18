@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.core.servers.basehttp import FileWrapper
 
-from funcov.forms import ParameterForm, CoverpointForm, SaveAsForm
+from funcov.forms import ParameterForm, CoverpointForm, CovergroupForm
 from django.forms.formsets import formset_factory
 from registration.forms import RegistrationForm
 
@@ -112,7 +112,7 @@ def editor(request):
           return HttpResponseRedirect(reverse('index'))
 
       elif formAction == 'save':
-        saveAs = SaveAsForm(data=request.POST)
+        saveAs = CovergroupForm(data=request.POST)
         if saveAs.is_valid():
           pass
         else:
@@ -134,7 +134,7 @@ def editor(request):
                         'type' : cg.type,
                         'parameters' : pForm,
                         'coverpoints' : cgForm,
-                        'saveas' : SaveAsForm(),
+                        'saveas' : CovergroupForm(),
                         'errormsg' : saveAs.errors,
                         'tab' : 'save',
                       }
@@ -155,7 +155,7 @@ def editor(request):
                     'type' : cg.type,
                     'parameters' : parameterFormSet(init=pfs.values()),
                     'coverpoints' : coverpointFormSet(init=cfs.values()),
-                    'saveas' : SaveAsForm(),
+                    'saveas' : CovergroupForm(),
                   }
         return render(request, 'funcov/editor.html', context)
 

@@ -6,7 +6,7 @@ from django.forms import ModelForm
 from funcov.models import Coverpoint, Parameter, ParameterChoice
 
 
-class SaveAsForm(forms.Form):
+class CovergroupForm(forms.Form):
   name = forms.CharField(label='Save As', initial='', max_length=50)
   private = forms.BooleanField(initial=True)
 
