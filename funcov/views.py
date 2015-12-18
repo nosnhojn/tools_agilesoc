@@ -112,8 +112,8 @@ def editor(request):
           return HttpResponseRedirect(reverse('index'))
 
       elif formAction == 'save':
-        saveAs = CovergroupForm(data=request.POST)
-        if saveAs.is_valid():
+        saveas = CovergroupForm(data=request.POST)
+        if saveas.is_valid():
           pass
         else:
           pForm = parameterFormSet(data=request.POST)
@@ -135,7 +135,7 @@ def editor(request):
                         'parameters' : pForm,
                         'coverpoints' : cgForm,
                         'saveas' : CovergroupForm(),
-                        'errormsg' : saveAs.errors,
+                        'errormsg' : saveas.errors,
                         'tab' : 'save',
                       }
             return render(request, 'funcov/editor.html', context)

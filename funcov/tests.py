@@ -318,6 +318,25 @@ class editorViewTests(TestCase):
 
     mock_HttpResponseRedirect.assert_called_with(reverse('index'))
 
+# def newEmptyFormData(self, name, type):
+#   return {
+#            u'parameters-INITIAL_FORMS': [u'1'],
+#            u'parameters-TOTAL_FORMS': [u'0'],
+#
+#            u'covergroups-INITIAL_FORMS': [u'1'],
+#            u'covergroups-TOTAL_FORMS': [u'0'],
+#
+#            u'form-action': [u'save'],
+#            u'saveas-name' : [name],
+#            u'type': [type],
+#          }
+#
+# @patch('funcov.views.HttpResponseRedirect', return_value=HttpResponse())
+# def testBadSaveDataRedirect(self, mock_HttpResponseRedirect):
+#   response = self.client.post(reverse('editor'), self.newEmptyFormData(name='new', type='axi4stream'))
+#
+#   mock_HttpResponseRedirect.assert_called_with(reverse('index'))
+
 
 ###############################################################################################    
 class selectorViewTests(TestCase):

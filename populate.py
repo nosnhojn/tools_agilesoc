@@ -85,7 +85,7 @@ def add_covergroup(name, type, beginning, middle):
     cg.beginning=beginning
     cg.middle=middle
     cg.private=True
-    cg.owner='nosnhojn'
+    cg.owner='root'
     cg.save()
     return cg
 
