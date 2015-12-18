@@ -12,34 +12,31 @@ class UserProfile(models.Model):
 
 
 class ParameterChoice(models.Model):
-  param = models.CharField(max_length=128, default = '')
-  choice = models.CharField(max_length=128, default = '')
+  param = models.CharField(max_length=50, default = '')
+  choice = models.CharField(max_length=50, default = '')
 
   def __unicode__(self):
     return self.choice
 
 
 class Coverpoint(models.Model):
-  name = models.CharField(max_length=128, default = '')
+  name = models.CharField(max_length=50, default = '')
   enable = models.BooleanField(default=True, blank=True)
-  name = models.CharField(max_length=128, default = '')
-  desc = models.CharField(max_length=128, default = '')
-  type = models.CharField(max_length=128, default = '')
-  expr = models.CharField(max_length=128, default = '')
-  sensitivity = models.CharField(max_length=128, default = '', blank=True)
-  sensitivityLabel = models.CharField(max_length=128, default = '')
-  covergroup = models.CharField(max_length=128, default = '')
-  owner = models.CharField(max_length=128, default = '')
+  desc = models.CharField(max_length=200, default = '')
+  kind = models.CharField(max_length=50, default = '')
+  expr = models.CharField(max_length=50, default = '')
+  sensitivity = models.CharField(max_length=50, default = '', blank=True)
+  sensitivityLabel = models.CharField(max_length=50, default = '')
+  covergroup = models.CharField(max_length=50, default = '')
 
   def __unicode__(self):
     return self.name
 
 
 class Parameter(models.Model):
+  name = models.CharField(max_length=50, default='')
   enable = models.BooleanField(default=True)
-  name = models.CharField(max_length=128, default='')
-  owner = models.CharField(max_length=128, default = '')
-  covergroup = models.CharField(max_length=128, default = '')
+  covergroup = models.CharField(max_length=50, default = '')
   select = models.ForeignKey(ParameterChoice, blank=True, null=True)
 
   def __unicode__(self):
@@ -47,10 +44,12 @@ class Parameter(models.Model):
 
 
 class Covergroup(models.Model):
-  name = models.CharField(max_length=128, default = '')
-  type = models.CharField(max_length=128, default = '')
+  name = models.CharField(max_length=50, default = '')
+  type = models.CharField(max_length=50, default = '')
   beginning = models.CharField(max_length=10000, default = '')
   middle = models.CharField(max_length=100, default = '')
+  private = models.BooleanField(default=True, blank=True)
+  owner = models.CharField(max_length=50, default = '')
 
   def __unicode__(self):
     return self.name

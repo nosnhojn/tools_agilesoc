@@ -6,9 +6,9 @@ def coverpointAsString(parameter, covergroup):
     cp += '    %s : coverpoint %s' % (covergroup['name'].value(), covergroup['expr'].value())
     if covergroup['sensitivity'].value() != '' and covergroup['sensitivity'].value() != None:
       cp += ' iff (%s)' % covergroup['sensitivity'].value()
-    if covergroup['type'].value() == 'value':
+    if covergroup['kind'].value() == 'value':
       cp += ';\n'
-    elif covergroup['type'].value() == 'toggle':
+    elif covergroup['kind'].value() == 'toggle':
       numBits = 1
       if parameter['select'].value() != None:
         numBits = int(ParameterChoice.objects.filter(id=parameter['select'].value())[0].choice)
@@ -28,7 +28,7 @@ def coverpointAsString(parameter, covergroup):
 def covergroupAsString(parameters, covergroups):
   cg = ""
   for c in covergroups:
-    if c['type'].value() == 'toggle':
+    if c['kind'].value() == 'toggle':
       index = next(i for (i, p) in enumerate(parameters) if p['name'].value() == c['expr'].value())
       cg += coverpointAsString(parameters[index], c)
     else:

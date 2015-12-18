@@ -30,9 +30,8 @@ def populate():
     add_coverpoint(name = cp['name'],
                    enable = cp['enable'],
                    desc = cp['desc'],
-                   type = cp['type'],
+                   kind = cp['kind'],
                    expr = cp['expr'],
-                   owner = 'nosnhojn',
                    sensitivity = cp['sensitivity'],
                    sensitivityLabel = cp['sensitivityLabel'],
                    covergroup = 'axi4stream')
@@ -41,9 +40,8 @@ def populate():
     add_coverpoint(name = cp['name'],
                    enable = cp['enable'],
                    desc = cp['desc'],
-                   type = cp['type'],
+                   kind = cp['kind'],
                    expr = cp['expr'],
-                   owner = 'nosnhojn',
                    sensitivity = cp['sensitivity'],
                    sensitivityLabel = cp['sensitivityLabel'],
                    covergroup = 'apb')
@@ -52,9 +50,8 @@ def populate():
     add_coverpoint(name = cp['name'],
                    enable = cp['enable'],
                    desc = cp['desc'],
-                   type = cp['type'],
+                   kind = cp['kind'],
                    expr = cp['expr'],
-                   owner = 'nosnhojn',
                    sensitivity = cp['sensitivity'],
                    sensitivityLabel = cp['sensitivityLabel'],
                    covergroup = 'ahb')
@@ -64,7 +61,6 @@ def populate():
                   enable = p['enable'],
                   select = p['select'],
                   choices = p['choices'],
-                  owner = 'nosnhojn',
                   covergroup = 'axi4stream')
 
   for p in apbParameters:
@@ -72,7 +68,6 @@ def populate():
                   enable = p['enable'],
                   select = p['select'],
                   choices = p['choices'],
-                  owner = 'nosnhojn',
                   covergroup = 'apb')
 
   for p in ahbParameters:
@@ -80,7 +75,6 @@ def populate():
                   enable = p['enable'],
                   select = p['select'],
                   choices = p['choices'],
-                  owner = 'nosnhojn',
                   covergroup = 'ahb')
 
 
@@ -90,18 +84,17 @@ def add_covergroup(name, type, beginning, middle):
     cg.type=type
     cg.beginning=beginning
     cg.middle=middle
+    cg.private=True
+    cg.owner='nosnhojn'
     cg.save()
     return cg
 
 
-def add_parameter(name, enable, select, choices, owner, covergroup):
+def add_parameter(name, enable, select, choices, covergroup):
     p = Parameter.objects.get_or_create(name=name,
-                                        enable=enable,
-                                        owner=owner,
                                         covergroup=covergroup)[0]
     p.name=name
     p.enable=enable
-    p.owner=owner
     p.covergroup=covergroup
     p.save()
 
@@ -114,22 +107,14 @@ def add_parameter(name, enable, select, choices, owner, covergroup):
 
     return p
 
-def add_coverpoint(name, enable, desc, type, expr, owner, sensitivity, sensitivityLabel, covergroup):
+def add_coverpoint(name, enable, desc, kind, expr, sensitivity, sensitivityLabel, covergroup):
     cp = Coverpoint.objects.get_or_create(name=name,
-                                          enable = enable,
-                                          desc = desc,
-                                          type = type,
-                                          expr = expr,
-                                          owner = owner,
-                                          sensitivity = sensitivity,
-                                          sensitivityLabel = sensitivityLabel,
                                           covergroup = covergroup)[0]
     cp.name = name
     cp.enable = enable
     cp.desc = desc
-    cp.type = type
+    cp.kind = kind
     cp.expr = expr
-    cp.owner = owner
     cp.sensitivity = sensitivity
     cp.sensitivityLabel = sensitivityLabel
     cp.covergroup = covergroup

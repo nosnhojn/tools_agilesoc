@@ -3,12 +3,13 @@ from django.forms.formsets import formset_factory
 
 from django.db import models
 from django.forms import ModelForm
-from funcov.models import Coverpoint, Parameter, ParameterChoice
+from funcov.models import Covergroup, Coverpoint, Parameter, ParameterChoice
 
 
-class CovergroupForm(forms.Form):
-  name = forms.CharField(label='Save As', initial='', max_length=50)
-  private = forms.BooleanField(initial=True)
+class CovergroupForm(ModelForm):
+  class Meta:
+    model = Covergroup
+    fields = [ 'name', 'private' ]
 
 
 class ParameterForm(forms.Form):
@@ -20,11 +21,11 @@ class ParameterForm(forms.Form):
 class CoverpointForm(ModelForm):
   class Meta:
     model = Coverpoint
-    fields = [ 'enable', 'name', 'desc', 'type', 'expr', 'sensitivityLabel', 'sensitivity' ]
+    fields = [ 'enable', 'name', 'desc', 'kind', 'expr', 'sensitivityLabel', 'sensitivity' ]
     widgets = {
                 'name' : forms.HiddenInput(),
                 'desc' : forms.HiddenInput(),
-                'type' : forms.HiddenInput(),
+                'kind' : forms.HiddenInput(),
                 'expr' : forms.HiddenInput(),
                 'sensitivityLabel' : forms.HiddenInput(),
                 'sensitivity' : forms.HiddenInput(),

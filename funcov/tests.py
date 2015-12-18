@@ -163,7 +163,6 @@ class editorViewTests(TestCase):
         u'parameters-TOTAL_FORMS': [u'1'],
         u'parameters-0-enable': True,
         u'parameters-0-name': 'a',
-        u'parameters-0-owner': 'b',
         u'parameters-0-covergroup': 'c',
 
         u'covergroups-INITIAL_FORMS': [u'1'],
@@ -263,7 +262,7 @@ class editorViewTests(TestCase):
       self.assertTrue(c.initial['enable'])
       self.assertTrue(c.initial['name'] != None)
       self.assertTrue(c.initial['desc'] != None)
-      self.assertTrue(c.initial['type'] != None)
+      self.assertTrue(c.initial['kind'] != None)
       self.assertTrue(c.initial['expr'] != None)
       self.assertTrue(c.initial['sensitivityLabel'] != None)
       self.assertTrue(c.initial['sensitivity'] != None)
@@ -281,7 +280,6 @@ class editorViewTests(TestCase):
         u'parameters-TOTAL_FORMS': [u'1'],
         u'parameters-0-enable': True,
         u'parameters-0-name': 'a',
-        u'parameters-0-owner': 'b',
         u'parameters-0-covergroup': 'c',
 
         u'covergroups-INITIAL_FORMS': [u'1'],
@@ -348,11 +346,10 @@ class dbInteractionTests(TestCase):
     cp.enable = True
     cp.name = 'n'
     cp.desc = 'a d'
-    cp.type = 't'
+    cp.kind = 't'
     cp.expr = 'e'
     cp.sensitivityLabel = 'sL'
     cp.covergroup = 'c'
-    cp.owner = 'o'
     cp.save()
 
     cg = Covergroup()
@@ -375,15 +372,13 @@ class dbInteractionTests(TestCase):
                           ).filter(
                                    desc = 'a d'
                           ).filter(
-                                   type = 't'
+                                   kind = 't'
                           ).filter(
                                    expr = 'e'
                           ).filter(
                                    sensitivityLabel = 'sL'
                           ).filter(
                                    covergroup = 'c'
-                          ).filter(
-                                   owner = 'o'
                           )
     self.assertEqual(len(qs), 1)
 
@@ -412,7 +407,7 @@ class coverageTemplateTests(TestCase):
   def testCoverpointValueInsensitive(self):
     self.cgForm = CoverpointForm(initial={
                                            'name':'theName',
-                                           'type':'value',
+                                           'kind':'value',
                                            'expr':'theSignal',
                                          })
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), "    theName : coverpoint theSignal;\n")
@@ -420,7 +415,7 @@ class coverageTemplateTests(TestCase):
   def testCoverpointValueSensitive(self):
     self.cgForm = CoverpointForm(initial={
                                            'name':'aName',
-                                           'type':'value',
+                                           'kind':'value',
                                            'expr':'aSignal',
                                            'sensitivity':'someSignal',
                                          })
@@ -429,7 +424,7 @@ class coverageTemplateTests(TestCase):
   def testCoverpointToggle1BitInsensitive(self):
     self.cgForm = CoverpointForm(initial={
                                            'name':'aName',
-                                           'type':'toggle',
+                                           'kind':'toggle',
                                            'expr':'aSignal',
                                          })
     cp  = '    aName : coverpoint aSignal\n'
@@ -440,7 +435,7 @@ class coverageTemplateTests(TestCase):
     self.assertEquals(coverpointAsString(self.pForm, self.cgForm), cp)
 
   def testCoverpointToggleNBitInsensitive(self):
-    add_parameter(name = 'aSignal', enable = True, select = '7', choices = [ '7' ], owner = 'blah', covergroup = 'blah')
+    add_parameter(name = 'aSignal', enable = True, select = '7', choices = [ '7' ], covergroup = 'blah')
     self.pForm = ParameterForm(initial={
                                          'name':'aSignal',
                                        })
@@ -450,7 +445,7 @@ class coverageTemplateTests(TestCase):
 
     self.cgForm = CoverpointForm(initial={
                                            'name':'aName',
-                                           'type':'toggle',
+                                           'kind':'toggle',
                                            'expr':'aSignal',
                                          })
     cp  = '    aName : coverpoint aSignal\n'
@@ -475,7 +470,7 @@ class coverageTemplateTests(TestCase):
   def testCoverpointToggle1BitSensitive(self):
     self.cgForm = CoverpointForm(initial={
                                            'name':'aName',
-                                           'type':'toggle',
+                                           'kind':'toggle',
                                            'expr':'aSignal',
                                            'sensitivity':'bucko',
                                          })
@@ -490,13 +485,13 @@ class coverageTemplateTests(TestCase):
     _2coverpoints = [
                       {
                         'name'        : 'ActiveDataCycle',
-                        'type'        : 'value',
+                        'kind'        : 'value',
                         'expr'      : 'signal1',
                         'sensitivityLabel' : 'dud',
                       },
                       {
                         'name'        : 'tDataToggle',
-                        'type'        : 'toggle',
+                        'kind'        : 'toggle',
                         'expr'      : 'signal2',
                         'sensitivityLabel' : 'dud',
                         'sensitivity' : 'activeDataCycle',
@@ -505,7 +500,7 @@ class coverageTemplateTests(TestCase):
     cgFormSet = formset_factory(CoverpointForm, extra=0)
     cgForm = cgFormSet(initial=_2coverpoints)
 
-    add_parameter(name = 'signal2', enable = True, select = '2', choices = [ '2' ], owner = 'blah', covergroup = 'blah')
+    add_parameter(name = 'signal2', enable = True, select = '2', choices = [ '2' ], covergroup = 'blah')
     _2parameters = [
                      {
                        'name'   : 'signal2',
@@ -541,7 +536,7 @@ class coverageTemplateTests(TestCase):
     self.assertEquals(portAsString(self.pForm), '  input port')
 
   def testNBitParameter(self):
-    add_parameter(name = 'port', enable = True, select = '41', choices = [ '41' ], owner = 'blah', covergroup = 'blah')
+    add_parameter(name = 'port', enable = True, select = '41', choices = [ '41' ], covergroup = 'blah')
     self.pForm = ParameterForm(initial={
                                          'name':'port',
                                        })
@@ -551,7 +546,7 @@ class coverageTemplateTests(TestCase):
     self.assertEquals(portAsString(self.pForm), '  input [40:0] port')
 
   def testPortsAsString(self):
-    add_parameter(name = 'signal2', enable = True, select = '2', choices = [ '2' ], owner = 'blah', covergroup = 'blah')
+    add_parameter(name = 'signal2', enable = True, select = '2', choices = [ '2' ], covergroup = 'blah')
     _2parameters = [
                      {
                        'name'   : 'signal2',
