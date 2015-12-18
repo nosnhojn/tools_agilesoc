@@ -112,9 +112,29 @@ def editor(request):
           return HttpResponseRedirect(reverse('index'))
 
       elif formAction == 'save':
-        saveas = CovergroupForm(data=request.POST)
+        saveas = CovergroupForm(data=request.POST, prefix='covergroup')
         if saveas.is_valid():
-          pass
+          pForm = parameterFormSet(data=request.POST)
+          cgForm = coverpointFormSet(data=request.POST)
+          if pForm.is_valid() and cgForm.is_valid():
+            for f in pForm:
+              qs = ParameterChoice.objects.filter(param=f.cleaned_data['name'])
+              if len(qs) == 0:
+                f.fields['select'] = None
+              else:
+                f.fields['select'].queryset = qs
+                f.fields['select'].initial = qs[0]
+
+            cg = Covergroup.objects.filter(type = requestedType)[0]
+
+            context = {
+                        'name' : saveas.cleaned_data['name'],
+                        'type' : cg.type,
+                        'parameters' : pForm,
+                        'coverpoints' : cgForm,
+                        'saveas' : CovergroupForm(initial={'name':saveas.cleaned_data['name'], 'private':True}, prefix='covergroup'),
+                      }
+            return render(request, 'funcov/editor.html', context)
         else:
           pForm = parameterFormSet(data=request.POST)
           cgForm = coverpointFormSet(data=request.POST)
@@ -134,7 +154,7 @@ def editor(request):
                         'type' : cg.type,
                         'parameters' : pForm,
                         'coverpoints' : cgForm,
-                        'saveas' : CovergroupForm(),
+                        'saveas' : CovergroupForm(initial={'name':cg.name, 'private':True}, prefix='covergroup'),
                         'errormsg' : saveas.errors,
                         'tab' : 'save',
                       }
@@ -155,7 +175,7 @@ def editor(request):
                     'type' : cg.type,
                     'parameters' : parameterFormSet(init=pfs.values()),
                     'coverpoints' : coverpointFormSet(init=cfs.values()),
-                    'saveas' : CovergroupForm(),
+                    'saveas' : CovergroupForm(initial={'name':cg.name, 'private': True}, prefix='covergroup'),
                   }
         return render(request, 'funcov/editor.html', context)
 

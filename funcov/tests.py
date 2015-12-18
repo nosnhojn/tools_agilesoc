@@ -270,8 +270,8 @@ class editorViewTests(TestCase):
   def testAxi4StreamSaveAs(self):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
     saveAs = response.context['saveas']
-    self.assertTrue(saveAs.fields['private'])
-    self.assertTrue(saveAs.fields['name'])
+    self.assertEqual(saveAs.initial['private'], True)
+    self.assertEqual(saveAs.initial['name'], 'Streaming AXI-4')
 
   @patch('funcov.views.render', return_value=HttpResponse())
   def testInvalidSaveIsARedo(self, mock_render):
@@ -286,7 +286,7 @@ class editorViewTests(TestCase):
         u'covergroups-TOTAL_FORMS': [u'0'],
 
         u'form-action': [u'save'],
-        u'saveas-name' : [u''],
+        u'covergroup-name' : [u''],
         u'type': [u'axi4stream'],
     }
     response = self.client.post(reverse('editor'), data)
@@ -295,7 +295,9 @@ class editorViewTests(TestCase):
     self.assertEqual(args[1], 'funcov/editor.html')
     self.assertEqual(args[2]['name'], 'Streaming AXI-4')
     self.assertEqual(args[2]['type'], 'axi4stream')
-    self.assertTrue(type(args[2]['saveas']) == CovergroupForm)
+    saveAs = args[2]['saveas']
+    self.assertEqual(saveAs.initial['private'], True)
+    self.assertEqual(saveAs.initial['name'], 'Streaming AXI-4')
     self.assertEqual(len(args[2]['parameters']), 1)
     self.assertEqual(len(args[2]['coverpoints']), 0)
     self.assertTrue(args[2]['errormsg'])
@@ -311,31 +313,42 @@ class editorViewTests(TestCase):
         u'covergroups-TOTAL_FORMS': [u'0'],
 
         u'form-action': [u'save'],
-        u'saveas-name' : [u''],
+        u'covergroup-name' : [u''],
         u'type': [u'axi4stream'],
     }
     response = self.client.post(reverse('editor'), data)
 
     mock_HttpResponseRedirect.assert_called_with(reverse('index'))
 
-# def newEmptyFormData(self, name, type):
-#   return {
-#            u'parameters-INITIAL_FORMS': [u'1'],
-#            u'parameters-TOTAL_FORMS': [u'0'],
-#
-#            u'covergroups-INITIAL_FORMS': [u'1'],
-#            u'covergroups-TOTAL_FORMS': [u'0'],
-#
-#            u'form-action': [u'save'],
-#            u'saveas-name' : [name],
-#            u'type': [type],
-#          }
-#
-# @patch('funcov.views.HttpResponseRedirect', return_value=HttpResponse())
-# def testBadSaveDataRedirect(self, mock_HttpResponseRedirect):
-#   response = self.client.post(reverse('editor'), self.newEmptyFormData(name='new', type='axi4stream'))
-#
-#   mock_HttpResponseRedirect.assert_called_with(reverse('index'))
+  def newEmptyFormData(self, name, type):
+    return {
+             u'parameters-INITIAL_FORMS': [u'1'],
+             u'parameters-TOTAL_FORMS': [u'0'],
+ 
+             u'covergroups-INITIAL_FORMS': [u'1'],
+             u'covergroups-TOTAL_FORMS': [u'0'],
+ 
+             u'form-action': [u'save'],
+             u'covergroup-name' : [name],
+             u'type': [type],
+           }
+ 
+  @patch('funcov.views.render', return_value=HttpResponse())
+  def testGoodSavedCovergroupHasNewName(self, mock_render):
+    response = self.client.post(reverse('editor'), self.newEmptyFormData(name='new', type='axi4stream'))
+
+    args, kwargs = mock_render.call_args
+
+    self.assertEqual(args[1], 'funcov/editor.html')
+    self.assertEqual(args[2]['name'], 'new')
+    #self.assertNotEqual(args[2]['type'], 'axi4stream')
+
+    saveAs = args[2]['saveas']
+    self.assertEqual(saveAs.initial['private'], True)
+    self.assertEqual(saveAs.initial['name'], 'new')
+
+    self.assertEqual(len(args[2]['parameters']), 0)
+    self.assertEqual(len(args[2]['coverpoints']), 0)
 
 
 ###############################################################################################    
