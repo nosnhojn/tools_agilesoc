@@ -88,96 +88,104 @@ def parameterFormSet(init=None, data=None):
 
   return fs
 
+import random
+import string
+def randomTypeString():
+  return ''.join([random.choice(string.ascii_letters + string.digits) for n in range(10)])
+
 def editor(request):
-    context = {}
+  context = {}
 
-    if request.method == 'POST':
-      requestedType = request.POST.get('type')
-      formAction = request.POST.get('form-action')
+  if request.method == 'POST':
+    requestedType = request.POST.get('type')
+    formAction = request.POST.get('form-action')
 
-      if formAction == 'download':
+    if formAction == 'download':
+      pForm = parameterFormSet(data=request.POST)
+      cgForm = coverpointFormSet(data=request.POST)
+      if pForm.is_valid() and cgForm.is_valid():
+        cg = Covergroup.objects.filter(type = requestedType)[0]
+        beginning = cg.beginning
+        middle = cg.middle
+
+        cgAsString = coverageModuleAsString(pForm, cgForm, beginning, middle, end)
+        return render(request, 'funcov/myCovergroup.html', { 'uri' : quote(cgAsString), 'txt' : cgAsString })
+
+      else:
+        #print (pForm.errors)
+        #print (cgForm.errors)
+        return HttpResponseRedirect(reverse('index'))
+
+    elif formAction == 'save':
+      saveas = CovergroupForm(data=request.POST, prefix='covergroup')
+      if saveas.is_valid():
         pForm = parameterFormSet(data=request.POST)
         cgForm = coverpointFormSet(data=request.POST)
         if pForm.is_valid() and cgForm.is_valid():
+          for f in pForm:
+            qs = ParameterChoice.objects.filter(param=f.cleaned_data['name'])
+            if len(qs) == 0:
+              f.fields['select'] = None
+            else:
+              f.fields['select'].queryset = qs
+              f.fields['select'].initial = qs[0]
+
+          newCg = Covergroup.objects.filter(type = requestedType)[0]
+          newCg.pk = None
+          newCg.type = randomTypeString()
+          newCg.save()
+
+          context = {
+                      'name' : saveas.cleaned_data['name'],
+                      'type' : newCg.type,
+                      'parameters' : pForm,
+                      'coverpoints' : cgForm,
+                      'saveas' : CovergroupForm(initial={'name':saveas.cleaned_data['name'], 'private':True}, prefix='covergroup'),
+                    }
+          return render(request, 'funcov/editor.html', context)
+      else:
+        pForm = parameterFormSet(data=request.POST)
+        cgForm = coverpointFormSet(data=request.POST)
+        if pForm.is_valid() and cgForm.is_valid():
+          for f in pForm:
+            qs = ParameterChoice.objects.filter(param=f.cleaned_data['name'])
+            if len(qs) == 0:
+              f.fields['select'] = None
+            else:
+              f.fields['select'].queryset = qs
+              f.fields['select'].initial = qs[0]
+
           cg = Covergroup.objects.filter(type = requestedType)[0]
-          beginning = cg.beginning
-          middle = cg.middle
 
-          cgAsString = coverageModuleAsString(pForm, cgForm, beginning, middle, end)
-          return render(request, 'funcov/myCovergroup.html', { 'uri' : quote(cgAsString), 'txt' : cgAsString })
-
+          context = {
+                      'name' : cg.name,
+                      'type' : cg.type,
+                      'parameters' : pForm,
+                      'coverpoints' : cgForm,
+                      'saveas' : CovergroupForm(initial={'name':cg.name, 'private':True}, prefix='covergroup'),
+                      'errormsg' : saveas.errors,
+                      'tab' : 'save',
+                    }
+          return render(request, 'funcov/editor.html', context)
         else:
-          #print (pForm.errors)
-          #print (cgForm.errors)
           return HttpResponseRedirect(reverse('index'))
 
-      elif formAction == 'save':
-        saveas = CovergroupForm(data=request.POST, prefix='covergroup')
-        if saveas.is_valid():
-          pForm = parameterFormSet(data=request.POST)
-          cgForm = coverpointFormSet(data=request.POST)
-          if pForm.is_valid() and cgForm.is_valid():
-            for f in pForm:
-              qs = ParameterChoice.objects.filter(param=f.cleaned_data['name'])
-              if len(qs) == 0:
-                f.fields['select'] = None
-              else:
-                f.fields['select'].queryset = qs
-                f.fields['select'].initial = qs[0]
+  else:
+    requestedType = request.GET.get('type')
 
-            cg = Covergroup.objects.filter(type = requestedType)[0]
-
-            context = {
-                        'name' : saveas.cleaned_data['name'],
-                        'type' : cg.type,
-                        'parameters' : pForm,
-                        'coverpoints' : cgForm,
-                        'saveas' : CovergroupForm(initial={'name':saveas.cleaned_data['name'], 'private':True}, prefix='covergroup'),
-                      }
-            return render(request, 'funcov/editor.html', context)
-        else:
-          pForm = parameterFormSet(data=request.POST)
-          cgForm = coverpointFormSet(data=request.POST)
-          if pForm.is_valid() and cgForm.is_valid():
-            for f in pForm:
-              qs = ParameterChoice.objects.filter(param=f.cleaned_data['name'])
-              if len(qs) == 0:
-                f.fields['select'] = None
-              else:
-                f.fields['select'].queryset = qs
-                f.fields['select'].initial = qs[0]
-
-            cg = Covergroup.objects.filter(type = requestedType)[0]
-
-            context = {
-                        'name' : cg.name,
-                        'type' : cg.type,
-                        'parameters' : pForm,
-                        'coverpoints' : cgForm,
-                        'saveas' : CovergroupForm(initial={'name':cg.name, 'private':True}, prefix='covergroup'),
-                        'errormsg' : saveas.errors,
-                        'tab' : 'save',
-                      }
-            return render(request, 'funcov/editor.html', context)
-          else:
-            return HttpResponseRedirect(reverse('index'))
+    cg = Covergroup.objects.filter(type = requestedType)
+    if len(cg) != 0:
+      cg = cg[0]
+      cfs = Coverpoint.objects.filter(covergroup = requestedType)
+      pfs = Parameter.objects.filter(covergroup = requestedType)
+      context = {
+                  'name' : cg.name,
+                  'type' : cg.type,
+                  'parameters' : parameterFormSet(init=pfs.values()),
+                  'coverpoints' : coverpointFormSet(init=cfs.values()),
+                  'saveas' : CovergroupForm(initial={'name':cg.name, 'private': True}, prefix='covergroup'),
+                }
+      return render(request, 'funcov/editor.html', context)
 
     else:
-      requestedType = request.GET.get('type')
-
-      cg = Covergroup.objects.filter(type = requestedType)
-      if len(cg) != 0:
-        cg = cg[0]
-        cfs = Coverpoint.objects.filter(covergroup = requestedType)
-        pfs = Parameter.objects.filter(covergroup = requestedType)
-        context = {
-                    'name' : cg.name,
-                    'type' : cg.type,
-                    'parameters' : parameterFormSet(init=pfs.values()),
-                    'coverpoints' : coverpointFormSet(init=cfs.values()),
-                    'saveas' : CovergroupForm(initial={'name':cg.name, 'private': True}, prefix='covergroup'),
-                  }
-        return render(request, 'funcov/editor.html', context)
-
-      else:
-        return HttpResponseRedirect(reverse('index'))
+      return HttpResponseRedirect(reverse('index'))

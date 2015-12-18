@@ -349,6 +349,16 @@ class editorViewTests(TestCase):
 
     self.assertEqual(len(args[2]['parameters']), 0)
     self.assertEqual(len(args[2]['coverpoints']), 0)
+ 
+  @patch('funcov.views.render', return_value=HttpResponse())
+  def testGoodSavedCovergroupWrittenToDatabase(self, mock_render):
+    expNumGroups = len(Covergroup.objects.all()) + 1
+    response = self.client.post(reverse('editor'), self.newEmptyFormData(name='new', type='axi4stream'))
+
+    args, kwargs = mock_render.call_args
+
+    self.assertEqual(len(Covergroup.objects.all()), expNumGroups)
+    self.assertNotEqual(args[2]['type'], 'axi4stream')
 
 
 ###############################################################################################    
