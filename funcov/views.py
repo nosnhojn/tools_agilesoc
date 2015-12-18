@@ -92,14 +92,14 @@ def editor(request):
     context = {}
 
     if request.method == 'POST':
-      type = request.POST.get('type')
+      requestedType = request.POST.get('type')
       formAction = request.POST.get('form-action')
 
       if formAction == 'download':
         pForm = parameterFormSet(data=request.POST)
         cgForm = coverpointFormSet(data=request.POST)
         if pForm.is_valid() and cgForm.is_valid():
-          cg = Covergroup.objects.filter(type = type)[0]
+          cg = Covergroup.objects.filter(type = requestedType)[0]
           beginning = cg.beginning
           middle = cg.middle
 
@@ -127,7 +127,7 @@ def editor(request):
                 f.fields['select'].queryset = qs
                 f.fields['select'].initial = qs[0]
 
-            cg = Covergroup.objects.filter(type = type)[0]
+            cg = Covergroup.objects.filter(type = requestedType)[0]
 
             context = {
                         'name' : cg.name,
@@ -143,13 +143,13 @@ def editor(request):
             return HttpResponseRedirect(reverse('index'))
 
     else:
-      type = request.GET.get('type')
+      requestedType = request.GET.get('type')
 
-      cg = Covergroup.objects.filter(type = type)
+      cg = Covergroup.objects.filter(type = requestedType)
       if len(cg) != 0:
         cg = cg[0]
-        cfs = Coverpoint.objects.filter(covergroup = type)
-        pfs = Parameter.objects.filter(covergroup = type)
+        cfs = Coverpoint.objects.filter(covergroup = requestedType)
+        pfs = Parameter.objects.filter(covergroup = requestedType)
         context = {
                     'name' : cg.name,
                     'type' : cg.type,
