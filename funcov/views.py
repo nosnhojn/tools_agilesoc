@@ -130,16 +130,32 @@ def editor(request):
               f.fields['select'].queryset = qs
               f.fields['select'].initial = qs[0]
 
+          # duplicate and save the new covergroup and dependants
           newCg = Covergroup.objects.filter(type = requestedType)[0]
           newCg.pk = None
           newCg.type = randomTypeString()
+          newCg.name = saveas.cleaned_data['name']
+          newCg.owner = request.user.username
+          newCg.private = True
           newCg.save()
 
+          newCps = Coverpoint.objects.filter(covergroup = requestedType)
+          for cp in newCps:
+            cp.pk = None
+            cp.covergroup = newCg.type
+            cp.save()
+
+          newPs = Parameter.objects.filter(covergroup = requestedType)
+          for p in newPs:
+            p.pk = None
+            p.covergroup = newCg.type
+            p.save()
+
           context = {
-                      'name' : saveas.cleaned_data['name'],
+                      'name' : newCg.name,
                       'type' : newCg.type,
-                      'parameters' : pForm,
-                      'coverpoints' : cgForm,
+                      'parameters' : parameterFormSet(init=newPs.values()),
+                      'coverpoints' : coverpointFormSet(init=newCps.values()),
                       'saveas' : CovergroupForm(initial={'name':saveas.cleaned_data['name'], 'private':True}, prefix='covergroup'),
                     }
           return render(request, 'funcov/editor.html', context)

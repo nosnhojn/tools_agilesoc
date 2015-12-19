@@ -333,33 +333,31 @@ class editorViewTests(TestCase):
              u'type': [type],
            }
  
+  @patch('funcov.views.randomTypeString', return_value='jinx')
   @patch('funcov.views.render', return_value=HttpResponse())
-  def testGoodSavedCovergroupHasNewName(self, mock_render):
+  def testGoodSavedCovergroupHasNewName(self, mock_render, mock_randomTypeString):
+    expNumParameters = len(Parameter.objects.filter(covergroup = 'axi4stream'))
+    expNumCoverpoints = len(Coverpoint.objects.filter(covergroup = 'axi4stream'))
+    expNumGroups = len(Covergroup.objects.all()) + 1
+
     response = self.client.post(reverse('editor'), self.newEmptyFormData(name='new', type='axi4stream'))
 
     args, kwargs = mock_render.call_args
 
     self.assertEqual(args[1], 'funcov/editor.html')
     self.assertEqual(args[2]['name'], 'new')
-    #self.assertNotEqual(args[2]['type'], 'axi4stream')
+    self.assertEqual(args[2]['type'], 'jinx')
 
     saveAs = args[2]['saveas']
     self.assertEqual(saveAs.initial['private'], True)
     self.assertEqual(saveAs.initial['name'], 'new')
+    self.assertEqual(len(Covergroup.objects.filter(owner = 'a', name = 'new', private = True)), 1)
 
-    self.assertEqual(len(args[2]['parameters']), 0)
-    self.assertEqual(len(args[2]['coverpoints']), 0)
- 
-  @patch('funcov.views.render', return_value=HttpResponse())
-  def testGoodSavedCovergroupWrittenToDatabase(self, mock_render):
-    expNumGroups = len(Covergroup.objects.all()) + 1
-    response = self.client.post(reverse('editor'), self.newEmptyFormData(name='new', type='axi4stream'))
-
-    args, kwargs = mock_render.call_args
+    self.assertEqual(len(Parameter.objects.filter(covergroup = 'jinx')), expNumParameters)
+    self.assertEqual(len(Coverpoint.objects.filter(covergroup = 'jinx')), expNumCoverpoints)
 
     self.assertEqual(len(Covergroup.objects.all()), expNumGroups)
-    self.assertNotEqual(args[2]['type'], 'axi4stream')
-
+ 
 
 ###############################################################################################    
 class selectorViewTests(TestCase):
