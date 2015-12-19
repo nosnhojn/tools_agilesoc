@@ -16,6 +16,20 @@ from funcov.models import UserProfile, Coverpoint, Covergroup, ParameterChoice, 
 from populate import populate, add_parameter
 from funcov.testStrings import emptyAxi4streamCg
 
+
+def newEmptyFormData(name, type):
+  return {
+           u'parameters-INITIAL_FORMS': [u'1'],
+           u'parameters-TOTAL_FORMS': [u'0'],
+
+           u'covergroups-INITIAL_FORMS': [u'1'],
+           u'covergroups-TOTAL_FORMS': [u'0'],
+
+           u'form-action': [u'save'],
+           u'covergroup-name' : [name],
+           u'type': [type],
+         }
+
 ###############################################################################################    
 class userTests(TestCase):
   uname = 'uname'
@@ -319,19 +333,6 @@ class editorViewTests(TestCase):
     response = self.client.post(reverse('editor'), data)
 
     mock_HttpResponseRedirect.assert_called_with(reverse('index'))
-
-  def newEmptyFormData(self, name, type):
-    return {
-             u'parameters-INITIAL_FORMS': [u'1'],
-             u'parameters-TOTAL_FORMS': [u'0'],
- 
-             u'covergroups-INITIAL_FORMS': [u'1'],
-             u'covergroups-TOTAL_FORMS': [u'0'],
- 
-             u'form-action': [u'save'],
-             u'covergroup-name' : [name],
-             u'type': [type],
-           }
  
   @patch('funcov.views.randomTypeString', return_value='jinx')
   @patch('funcov.views.render', return_value=HttpResponse())
@@ -340,7 +341,7 @@ class editorViewTests(TestCase):
     expNumCoverpoints = len(Coverpoint.objects.filter(covergroup = 'axi4stream'))
     expNumGroups = len(Covergroup.objects.all()) + 1
 
-    response = self.client.post(reverse('editor'), self.newEmptyFormData(name='new', type='axi4stream'))
+    response = self.client.post(reverse('editor'), newEmptyFormData(name='new', type='axi4stream'))
 
     args, kwargs = mock_render.call_args
 
@@ -363,9 +364,13 @@ class editorViewTests(TestCase):
 class selectorViewTests(TestCase):
   def setUp(self):
     populate()
+    up = UserProfile()
+    up.user = User.objects.create_user('a', 'b', 'c')
+    up.save()
+    self.client.login(username='a', password='c')
 
   @patch('funcov.views.render', return_value=HttpResponse())
-  def testContextIncludesAllGroups(self, mock_render):
+  def testContextIncludesRootGroups(self, mock_render):
     expectedButtons = {
                         'Streaming AXI-4': { 'type' : 'axi4stream', },
                         'AHB': { 'type' : 'ahb', },
@@ -375,6 +380,39 @@ class selectorViewTests(TestCase):
 
     args, kwargs = mock_render.call_args
     self.assertEqual(args[1], 'funcov/selector.html')
+    self.assertEqual(args[2]['buttons'], expectedButtons)
+
+  @patch('funcov.views.randomTypeString', return_value='jinx')
+  @patch('funcov.views.render', return_value=HttpResponse())
+  def testContextIncludesUserGroups(self, mock_render, mock_randomTypeString):
+    expectedButtons = {
+                        'Streaming AXI-4': { 'type' : 'axi4stream', },
+                        'AHB': { 'type' : 'ahb', },
+                        'APB': { 'type' : 'apb', },
+                        'new': { 'type' : 'jinx', },
+                      }
+
+    response = self.client.post(reverse('editor'), newEmptyFormData(name='new', type='axi4stream'))
+    self.client.get(reverse('selector'))
+
+    args, kwargs = mock_render.call_args
+    self.assertEqual(args[2]['buttons'], expectedButtons)
+
+  @patch('funcov.views.randomTypeString', return_value='jinx')
+  @patch('funcov.views.render', return_value=HttpResponse())
+  def testContextDoesntIncludesOtherUserGroups(self, mock_render, mock_randomTypeString):
+    expectedButtons = {
+                        'Streaming AXI-4': { 'type' : 'axi4stream', },
+                        'AHB': { 'type' : 'ahb', },
+                        'APB': { 'type' : 'apb', },
+                      }
+
+    response = self.client.post(reverse('editor'), newEmptyFormData(name='new', type='axi4stream'))
+
+    self.client.logout()
+    self.client.get(reverse('selector'))
+
+    args, kwargs = mock_render.call_args
     self.assertEqual(args[2]['buttons'], expectedButtons)
 
 

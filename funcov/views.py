@@ -37,7 +37,8 @@ def contact(request):
 
 def selector(request):
     buttons = {}
-    for cg in Covergroup.objects.all():
+    cgs = Covergroup.objects.filter(owner = 'root') | Covergroup.objects.filter(owner = request.user.username)
+    for cg in cgs:
       buttons[cg.name] = { 'type' : cg.type }
 
     context = {
