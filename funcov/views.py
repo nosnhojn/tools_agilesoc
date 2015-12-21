@@ -140,12 +140,14 @@ def editor(request):
           newCg.private = True
           newCg.save()
 
+          # !! need the enable here !!
           newCps = Coverpoint.objects.filter(covergroup = requestedType)
           for cp in newCps:
             cp.pk = None
             cp.covergroup = newCg.type
             cp.save()
 
+          # !! need the select here !!
           newPs = Parameter.objects.filter(covergroup = requestedType)
           for p in newPs:
             p.pk = None
