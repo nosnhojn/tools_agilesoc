@@ -17,6 +17,8 @@ from populate import populate, add_parameter
 from funcov.testStrings import emptyAxi4streamCg
 
 
+###############################################################################################    
+# misc helper functions
 def newEmptyFormData(name, type, action='save'):
   return {
            u'parameters-INITIAL_FORMS': [u'1'],
@@ -29,6 +31,33 @@ def newEmptyFormData(name, type, action='save'):
            u'covergroup-name' : [name],
            u'type': [type],
          }
+
+def fullFormData(name, type, action='save'):
+  data = newEmptyFormData(name, type, action)
+
+  newCps = Coverpoint.objects.filter(covergroup = type)
+  for idx in range(len(newCps)):
+    prefix = 'covergroups-' + str(idx) + '-'
+    data[prefix + 'name'] = newCps[idx].name
+    data[prefix + 'enable'] = newCps[idx].enable
+    data[prefix + 'desc'] = newCps[idx].desc
+    data[prefix + 'kind'] = newCps[idx].kind
+    data[prefix + 'expr'] = newCps[idx].expr
+    data[prefix + 'sensitivity'] = newCps[idx].sensitivity
+    data[prefix + 'sensitivityLabel'] = newCps[idx].sensitivityLabel
+    data[prefix + 'covergroup'] = newCps[idx].covergroup
+  data['covergroups-TOTAL_FORMS'] = len(newCps)
+
+  newPs = Parameter.objects.filter(covergroup = type)
+  for idx in range(len(newPs)):
+    prefix = 'parameters-' + str(idx) + '-'
+    data[prefix + 'name'] = newPs[idx].name
+    data[prefix + 'enable'] = newPs[idx].enable
+    data[prefix + 'covergroup'] = newPs[idx].covergroup
+    select = 55
+  data['parameters-TOTAL_FORMS'] = len(newPs)
+
+  return data
 
 ###############################################################################################    
 class userTests(TestCase):
@@ -276,7 +305,7 @@ class editorViewTests(TestCase):
  
   @patch('funcov.views.randomTypeString', return_value='jinx')
   @patch('funcov.views.render', return_value=HttpResponse())
-  def testGoodSavedCovergroupHasNewName(self, mock_render, mock_randomTypeString):
+  def testNewCovergroupIsDuplicate(self, mock_render, mock_randomTypeString):
     expNumParameters = len(Parameter.objects.filter(covergroup = 'axi4stream'))
     expNumCoverpoints = len(Coverpoint.objects.filter(covergroup = 'axi4stream'))
     expNumGroups = len(Covergroup.objects.all()) + 1
@@ -295,9 +324,22 @@ class editorViewTests(TestCase):
     self.assertEqual(len(Covergroup.objects.filter(owner = 'a', name = 'new', private = True)), 1)
 
     self.assertEqual(len(Parameter.objects.filter(covergroup = 'jinx')), expNumParameters)
-    self.assertEqual(len(Coverpoint.objects.filter(covergroup = 'jinx')), expNumCoverpoints)
+    self.assertEqual(len(Coverpoint.objects.filter(covergroup = 'jinx')), 0)
 
     self.assertEqual(len(Covergroup.objects.all()), expNumGroups)
+
+  @patch('funcov.views.randomTypeString', return_value='jinx')
+  @patch('funcov.views.render', return_value=HttpResponse())
+  def testNewCovergroupSavesCustomizedCoverpoints(self, mock_render, mock_randomTypeString):
+    expNumCoverpoints = len(Coverpoint.objects.filter(covergroup = 'axi4stream')) - 1
+
+    data = fullFormData(name='new', type='axi4stream')
+    data['covergroups-0-enable'] = False
+    response = self.client.post(reverse('editor'), data)
+ 
+    args, kwargs = mock_render.call_args
+    saveAs = args[2]['saveas']
+    self.assertEqual(len(Coverpoint.objects.filter(covergroup = 'jinx', enable = True)), expNumCoverpoints)
  
 
 ###############################################################################################    
