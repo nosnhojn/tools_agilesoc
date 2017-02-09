@@ -140,12 +140,20 @@ def editor(request):
           newCg.private = True
           newCg.save()
 
-          newCps = Coverpoint.objects.filter(covergroup = requestedType)
-          for cp in newCps:
-            cp.pk = None
-            cp.covergroup = newCg.type
-            cp.save()
+          # !! need the enable here !!
+          #newCps = Coverpoint.objects.filter(covergroup = requestedType)
+          #for cp in newCps:
+          #  cp.pk = None
+          #  cp.covergroup = newCg.type
+          #  cp.save()
+          for cp in cgForm.cleaned_data:
+            newEntry = Coverpoint(**cp)
+            newEntry.pk = None
+            newEntry.covergroup = newCg.type
+            newEntry.save()
+          newCps = Coverpoint.objects.filter(covergroup = newCg.type)
 
+          # !! need the select here !!
           newPs = Parameter.objects.filter(covergroup = requestedType)
           for p in newPs:
             p.pk = None

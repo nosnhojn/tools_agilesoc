@@ -17,7 +17,9 @@ from populate import populate, add_parameter
 from funcov.testStrings import emptyAxi4streamCg
 
 
-def newEmptyFormData(name, type):
+###############################################################################################    
+# misc helper functions
+def newEmptyFormData(name, type, action='save'):
   return {
            u'parameters-INITIAL_FORMS': [u'1'],
            u'parameters-TOTAL_FORMS': [u'0'],
@@ -25,10 +27,37 @@ def newEmptyFormData(name, type):
            u'covergroups-INITIAL_FORMS': [u'1'],
            u'covergroups-TOTAL_FORMS': [u'0'],
 
-           u'form-action': [u'save'],
+           u'form-action': [action],
            u'covergroup-name' : [name],
            u'type': [type],
          }
+
+def fullFormData(name, type, action='save'):
+  data = newEmptyFormData(name, type, action)
+
+  newCps = Coverpoint.objects.filter(covergroup = type)
+  for idx in range(len(newCps)):
+    prefix = 'covergroups-' + str(idx) + '-'
+    data[prefix + 'name'] = newCps[idx].name
+    data[prefix + 'enable'] = newCps[idx].enable
+    data[prefix + 'desc'] = newCps[idx].desc
+    data[prefix + 'kind'] = newCps[idx].kind
+    data[prefix + 'expr'] = newCps[idx].expr
+    data[prefix + 'sensitivity'] = newCps[idx].sensitivity
+    data[prefix + 'sensitivityLabel'] = newCps[idx].sensitivityLabel
+    data[prefix + 'covergroup'] = newCps[idx].covergroup
+  data['covergroups-TOTAL_FORMS'] = len(newCps)
+
+  newPs = Parameter.objects.filter(covergroup = type)
+  for idx in range(len(newPs)):
+    prefix = 'parameters-' + str(idx) + '-'
+    data[prefix + 'name'] = newPs[idx].name
+    data[prefix + 'enable'] = newPs[idx].enable
+    data[prefix + 'covergroup'] = newPs[idx].covergroup
+    select = 55
+  data['parameters-TOTAL_FORMS'] = len(newPs)
+
+  return data
 
 ###############################################################################################    
 class userTests(TestCase):
@@ -155,16 +184,8 @@ class editorViewTests(TestCase):
   @patch('funcov.views.parameterFormSet')
   @patch('funcov.views.coverpointFormSet')
   def testFormsetsCreatedByByEditor(self, mock_coverpointFormSet, mock_parameterFormSet):
-    data = {
-        u'parameters-INITIAL_FORMS': [u'1'],
-        u'parameters-TOTAL_FORMS': [u'0'],
+    data = newEmptyFormData('whatever', 'axi4stream', 'download')
 
-        u'covergroups-INITIAL_FORMS': [u'1'],
-        u'covergroups-TOTAL_FORMS': [u'0'],
-
-        u'type': [u'axi4stream'],
-        u'form-action': [u'download'],
-    }
     response = self.client.post(reverse('editor'), data)
 
     mock_coverpointFormSet.assert_called_with(data=data)
@@ -172,19 +193,12 @@ class editorViewTests(TestCase):
 
   @patch('funcov.views.coverageModuleAsString', return_value='')
   def testFormsetsPassedToAsString(self, mock_coverageModuleAsString):
-    data = {
-        u'parameters-INITIAL_FORMS': [u'1'],
-        u'parameters-TOTAL_FORMS': [u'1'],
-        u'parameters-0-enable': True,
-        u'parameters-0-name': 'a',
-        u'parameters-0-covergroup': 'c',
+    data = newEmptyFormData('whatever', 'axi4stream', 'download')
+    data['parameters-TOTAL_FORMS'] = [u'1']
+    data['parameters-0-enable'] = True
+    data['parameters-0-name'] = 'a'
+    data['parameters-0-covergroup'] = 'c'
 
-        u'covergroups-INITIAL_FORMS': [u'1'],
-        u'covergroups-TOTAL_FORMS': [u'0'],
-
-        u'type': [u'axi4stream'],
-        u'form-action': [u'download'],
-    }
     response = self.client.post(reverse('editor'), data)
 
     args, kwargs = mock_coverageModuleAsString.call_args
@@ -194,16 +208,8 @@ class editorViewTests(TestCase):
   @patch('funcov.views.render', return_value=HttpResponse())
   def testCovergroupOutput(self, mock_render):
     self.maxDiff = 10000
-    data = {
-        u'parameters-INITIAL_FORMS': [u'1'],
-        u'parameters-TOTAL_FORMS': [u'0'],
+    data = newEmptyFormData('whatever', 'axi4stream', 'download')
 
-        u'covergroups-INITIAL_FORMS': [u'1'],
-        u'covergroups-TOTAL_FORMS': [u'0'],
-
-        u'type': [u'axi4stream'],
-        u'form-action': [u'download'],
-    }
     response = self.client.post(reverse('editor'), data)
  
     args, kwargs = mock_render.call_args
@@ -212,16 +218,8 @@ class editorViewTests(TestCase):
   @patch('funcov.views.coverageModuleAsString', return_value='jake')
   @patch('funcov.views.render', return_value=HttpResponse())
   def testValidatedPostToMyCovergroup(self, mock_render, mock_coverageModuleAsString):
-    data = {
-        u'parameters-INITIAL_FORMS': [u'1'],
-        u'parameters-TOTAL_FORMS': [u'0'],
+    data = newEmptyFormData('whatever', 'axi4stream', 'download')
 
-        u'covergroups-INITIAL_FORMS': [u'1'],
-        u'covergroups-TOTAL_FORMS': [u'0'],
-
-        u'type': [u'axi4stream'],
-        u'form-action': [u'download'],
-    }
     response = self.client.post(reverse('editor'), data)
  
     args, kwargs = mock_render.call_args
@@ -230,43 +228,30 @@ class editorViewTests(TestCase):
 
   @patch('funcov.views.HttpResponseRedirect', return_value=HttpResponse())
   def testBadCoverpointPostInput(self, mock_HttpResponseRedirect):
-    data = {
-        u'parameters-INITIAL_FORMS': [u'1'],
-        u'parameters-TOTAL_FORMS': [u'0'],
+    data = newEmptyFormData('whatever', 'axi4stream', 'download')
+    data['covergroups-TOTAL_FORMS'] = '1'
 
-        u'covergroups-INITIAL_FORMS': [u'1'],
-        u'covergroups-TOTAL_FORMS': [u'1'],    # this is an error
-
-        u'type': [u'axi4stream'],
-        u'form-action': [u'download'],
-    }
     response = self.client.post(reverse('editor'), data)
+
     mock_HttpResponseRedirect.assert_called_with(reverse('index'))
 
   @patch('funcov.views.HttpResponseRedirect', return_value=HttpResponse())
   def testBadParameterPostInput(self, mock_HttpResponseRedirect):
-    data = {
-        u'parameters-INITIAL_FORMS': [u'1'],
-        u'parameters-TOTAL_FORMS': [u'1'],    # this is an error
+    data = newEmptyFormData('whatever', 'axi4stream', 'download')
+    data['parameters-TOTAL_FORMS'] = '1'
 
-        u'covergroups-INITIAL_FORMS': [u'1'],
-        u'covergroups-TOTAL_FORMS': [u'0'],
-
-        u'type': [u'axi4stream'],
-        u'form-action': [u'download'],
-    }
     response = self.client.post(reverse('editor'), data)
+
     mock_HttpResponseRedirect.assert_called_with(reverse('index'))
 
   def testAxi4StreamParams(self):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
+
     parameters = response.context['parameters']
     self.assertTrue(len(parameters) > 0)
     for p in parameters:
       self.assertTrue(p.initial['enable'])
       self.assertTrue(p.initial['name'] != None)
-      #if p['select'] != None:
-      #  self.assertTrue(len(p['select']) > 0)
  
   def testAxi4StreamCovergroups(self):
     response = self.client.get(reverse('editor'), { 'type':'axi4stream' })
@@ -289,20 +274,12 @@ class editorViewTests(TestCase):
 
   @patch('funcov.views.render', return_value=HttpResponse())
   def testInvalidSaveIsARedo(self, mock_render):
-    data = {
-        u'parameters-INITIAL_FORMS': [u'1'],
-        u'parameters-TOTAL_FORMS': [u'1'],
-        u'parameters-0-enable': True,
-        u'parameters-0-name': 'a',
-        u'parameters-0-covergroup': 'c',
+    data = newEmptyFormData('', 'axi4stream', 'save')
+    data['parameters-TOTAL_FORMS'] = '1'
+    data['parameters-0-enable'] = True,
+    data['parameters-0-name'] = 'a',
+    data['parameters-0-covergroup'] = 'c',
 
-        u'covergroups-INITIAL_FORMS': [u'1'],
-        u'covergroups-TOTAL_FORMS': [u'0'],
-
-        u'form-action': [u'save'],
-        u'covergroup-name' : [u''],
-        u'type': [u'axi4stream'],
-    }
     response = self.client.post(reverse('editor'), data)
 
     args, kwargs = mock_render.call_args
@@ -319,24 +296,16 @@ class editorViewTests(TestCase):
 
   @patch('funcov.views.HttpResponseRedirect', return_value=HttpResponse())
   def testBadSaveDataRedirect(self, mock_HttpResponseRedirect):
-    data = {
-        u'parameters-INITIAL_FORMS': [u'1'],
-        u'parameters-TOTAL_FORMS': [u'1'],
+    data = newEmptyFormData('', 'axi4stream', 'save')
+    data['parameters-TOTAL_FORMS'] = '1'
 
-        u'covergroups-INITIAL_FORMS': [u'1'],
-        u'covergroups-TOTAL_FORMS': [u'0'],
-
-        u'form-action': [u'save'],
-        u'covergroup-name' : [u''],
-        u'type': [u'axi4stream'],
-    }
     response = self.client.post(reverse('editor'), data)
 
     mock_HttpResponseRedirect.assert_called_with(reverse('index'))
  
   @patch('funcov.views.randomTypeString', return_value='jinx')
   @patch('funcov.views.render', return_value=HttpResponse())
-  def testGoodSavedCovergroupHasNewName(self, mock_render, mock_randomTypeString):
+  def testNewCovergroupIsDuplicate(self, mock_render, mock_randomTypeString):
     expNumParameters = len(Parameter.objects.filter(covergroup = 'axi4stream'))
     expNumCoverpoints = len(Coverpoint.objects.filter(covergroup = 'axi4stream'))
     expNumGroups = len(Covergroup.objects.all()) + 1
@@ -355,9 +324,22 @@ class editorViewTests(TestCase):
     self.assertEqual(len(Covergroup.objects.filter(owner = 'a', name = 'new', private = True)), 1)
 
     self.assertEqual(len(Parameter.objects.filter(covergroup = 'jinx')), expNumParameters)
-    self.assertEqual(len(Coverpoint.objects.filter(covergroup = 'jinx')), expNumCoverpoints)
+    self.assertEqual(len(Coverpoint.objects.filter(covergroup = 'jinx')), 0)
 
     self.assertEqual(len(Covergroup.objects.all()), expNumGroups)
+
+  @patch('funcov.views.randomTypeString', return_value='jinx')
+  @patch('funcov.views.render', return_value=HttpResponse())
+  def testNewCovergroupSavesCustomizedCoverpoints(self, mock_render, mock_randomTypeString):
+    expNumCoverpoints = len(Coverpoint.objects.filter(covergroup = 'axi4stream')) - 1
+
+    data = fullFormData(name='new', type='axi4stream')
+    data['covergroups-0-enable'] = False
+    response = self.client.post(reverse('editor'), data)
+ 
+    args, kwargs = mock_render.call_args
+    saveAs = args[2]['saveas']
+    self.assertEqual(len(Coverpoint.objects.filter(covergroup = 'jinx', enable = True)), expNumCoverpoints)
  
 
 ###############################################################################################    
